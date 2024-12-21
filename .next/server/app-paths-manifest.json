@@ -1,6 +1,7 @@
 {
-  "/page": "app/page.js",
+  "/main/track/page": "app/main/track/page.js",
+  "/manifest.json/route": "app/manifest.json/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/manifest.json/route": "app/manifest.json/route.js"
+  "/main/map/page": "app/main/map/page.js",
+  "/main/schedule/page": "app/main/schedule/page.js"
 }
