@@ -3,5 +3,6 @@
   "/manifest.json/route": "app/manifest.json/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/main/map/page": "app/main/map/page.js",
-  "/main/schedule/page": "app/main/schedule/page.js"
+  "/main/schedule/page": "app/main/schedule/page.js",
+  "/page": "app/page.js"
 }
