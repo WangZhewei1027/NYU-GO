@@ -20,8 +20,12 @@ export default function Stops() {
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant={"outline"} className="p-2 text-base">
-            <GoTriangleDown className="text-gray-500" /> {selectedStop}
+          <Button
+            variant={"outline"}
+            className="p-2 text-base w-full max-w-full flex items-center space-x-2 overflow-hidden"
+          >
+            <GoTriangleDown className="shrink-0 text-gray-500" />
+            <span className="truncate">{selectedStop}</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-[80vw] max-h-[80vh] overflow-y-auto">

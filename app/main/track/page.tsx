@@ -21,7 +21,10 @@ const TrackPage = () => {
 
       {/* Location */}
       <div className="mb-8 text-base">
-        Arriving at &nbsp; <Stops />
+        Arriving at &nbsp;
+        <div className="max-w-48 inline-block">
+          <Stops />
+        </div>
         &nbsp; in
       </div>
 
