@@ -17,9 +17,6 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ name, time, color }) => {
   return (
     <div>
-      <div className="ml-2 text-gray-500 text-mono">
-        leaving 6 Metro Tech in{" "}
-      </div>
       <div className={`flex items-center border rounded-lg shadow-sm mt-1`}>
         <div className={`h-24 w-2 ${color} rounded-l-lg`} />
         <div className="ml-4 text-xl font-bold font-sans">Route {name}</div>
@@ -36,12 +33,12 @@ const TrackPage = () => {
   return (
     <div className="p-4">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex mb-6">
         <h1 className="text-3xl font-bold">Track</h1>
-        {/* <a href="/add-routes" className="text-sm text-gray-500 hover:underline">
-          add routes
-        </a> */}
       </div>
+
+      {/* Location */}
+      <div>Arriving at XX in</div>
 
       {/* Routes List */}
       <div className="space-y-6">
