@@ -1,4 +1,4 @@
-const stops: string[] = [
+export const stops: string[] = [
   "715 Broadway Departure",
   "Broadway & Broome St.",
   "80 Lafayette",
@@ -9,3 +9,7 @@ const stops: string[] = [
   "Cleveland & Spring St.",
   "715 Broadway Arrival",
 ];
+
+export function getRemainingTime(route: string): number {
+  return Math.floor(Math.random() * 10) + 1;
+}
