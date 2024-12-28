@@ -37,7 +37,7 @@ const Card: React.FC<CardProps> = ({ name, color }) => {
       onClick={() => setIsClicked(!isClicked)}
     >
       <div className="flex items-center w-full h-20">
-        <div className="ml-4 text-xl font-bold font-sans">Route {name}</div>
+        <div className="ml-2 text-xl font-bold font-sans">Route {name}</div>
         <div className="ml-auto pr-4">
           <div className="inline text-4xl font-mono">{time}</div>
           <div className="inline ml-1 text-gray-500 text-end">min</div>
@@ -48,7 +48,7 @@ const Card: React.FC<CardProps> = ({ name, color }) => {
           isClicked ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
         } items-center w-full`}
       >
-        <div className="flex flex-col p-4 pt-2">
+        <div className="flex flex-col p-2">
           <div className="flex flex-row">
             <div className="flex-1 overflow-hidden flex flex-col  pr-2">
               <div className="text-base font-bold">From</div>
