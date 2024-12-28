@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { GoTriangleDown } from "react-icons/go";
+import { MdArrowDropDown } from "react-icons/md";
 import { stops } from "@/app/utils";
 import {
   Dialog,
@@ -22,9 +22,9 @@ export default function Stops() {
         <DialogTrigger asChild>
           <Button
             variant={"outline"}
-            className="p-2 text-base w-full max-w-full flex items-center space-x-2 overflow-hidden"
+            className="p-1 text-base w-full max-w-full"
           >
-            <GoTriangleDown className="shrink-0 text-gray-500" />
+            <MdArrowDropDown className="shrink-0 text-gray-500" />
             <span className="truncate">{selectedStop}</span>
           </Button>
         </DialogTrigger>

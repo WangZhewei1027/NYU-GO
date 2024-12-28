@@ -1,15 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { getRemainingTime, getFromTime, getToTime } from "@/app/utils";
+import { getRemainingTime, getFromTime, getToTime, routes } from "@/app/utils";
 import Stops from "@/components/Stops";
 
 interface CardProps {
   name: string;
-  color: string;
 }
 
-const Card: React.FC<CardProps> = ({ name, color }) => {
+const Card: React.FC<CardProps> = ({ name }) => {
   const [isClicked, setIsClicked] = useState(false);
 
   const [time, setTime] = useState("--");
@@ -19,21 +18,9 @@ const Card: React.FC<CardProps> = ({ name, color }) => {
     setTime(remainingTime.toString());
   }, [name]);
 
-  const borderColor = {
-    pink: "border-pink-400",
-    purple: "border-purple-400",
-    yellow: "border-yellow-600",
-  }[color];
-
-  const bgColor = {
-    pink: "bg-pink-200",
-    purple: "bg-purple-200",
-    yellow: "bg-yellow-200",
-  }[color];
-
   return (
     <div
-      className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[10px] ${borderColor}`}
+      className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[10px] ${routes[name]?.borderColor}`}
       onClick={() => setIsClicked(!isClicked)}
     >
       <div className="flex items-center w-full h-20">
@@ -72,13 +59,13 @@ const Card: React.FC<CardProps> = ({ name, color }) => {
           <div className="ml-auto space-x-2 mt-4">
             <Button
               variant={"outline"}
-              className={`h-12 rounded-full text-base ${borderColor}`}
+              className={`h-12 rounded-full text-base ${routes[name].borderColor}`}
             >
               full schedule
             </Button>
             <Button
               variant={"secondary"}
-              className={`h-12 rounded-full text-base ${bgColor}`}
+              className={`h-12 rounded-full text-base ${routes[name].bgColor}`}
             >
               open map
             </Button>
