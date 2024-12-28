@@ -25,8 +25,8 @@ const TrackPage = () => {
       .map((route) => route.name)
       .filter((name) => localStorage.getItem(name) === "true");
 
-    // 仅当状态发生变化时更新
-    if (JSON.stringify(visible) !== JSON.stringify(visibleRoutes)) {
+    //仅当状态发生变化时更新
+    if (visible !== visibleRoutes) {
       setVisibleRoutes(visible);
     }
   };
@@ -38,7 +38,7 @@ const TrackPage = () => {
     // 设置轮询定时器
     const intervalId = setInterval(() => {
       updateVisibleRoutes();
-    }, 1000); // 每秒检查一次
+    }, 500); // 每秒检查一次
 
     // 清理定时器
     return () => clearInterval(intervalId);
@@ -70,6 +70,11 @@ const TrackPage = () => {
             visibleRoutes.includes(route.name) && (
               <Card name={route.name} key={index} />
             )
+        )}
+        {!visibleRoutes.length && (
+          <div className="w-ful h-full text-center text-gray-400 font-bold text-xl mt-8">
+            No Routes Added
+          </div>
         )}
         <div className="w-full h-16"></div>
       </div>
