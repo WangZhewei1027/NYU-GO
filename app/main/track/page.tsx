@@ -27,7 +27,6 @@ const TrackPage = () => {
     setVisibleRoutes(visible);
   };
 
-  // 初始化和监听逻辑
   useEffect(() => {
     updateVisibleRoutes();
 
@@ -35,8 +34,13 @@ const TrackPage = () => {
     const originalSetItem = localStorage.setItem;
     localStorage.setItem = function (key, value) {
       originalSetItem.apply(this, [key, value]);
-      const event = new Event("localStorageUpdate");
-      window.dispatchEvent(event); // 手动触发事件
+
+      // 兼容性处理
+      const event =
+        typeof CustomEvent === "function"
+          ? new CustomEvent("localStorageUpdate", { detail: { key, value } })
+          : new Event("localStorageUpdate");
+      window.dispatchEvent(event);
     };
 
     const handleUpdate = () => {
@@ -47,7 +51,7 @@ const TrackPage = () => {
     window.addEventListener("localStorageUpdate", handleUpdate);
 
     return () => {
-      // 恢复原始 setItem 方法，避免意外影响其他逻辑
+      // 恢复原始 setItem 方法
       localStorage.setItem = originalSetItem;
       window.removeEventListener("localStorageUpdate", handleUpdate);
     };
