@@ -57,7 +57,7 @@ export default function Add() {
             </div>
           </div>
         </DialogTrigger>
-        <DialogContent className="max-w-[90vw] max-h-[90vh] overflow-y-auto p-2 rounded">
+        <DialogContent className="max-w-[90vw] max-h-[80vh] overflow-y-auto p-2 rounded">
           <DialogHeader>
             <DialogTitle>
               <div className="hidden">Add Routes</div>
@@ -83,7 +83,7 @@ export default function Add() {
               <Button
                 type="button"
                 variant="outline"
-                className="absolute border border-egg-blue-400 rounded-full text-egg-blue-400 text-base bg-transparent backdrop-blur left-1/2 transform -translate-x-1/2"
+                className="fixed border border-egg-blue-400 rounded-full text-egg-blue-400 text-base left-1/2 transform -translate-x-1/2"
               >
                 Close
               </Button>
