@@ -80,9 +80,13 @@ export default function Add() {
           </div>
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              {/* <Button type="button" variant="secondary">
+              <Button
+                type="button"
+                variant="outline"
+                className="absolute border border-egg-blue-400 rounded-full text-egg-blue-400 text-base bg-transparent backdrop-blur left-1/2 transform -translate-x-1/2"
+              >
                 Close
-              </Button> */}
+              </Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
