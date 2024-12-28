@@ -24,37 +24,24 @@ const TrackPage = () => {
     const visible = routes
       .map((route) => route.name)
       .filter((name) => localStorage.getItem(name) === "true");
-    setVisibleRoutes(visible);
+
+    // 仅当状态发生变化时更新
+    if (JSON.stringify(visible) !== JSON.stringify(visibleRoutes)) {
+      setVisibleRoutes(visible);
+    }
   };
 
   useEffect(() => {
+    // 初始化可见路线
     updateVisibleRoutes();
 
-    // 手动触发更新逻辑的封装
-    const originalSetItem = localStorage.setItem;
-    localStorage.setItem = function (key, value) {
-      originalSetItem.apply(this, [key, value]);
-
-      // 兼容性处理
-      const event =
-        typeof CustomEvent === "function"
-          ? new CustomEvent("localStorageUpdate", { detail: { key, value } })
-          : new Event("localStorageUpdate");
-      window.dispatchEvent(event);
-    };
-
-    const handleUpdate = () => {
+    // 设置轮询定时器
+    const intervalId = setInterval(() => {
       updateVisibleRoutes();
-    };
+    }, 1000); // 每秒检查一次
 
-    // 监听自定义事件
-    window.addEventListener("localStorageUpdate", handleUpdate);
-
-    return () => {
-      // 恢复原始 setItem 方法
-      localStorage.setItem = originalSetItem;
-      window.removeEventListener("localStorageUpdate", handleUpdate);
-    };
+    // 清理定时器
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -83,11 +70,6 @@ const TrackPage = () => {
             visibleRoutes.includes(route.name) && (
               <Card name={route.name} key={index} />
             )
-        )}
-        {!visibleRoutes.length && (
-          <div className="w-ful h-full text-center text-gray-400 font-bold text-xl mt-8">
-            No Routes Added
-          </div>
         )}
         <div className="w-full h-16"></div>
       </div>
