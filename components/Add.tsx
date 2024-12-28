@@ -39,13 +39,18 @@ export default function Add() {
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button
-            variant={"ghost"}
-            size={"icon"}
-            className="p-1 text-base w-full max-w-full"
-          >
-            <MdOutlineAdd className="shrink-0 text-gray-500" />
-          </Button>
+          <div className="flex items-center justify-cente w-full border px-2 rounded-full">
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              className="p-1 text-base w-full max-w-full"
+            >
+              <MdOutlineAdd className="shrink-0 text-gray-500" />
+            </Button>
+            <div className="w-full text-nowrap text-gray-500 text-sm">
+              Add Routes
+            </div>
+          </div>
         </DialogTrigger>
         <DialogContent className="max-w-[90vw] max-h-[90vh] overflow-y-auto p-2 rounded">
           <DialogHeader>
