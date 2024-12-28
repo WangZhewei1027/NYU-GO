@@ -35,25 +35,22 @@ export const routes: Record<string, Route> = {
     bgColor: "bg-pink-200",
   },
   B: {
-    promo: "Points South of WSQ (Residence Halls: Lafayette & Broome)",
+    promo: "Points South of WSQ",
     borderColor: "border-purple-400",
     bgColor: "bg-purple-200",
   },
   C: {
-    promo:
-      "Stuyvesant Town & Points North of WSQ (Residence Halls: Coral, Founders, Palladium, Third North, UHall)",
+    promo: "Stuyvesant Town & Points North of WSQ",
     borderColor: "border-blue-400",
     bgColor: "bg-blue-400",
   },
   E: {
-    promo:
-      "Points North of WSQ (1st Ave Medical Corridor & Residence Halls: Gramercy Green, Palladium, Third North, UHall)",
+    promo: "Points North of WSQ",
     borderColor: "border-amber-600",
     bgColor: "bg-amber-200",
   },
   F: {
-    promo:
-      "3rd Avenue Express (Residence Halls: Coral, Founders, Gramercy Green, Palladium, Third North)",
+    promo: "3rd Avenue Express",
     borderColor: "border-green-400",
     bgColor: "bg-green-400",
   },
