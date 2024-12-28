@@ -16,14 +16,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { MdCheckBox } from "react-icons/md";
 
 function RouteItem({ route, promo }: { route: string; promo: string }) {
-  const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState(
+    localStorage.getItem(route) === "true"
+  );
 
   return (
     <div
       className={`w-full h-40 shadow rounded p-4 flex flex-col transition-all ${
         selected ? "bg-egg-blue-400 text-white" : "bg-white text-black"
       }`}
-      onClick={() => setSelected(!selected)}
+      onClick={() => {
+        setSelected(!selected);
+        localStorage.setItem(route, (!selected).toString());
+      }}
     >
       <div className="flex flex-row items-center">
         <span className="text-lg font-bold">Route {route}</span>
