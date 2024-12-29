@@ -13,7 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 
-export default function Stops() {
+interface StopsProps {
+  callback?: (stop: string) => void;
+}
+
+export default function Stops({ callback }: StopsProps) {
   const [selectedStop, setSelectedStop] = useState("715 Broadway Departure");
 
   return (
@@ -41,6 +45,7 @@ export default function Stops() {
               className="flex items-center justify-between p-2"
               onClick={() => {
                 setSelectedStop(stop);
+                callback?.(stop);
                 (
                   document.querySelector('[data-state="open"]') as HTMLElement
                 )?.click();

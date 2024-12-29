@@ -1,3 +1,5 @@
+import Papa from "papaparse";
+
 export const stops: string[] = [
   "715 Broadway Departure",
   "Broadway & Broome St.",
@@ -10,8 +12,83 @@ export const stops: string[] = [
   "715 Broadway Arrival",
 ];
 
-export function getRemainingTime(route: string): number {
-  return Math.floor(Math.random() * 10) + 1;
+export async function getRemainingTime(
+  route: string,
+  stop: string
+): Promise<number> {
+  const date = new Date();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const dayOfWeek = date.getDay();
+
+  let _dayOfWeek = "mt";
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    _dayOfWeek = "w";
+  } else if (dayOfWeek === 5) {
+    _dayOfWeek = "f";
+  } else {
+    _dayOfWeek = "mt";
+  }
+
+  const filename = `/route_${route}_${_dayOfWeek}.csv`;
+  console.log("Fetching file:", filename);
+
+  type RouteStop = {
+    [stop: string]: string;
+  };
+  let data: RouteStop[] = [];
+  await fetch(filename)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.text();
+    })
+    .then((csvText) => {
+      Papa.parse<{ stop: string; time: string }>(csvText, {
+        header: true, // 如果 CSV 包含表头
+        skipEmptyLines: true, // 跳过空行
+        complete: (results) => {
+          console.log("Parsed CSV Data:", results.data);
+          data = results.data;
+        },
+        error: (error: Error) => {
+          console.error("Error parsing CSV:", error);
+        },
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching CSV:", error);
+    });
+
+  if (data.length > 0) {
+    for (const entry of data) {
+      for (const [key, value] of Object.entries(entry)) {
+        if (key.toLowerCase().includes(stop.toLowerCase())) {
+          console.log(value);
+          const [time, period] = value.split(" ");
+          // eslint-disable-next-line prefer-const
+          let [entryHour, entryMinute] = time.split(":").map(Number);
+          if (period === "PM" && entryHour !== 12) {
+            entryHour += 12;
+          } else if (period === "AM" && entryHour === 12) {
+            entryHour = 0;
+          }
+          const remainingMinutes =
+            (entryHour - hour) * 60 + (entryMinute - minute);
+          // console.log(
+          //   `Stop: ${stop}, Entry Time: ${entry.time}, Current Time: ${hour}:${minute}, Remaining Minutes: ${remainingMinutes}`
+          // );
+          if (remainingMinutes >= 0) {
+            console.log("Remaining Minutes:", remainingMinutes);
+            return remainingMinutes;
+          }
+        }
+      }
+    }
+  }
+  console.log("No valid time found");
+  return -1; // Return -1 if no valid time is found
 }
 
 export function getFromTime(route: string): string[] {

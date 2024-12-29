@@ -19,30 +19,10 @@ const routes = [
 
 const TrackPage = () => {
   const [visibleRoutes, setVisibleRoutes] = useState<string[]>([]);
+  const [currentStop, setCurrentStop] = useState("715 Broadway Departure");
 
-  function handleClick() {
-    fetch("/route_a_mt.csv")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.text();
-      })
-      .then((csvText) => {
-        Papa.parse<string>(csvText, {
-          header: true, // 如果 CSV 包含表头
-          skipEmptyLines: true, // 跳过空行
-          complete: (results) => {
-            console.log("Parsed CSV Data:", results.data);
-          },
-          error: (error: Error) => {
-            console.error("Error parsing CSV:", error);
-          },
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching CSV:", error);
-      });
+  function handleStopChange(stop: string) {
+    setCurrentStop(stop);
   }
 
   // 更新可见的路线
@@ -81,21 +61,17 @@ const TrackPage = () => {
       <div className="mb-8 text-base">
         Arriving at &nbsp;
         <div className="max-w-48 inline-block">
-          <Stops />
+          <Stops callback={handleStopChange} />
         </div>
         &nbsp; in
       </div>
-
-      <Button className="w-16" onClick={() => handleClick()}>
-        test
-      </Button>
 
       {/* Routes List */}
       <div className="space-y-6">
         {routes.map(
           (route, index) =>
             visibleRoutes.includes(route.name) && (
-              <Card name={route.name} key={index} />
+              <Card name={route.name} stop={currentStop} key={index} />
             )
         )}
         {/* {!visibleRoutes.length && (

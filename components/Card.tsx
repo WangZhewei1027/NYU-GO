@@ -6,17 +6,26 @@ import Stops from "@/components/Stops";
 
 interface CardProps {
   name: string;
+  stop: string;
 }
 
-const Card: React.FC<CardProps> = ({ name }) => {
+const Card: React.FC<CardProps> = ({ name, stop }) => {
   const [isClicked, setIsClicked] = useState(false);
 
   const [time, setTime] = useState("--");
 
   useEffect(() => {
-    const remainingTime = getRemainingTime(name);
-    setTime(remainingTime.toString());
-  }, [name]);
+    const fetchRemainingTime = async () => {
+      const remainingTime = await getRemainingTime(name, stop);
+      if (remainingTime === -1) {
+        setTime("--");
+        return;
+      }
+      setTime(remainingTime.toString());
+    };
+
+    fetchRemainingTime();
+  }, [name, stop]);
 
   return (
     <div
