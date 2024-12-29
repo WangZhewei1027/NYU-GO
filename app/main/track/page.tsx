@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Card from "@/components/Card";
 import Stops from "@/components/Stops";
 import Add from "@/components/Add";
+import Papa from "papaparse";
 
 const routes = [
   { name: "A", time: "4", color: "pink" },
@@ -18,6 +19,31 @@ const routes = [
 
 const TrackPage = () => {
   const [visibleRoutes, setVisibleRoutes] = useState<string[]>([]);
+
+  function handleClick() {
+    fetch("/route_a_mt.csv")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.text();
+      })
+      .then((csvText) => {
+        Papa.parse<string>(csvText, {
+          header: true, // 如果 CSV 包含表头
+          skipEmptyLines: true, // 跳过空行
+          complete: (results) => {
+            console.log("Parsed CSV Data:", results.data);
+          },
+          error: (error: Error) => {
+            console.error("Error parsing CSV:", error);
+          },
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching CSV:", error);
+      });
+  }
 
   // 更新可见的路线
   const updateVisibleRoutes = () => {
@@ -49,9 +75,6 @@ const TrackPage = () => {
       {/* Header */}
       <div className="flex mb-6">
         <h1 className="text-3xl font-bold">Track</h1>
-        <div className="ml-auto">
-          <Add />
-        </div>
       </div>
 
       {/* Location */}
@@ -63,6 +86,10 @@ const TrackPage = () => {
         &nbsp; in
       </div>
 
+      <Button className="w-16" onClick={() => handleClick()}>
+        test
+      </Button>
+
       {/* Routes List */}
       <div className="space-y-6">
         {routes.map(
@@ -71,11 +98,16 @@ const TrackPage = () => {
               <Card name={route.name} key={index} />
             )
         )}
-        {!visibleRoutes.length && (
+        {/* {!visibleRoutes.length && (
           <div className="w-ful h-full text-center text-gray-400 font-bold text-xl mt-8">
             No Routes Added
           </div>
-        )}
+        )} */}
+        <div className="flex justify-center items-center">
+          <div className="w-32">
+            <Add />
+          </div>
+        </div>
         <div className="w-full h-16"></div>
       </div>
     </div>

@@ -47,28 +47,25 @@ export default function Add() {
           <div className="flex items-center justify-cente w-full border px-2 rounded-full">
             <Button
               variant={"ghost"}
-              size={"icon"}
-              className="p-1 text-base w-full max-w-full"
+              className="p-1 text-base w-full max-w-full  text-gray-400"
             >
-              <MdOutlineAdd className="shrink-0 text-gray-500" />
-            </Button>
-            <div className="w-full text-nowrap text-gray-500 text-sm">
+              <MdOutlineAdd className="shrink-0 text-gray-400" />
               Add Routes
-            </div>
+            </Button>
           </div>
         </DialogTrigger>
-        <DialogContent className="max-w-[90vw] max-h-[80vh] overflow-y-auto p-2 rounded">
+        <DialogContent className="max-w-[90vw] max-h-[100vh] overflow-hidden p-2 rounded">
           <DialogHeader>
             <DialogTitle>
               <div className="hidden">Add Routes</div>
             </DialogTitle>
-            {/* <DialogDescription>
-              Anyone who has this link will be able to view this.
-            </DialogDescription> */}
+            <DialogDescription>
+              <div className="hidden">Add Routes</div>
+            </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4">
             {Object.keys(routes).map((route, index) => {
-              console.log(route);
+              //console.log(route);
               return (
                 <RouteItem
                   key={index}
@@ -78,12 +75,12 @@ export default function Add() {
               );
             })}
           </div>
-          <DialogFooter className="sm:justify-start">
+          <DialogFooter className="relative">
             <DialogClose asChild>
               <Button
                 type="button"
                 variant="outline"
-                className="fixed border border-egg-blue-400 rounded-full text-egg-blue-400 text-base left-1/2 transform -translate-x-1/2"
+                className="fixed bottom-4 left-1/2 transform -translate-x-1/2 border border-egg-blue-400 rounded-full text-egg-blue-400 text-base z-50"
               >
                 Close
               </Button>

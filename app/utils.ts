@@ -65,3 +65,12 @@ export const routes: Record<string, Route> = {
     bgColor: "bg-yellow-400",
   },
 };
+
+export function getSchedule(
+  route: string,
+  stopFrom: string,
+  stopTo: string,
+  time: Date
+): string[] {
+  return ["9:55 am", "10:00 am", "10:05 am"];
+}
