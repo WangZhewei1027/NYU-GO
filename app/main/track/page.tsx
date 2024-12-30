@@ -6,6 +6,8 @@ import Card from "@/components/Card";
 import Stops from "@/components/Stops";
 import Add from "@/components/Add";
 import Papa from "papaparse";
+import { useStore } from "@/app/store";
+import Location from "@/components/Location";
 
 const routes = [
   { name: "A", time: "4", color: "pink" },
@@ -19,11 +21,6 @@ const routes = [
 
 const TrackPage = () => {
   const [visibleRoutes, setVisibleRoutes] = useState<string[]>([]);
-  const [currentStop, setCurrentStop] = useState("715 Broadway Departure");
-
-  function handleStopChange(stop: string) {
-    setCurrentStop(stop);
-  }
 
   // 更新可见的路线
   const updateVisibleRoutes = () => {
@@ -61,17 +58,20 @@ const TrackPage = () => {
       <div className="mb-8 text-base">
         Arriving at &nbsp;
         <div className="max-w-48 inline-block">
-          <Stops callback={handleStopChange} />
+          <Stops />
         </div>
         &nbsp; in
       </div>
+      {/* <div>
+        <Location />
+      </div> */}
 
       {/* Routes List */}
       <div className="space-y-6">
         {routes.map(
           (route, index) =>
             visibleRoutes.includes(route.name) && (
-              <Card name={route.name} stop={currentStop} key={index} />
+              <Card name={route.name} key={index} />
             )
         )}
         {/* {!visibleRoutes.length && (

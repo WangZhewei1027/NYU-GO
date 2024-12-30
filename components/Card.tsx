@@ -3,20 +3,24 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { getRemainingTime, getFromTime, getToTime, routes } from "@/app/utils";
 import Stops from "@/components/Stops";
+import { useStore, StoreState } from "@/app/store";
 
 interface CardProps {
   name: string;
-  stop: string;
 }
 
-const Card: React.FC<CardProps> = ({ name, stop }) => {
+const Card: React.FC<CardProps> = ({ name }) => {
   const [isClicked, setIsClicked] = useState(false);
 
   const [time, setTime] = useState("--");
 
+  const store: StoreState = useStore() as StoreState;
+
   useEffect(() => {
+    console.log("fetching remaining time");
     const fetchRemainingTime = async () => {
-      const remainingTime = await getRemainingTime(name, stop);
+      const remainingTime = await getRemainingTime(name, store.currentLocation);
+      console.log(remainingTime);
       if (remainingTime === -1) {
         setTime("--");
         return;
@@ -25,7 +29,7 @@ const Card: React.FC<CardProps> = ({ name, stop }) => {
     };
 
     fetchRemainingTime();
-  }, [name, stop]);
+  }, [name, store.currentLocation]);
 
   return (
     <div

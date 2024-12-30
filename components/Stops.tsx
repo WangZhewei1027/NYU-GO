@@ -12,13 +12,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useStore, StoreState } from "@/app/store";
 
-interface StopsProps {
-  callback?: (stop: string) => void;
-}
-
-export default function Stops({ callback }: StopsProps) {
+export default function Stops() {
   const [selectedStop, setSelectedStop] = useState("715 Broadway Departure");
+
+  const store: StoreState = useStore() as StoreState;
 
   return (
     <>
@@ -32,12 +31,15 @@ export default function Stops({ callback }: StopsProps) {
             <span className="truncate">{selectedStop}</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-[80vw] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-[90vw] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Select Stop</DialogTitle>
-            {/* <DialogDescription>
-              Anyone who has this link will be able to view this.
-            </DialogDescription> */}
+            <DialogDescription>
+              <div className="hidden">
+                {" "}
+                Anyone who has this link will be able to view this.
+              </div>
+            </DialogDescription>
           </DialogHeader>
           {stops.map((stop, index) => (
             <div
@@ -45,7 +47,7 @@ export default function Stops({ callback }: StopsProps) {
               className="flex items-center justify-between p-2"
               onClick={() => {
                 setSelectedStop(stop);
-                callback?.(stop);
+                store.currentLocation = stop;
                 (
                   document.querySelector('[data-state="open"]') as HTMLElement
                 )?.click();
