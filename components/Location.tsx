@@ -17,6 +17,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 
 export default function Location() {
   const [StopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
+  const [searchTerm, setSearchTerm] = useState(""); // 搜索框输入内容
   const [selectedStop, setSelectedStop] = useState("715 Broadway");
 
   React.useEffect(() => {
@@ -26,6 +27,13 @@ export default function Location() {
     }
     fetchStops();
   }, []);
+
+  // 根据搜索框内容过滤 StopRoutes
+  const filteredStops = StopRoutes
+    ? Object.entries(StopRoutes).filter(([key]) =>
+        key.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   return (
     <Drawer>
@@ -51,12 +59,14 @@ export default function Location() {
           <Input
             placeholder="Search a stop"
             className="w-[55%] shadow-none rounded-full text-lg"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)} // 更新搜索输入值
           />
           <MdOutlineSearch className="w-8 h-8 text-gray-400 ml-2" />
         </div>
         <div className="flex flex-col h-full overflow-y-auto px-8">
-          {StopRoutes &&
-            Object.entries(StopRoutes).map(([key, value], index) => (
+          {filteredStops &&
+            filteredStops.map(([key, value], index) => (
               <div
                 key={index}
                 className="py-4 border-b transition transform active:scale-95 active:opacity-80"
@@ -64,24 +74,28 @@ export default function Location() {
                   setSelectedStop(key);
                 }}
               >
-                <div className="text-lg mb-1">{key}</div>
-                {value.map((stop, index) => (
-                  <div
-                    className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
-                    key={index}
-                  >
-                    {stop}
-                  </div>
-                ))}
+                <div>
+                  <div className="text-lg mb-1 inline">{key}</div>
+                </div>
+                <div>
+                  {value.map((stop, index) => (
+                    <div
+                      className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
+                      key={index}
+                    >
+                      {stop}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
+          {filteredStops.length === 0 && (
+            <div className="text-center text-gray-400 py-4 text-lg font-bold">
+              No stops found
+            </div>
+          )}
         </div>
-        <DrawerFooter>
-          {/* <Button>Submit</Button>
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose> */}
-        </DrawerFooter>
+        <DrawerFooter />
       </DrawerContent>
     </Drawer>
   );
