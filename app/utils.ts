@@ -12,6 +12,8 @@ export const stops: string[] = [
   "715 Broadway Arrival",
 ];
 
+const specialStops: string[] = ["6 MetroTech", "715 Broadway"];
+
 export async function getRemainingTime(
   route: string,
   stop: string
@@ -64,7 +66,13 @@ export async function getRemainingTime(
   if (data.length > 0) {
     for (const entry of data) {
       for (const [key, value] of Object.entries(entry)) {
-        if (key.toLowerCase().includes(stop.toLowerCase())) {
+        //key是表里的站名，带departure或arrival
+        //stop是手动传入的，不带departure或arrival
+        let _stop = stop;
+        if (specialStops.includes(stop)) {
+          _stop = stop + " Departure";
+        }
+        if (key.toLowerCase().includes(_stop.toLowerCase())) {
           //console.log(value);
           const [time, period] = value.split(" ");
           // eslint-disable-next-line prefer-const
@@ -162,6 +170,30 @@ export interface StopRoute {
 }
 
 export async function getAllStops(): Promise<StopRoute> {
+  const data: RouteStop[] = await getStopsData();
+
+  const obj: { [key: string]: string[] } = {};
+  if (data) {
+    for (const entry of data) {
+      for (const [key, value] of Object.entries(entry)) {
+        if (value === "") {
+          continue;
+        }
+        if (obj[value]) {
+          obj[value].push(key);
+        } else {
+          obj[value] = [key];
+        }
+        obj[value].sort();
+      }
+    }
+    //console.log(obj);
+  }
+
+  return obj;
+}
+
+async function getStopsData(): Promise<RouteStop[]> {
   let data: RouteStop[] = [];
   await fetch("/stops_data.csv")
     .then((response) => {
@@ -186,25 +218,22 @@ export async function getAllStops(): Promise<StopRoute> {
     .catch((error) => {
       console.error("Error fetching CSV:", error);
     });
-  //onsole.log(data);
 
-  const obj: { [key: string]: string[] } = {};
+  return data;
+}
+
+export async function getThisRouteStops(route: string): Promise<string[]> {
+  const data: RouteStop[] = await getStopsData();
+  const stops: string[] = [];
   if (data) {
     for (const entry of data) {
       for (const [key, value] of Object.entries(entry)) {
-        if (value === "") {
-          continue;
+        if (key === route && value !== "") {
+          stops.push(value);
         }
-        if (obj[value]) {
-          obj[value].push(key);
-        } else {
-          obj[value] = [key];
-        }
-        obj[value].sort();
       }
     }
-    //console.log(obj);
   }
-
-  return obj;
+  console.log(stops);
+  return stops;
 }

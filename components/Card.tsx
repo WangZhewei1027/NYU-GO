@@ -53,7 +53,7 @@ const Card: React.FC<CardProps> = ({ name }) => {
             <div className="flex-1 overflow-hidden flex flex-col  pr-2">
               <div className="text-base font-bold">From</div>
               <div className="w-full mt-2">
-                <Stops />
+                <Stops route={name} isFrom={true} />
               </div>
               <div className="text-base text-center mt-2">9:55 am</div>
               <div className="text-base text-center mt-2">10:10 am</div>
@@ -62,7 +62,7 @@ const Card: React.FC<CardProps> = ({ name }) => {
             <div className="flex-1 overflow-hidden flex flex-col  border-l border-gray-300 border-dashed pl-2">
               <div className="text-base font-bold">To</div>
               <div className="w-full mt-2">
-                <Stops />
+                <Stops route={name} isFrom={false} />
               </div>
               <div className="text-base text-center mt-2">10:10 am</div>
               <div className="text-base text-center mt-2">10:15 am</div>

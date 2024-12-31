@@ -19,7 +19,7 @@ import { useStore, StoreState } from "@/app/store";
 export default function Location() {
   const [StopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
   const [searchTerm, setSearchTerm] = useState(""); // 搜索框输入内容
-  const [selectedStop, setSelectedStop] = useState("715 Broadway");
+  const [selectedStop, setSelectedStop] = useState("-");
 
   const store: StoreState = useStore() as StoreState;
 
@@ -28,6 +28,7 @@ export default function Location() {
       const stops = await getAllStops();
       setStopRoutes(stops);
     }
+    setSelectedStop(localStorage.getItem("currentLocation") || "715 Broadway");
     fetchStops();
   }, []);
 
@@ -76,6 +77,7 @@ export default function Location() {
                 onClick={() => {
                   setSelectedStop(key);
                   store.currentLocation = key;
+                  localStorage.setItem("currentLocation", key);
                 }}
               >
                 <div>

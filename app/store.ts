@@ -6,7 +6,7 @@ export type StoreState = {
 };
 
 export const useStore = create((set) => ({
-  currentLocation: "715 Broadway",
+  currentLocation: localStorage.getItem("currentLocation") || "715 Broadway",
   updateCurrentLocation: (newLocation: string) =>
     set({ currentLocation: newLocation }),
 }));
