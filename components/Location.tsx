@@ -39,7 +39,10 @@ export default function Location() {
             <div className="hidden p-0">Select Location</div>
           </DrawerDescription>
         </DrawerHeader>
-        <div className="flex justify-center h-16 w-full shadow py-4">
+        <div
+          className="flex justify-center w-full py-4"
+          style={{ boxShadow: "0 4px 4px -3px rgba(0, 0, 0, 0.1)" }}
+        >
           <Input
             placeholder="Search a stop"
             className="w-[55%] shadow-none rounded-full text-lg"
