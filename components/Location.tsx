@@ -10,12 +10,14 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { getAllStops, StopRoute, routes } from "@/app/utils";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { MdOutlineSearch } from "react-icons/md";
+import { MdOutlineLocationOn } from "react-icons/md";
 
 export default function Location() {
   const [StopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
+  const [selectedStop, setSelectedStop] = useState("715 Broadway");
 
   React.useEffect(() => {
     async function fetchStops() {
@@ -28,7 +30,10 @@ export default function Location() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button>Open</Button>
+        <Button variant={"outline"} className="p-1 text-base w-full max-w-full">
+          <MdOutlineLocationOn className="shrink-0 text-gray-500" />
+          <span className="truncate">{selectedStop}</span>
+        </Button>
       </DrawerTrigger>
       <DrawerContent className="h-[85vh]">
         <DrawerHeader>
@@ -52,7 +57,13 @@ export default function Location() {
         <div className="flex flex-col h-full overflow-y-auto px-8">
           {StopRoutes &&
             Object.entries(StopRoutes).map(([key, value], index) => (
-              <div key={index} className="py-4 border-b">
+              <div
+                key={index}
+                className="py-4 border-b transition transform active:scale-95 active:opacity-80"
+                onClick={() => {
+                  setSelectedStop(key);
+                }}
+              >
                 <div className="text-lg mb-1">{key}</div>
                 {value.map((stop, index) => (
                   <div
