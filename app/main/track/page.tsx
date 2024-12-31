@@ -62,9 +62,9 @@ const TrackPage = () => {
         </div>
         &nbsp; in
       </div>
-      {/* <div>
+      <div>
         <Location />
-      </div> */}
+      </div>
 
       {/* Routes List */}
       <div className="space-y-6">

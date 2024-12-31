@@ -31,7 +31,7 @@ export async function getRemainingTime(
   }
 
   const filename = `/route_${route}_${_dayOfWeek}.csv`;
-  console.log("Fetching file:", filename);
+  //console.log("Fetching file:", filename);
 
   type RouteStop = {
     [stop: string]: string;
@@ -49,7 +49,7 @@ export async function getRemainingTime(
         header: true, // 如果 CSV 包含表头
         skipEmptyLines: true, // 跳过空行
         complete: (results) => {
-          console.log("Parsed CSV Data:", results.data);
+          //console.log("Parsed CSV Data:", results.data);
           data = results.data;
         },
         error: (error: Error) => {
@@ -65,7 +65,7 @@ export async function getRemainingTime(
     for (const entry of data) {
       for (const [key, value] of Object.entries(entry)) {
         if (key.toLowerCase().includes(stop.toLowerCase())) {
-          console.log(value);
+          //console.log(value);
           const [time, period] = value.split(" ");
           // eslint-disable-next-line prefer-const
           let [entryHour, entryMinute] = time.split(":").map(Number);
@@ -80,7 +80,7 @@ export async function getRemainingTime(
           //   `Stop: ${stop}, Entry Time: ${entry.time}, Current Time: ${hour}:${minute}, Remaining Minutes: ${remainingMinutes}`
           // );
           if (remainingMinutes >= 0) {
-            console.log("Remaining Minutes:", remainingMinutes);
+            //console.log("Remaining Minutes:", remainingMinutes);
             return remainingMinutes;
           }
         }
@@ -109,12 +109,12 @@ export const routes: Record<string, Route> = {
   A: {
     promo: "Service to/from Tandon in Brooklyn",
     borderColor: "border-pink-400",
-    bgColor: "bg-pink-200",
+    bgColor: "bg-pink-400",
   },
   B: {
     promo: "Points South of WSQ",
     borderColor: "border-purple-400",
-    bgColor: "bg-purple-200",
+    bgColor: "bg-purple-400",
   },
   C: {
     promo: "Stuyvesant Town & Points North of WSQ",
@@ -123,8 +123,8 @@ export const routes: Record<string, Route> = {
   },
   E: {
     promo: "Points North of WSQ",
-    borderColor: "border-amber-600",
-    bgColor: "bg-amber-200",
+    borderColor: "border-amber-400",
+    bgColor: "bg-amber-400",
   },
   F: {
     promo: "3rd Avenue Express",
@@ -150,4 +150,61 @@ export function getSchedule(
   time: Date
 ): string[] {
   return ["9:55 am", "10:00 am", "10:05 am"];
+}
+
+interface RouteStop {
+  route: string;
+  location: string;
+}
+
+export interface StopRoute {
+  [stop: string]: string[];
+}
+
+export async function getAllStops(): Promise<StopRoute> {
+  let data: RouteStop[] = [];
+  await fetch("/stops_data.csv")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.text();
+    })
+    .then((csvText) => {
+      Papa.parse<{ stop: string; time: string }>(csvText, {
+        header: true, // 如果 CSV 包含表头
+        skipEmptyLines: true, // 跳过空行
+        complete: (results) => {
+          //console.log("Parsed CSV Data:", results.data);
+          data = results.data as unknown as RouteStop[];
+        },
+        error: (error: Error) => {
+          console.error("Error parsing CSV:", error);
+        },
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching CSV:", error);
+    });
+  //onsole.log(data);
+
+  const obj: { [key: string]: string[] } = {};
+  if (data) {
+    for (const entry of data) {
+      for (const [key, value] of Object.entries(entry)) {
+        if (value === "") {
+          continue;
+        }
+        if (obj[value]) {
+          obj[value].push(key);
+        } else {
+          obj[value] = [key];
+        }
+        obj[value].sort();
+      }
+    }
+    //console.log(obj);
+  }
+
+  return obj;
 }

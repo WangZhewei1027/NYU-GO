@@ -17,10 +17,10 @@ const Card: React.FC<CardProps> = ({ name }) => {
   const store: StoreState = useStore() as StoreState;
 
   useEffect(() => {
-    console.log("fetching remaining time");
+    //console.log("fetching remaining time");
     const fetchRemainingTime = async () => {
       const remainingTime = await getRemainingTime(name, store.currentLocation);
-      console.log(remainingTime);
+      //console.log(remainingTime);
       if (remainingTime === -1) {
         setTime("--");
         return;
