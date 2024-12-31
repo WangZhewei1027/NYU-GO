@@ -58,12 +58,9 @@ const TrackPage = () => {
       <div className="mb-8 text-base">
         Arriving at &nbsp;
         <div className="max-w-48 inline-block">
-          <Stops />
+          <Location />
         </div>
         &nbsp; in
-      </div>
-      <div>
-        <Location />
       </div>
 
       {/* Routes List */}

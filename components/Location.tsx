@@ -14,11 +14,14 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { MdOutlineSearch } from "react-icons/md";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { useStore, StoreState } from "@/app/store";
 
 export default function Location() {
   const [StopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
   const [searchTerm, setSearchTerm] = useState(""); // 搜索框输入内容
   const [selectedStop, setSelectedStop] = useState("715 Broadway");
+
+  const store: StoreState = useStore() as StoreState;
 
   React.useEffect(() => {
     async function fetchStops() {
@@ -72,6 +75,7 @@ export default function Location() {
                 className="py-4 border-b transition transform active:scale-95 active:opacity-80"
                 onClick={() => {
                   setSelectedStop(key);
+                  store.currentLocation = key;
                 }}
               >
                 <div>
