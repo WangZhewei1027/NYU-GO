@@ -6,8 +6,8 @@ import Card from "@/components/Card";
 import Stops from "@/components/Stops";
 import Add from "@/components/Add";
 import Papa from "papaparse";
-import { useStore } from "@/app/store";
 import Location from "@/components/Location";
+import { useStore, StoreState } from "@/app/store";
 
 const routes = [
   { name: "A", time: "4", color: "pink" },
@@ -21,6 +21,8 @@ const routes = [
 
 const TrackPage = () => {
   const [visibleRoutes, setVisibleRoutes] = useState<string[]>([]);
+
+  const store: StoreState = useStore() as StoreState;
 
   // 更新可见的路线
   const updateVisibleRoutes = () => {
@@ -42,6 +44,9 @@ const TrackPage = () => {
     const intervalId = setInterval(() => {
       updateVisibleRoutes();
     }, 500); // 每秒检查一次
+
+    store.currentLocation =
+      localStorage.getItem("currentLocation") || "715 Broadway";
 
     // 清理定时器
     return () => clearInterval(intervalId);
