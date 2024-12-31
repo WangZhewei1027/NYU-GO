@@ -30,7 +30,7 @@ export default function Location() {
       <DrawerTrigger asChild>
         <Button>Open</Button>
       </DrawerTrigger>
-      <DrawerContent className="h-[80vh]">
+      <DrawerContent className="h-[85vh]">
         <DrawerHeader>
           <DrawerTitle asChild>
             <div className="hidden p-0">Select Location</div>
@@ -50,7 +50,7 @@ export default function Location() {
           {StopRoutes &&
             Object.entries(StopRoutes).map(([key, value], index) => (
               <div key={index} className="py-4 border-b">
-                <div className="text-lg">{key}</div>
+                <div className="text-lg mb-1">{key}</div>
                 {value.map((stop, index) => (
                   <div
                     className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
