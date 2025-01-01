@@ -78,6 +78,9 @@ export default function Location() {
                   setSelectedStop(key);
                   store.currentLocation = key;
                   localStorage.setItem("currentLocation", key);
+                  (
+                    document.querySelector('[data-state="open"]') as HTMLElement
+                  )?.click(); // 关闭对话框
                 }}
               >
                 <div>

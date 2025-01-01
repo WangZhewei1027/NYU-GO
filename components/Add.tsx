@@ -34,7 +34,7 @@ function RouteItem({ route, promo }: { route: string; promo: string }) {
         <span className="text-lg font-bold">Route {route}</span>
         <MdCheckBox className="ml-auto w-6 h-6 shadow-none text-white" />
       </div>
-      <p className="text-base mt-6">{promo}</p>
+      <p className="text-sm mt-6">{promo}</p>
     </div>
   );
 }
@@ -54,7 +54,7 @@ export default function Add() {
             </Button>
           </div>
         </DialogTrigger>
-        <DialogContent className="max-w-[90vw] max-h-[100vh] overflow-hidden p-2 rounded">
+        <DialogContent className="max-w-[90vw] max-h-[100vh] overflow-hidden p-4 rounded">
           <DialogHeader>
             <DialogTitle>
               <div className="hidden">Add Routes</div>
@@ -63,7 +63,7 @@ export default function Add() {
               <div className="hidden">Add Routes</div>
             </DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-2">
             {Object.keys(routes).map((route, index) => {
               //console.log(route);
               return (
@@ -80,7 +80,7 @@ export default function Add() {
               <Button
                 type="button"
                 variant="outline"
-                className="fixed bottom-4 left-1/2 transform -translate-x-1/2 border border-egg-blue-400 rounded-full text-egg-blue-400 text-base z-50"
+                className="fixed h-10 w-20 bottom-12 left-1/2 transform -translate-x-1/2 border border-egg-blue-400 rounded-full text-egg-blue-400 text-base z-50"
               >
                 Close
               </Button>

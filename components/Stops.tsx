@@ -92,7 +92,6 @@ export default function Stops({
                 className={`relative flex items-center pl-12 pr-4 py-4 cursor-pointer hover:bg-gray-100 transition `}
                 onClick={() => {
                   setSelectedStop(stop); // 更新选中的站点
-                  store.currentLocation = stop; // 更新全局状态
                   (
                     document.querySelector('[data-state="open"]') as HTMLElement
                   )?.click(); // 关闭对话框

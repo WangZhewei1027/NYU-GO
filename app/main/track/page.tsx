@@ -61,7 +61,7 @@ const TrackPage = () => {
 
       {/* Location */}
       <div className="mb-8 text-base">
-        Arriving at &nbsp;
+        Departing from &nbsp;
         <div className="max-w-48 inline-block">
           <Location />
         </div>
