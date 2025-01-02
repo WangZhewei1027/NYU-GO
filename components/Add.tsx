@@ -64,10 +64,10 @@ export default function Add() {
         </DialogTrigger>
         <DialogContent className="max-w-[90vw] max-h-[100vh] overflow-hidden p-4 rounded">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle asChild>
               <div className="hidden">Add Routes</div>
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription asChild>
               <div className="hidden">Add Routes</div>
             </DialogDescription>
           </DialogHeader>
