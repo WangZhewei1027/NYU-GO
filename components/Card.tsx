@@ -39,7 +39,15 @@ const Card: React.FC<CardProps> = ({ name }) => {
       <div className="flex items-center w-full h-20">
         <div className="ml-2 text-xl font-bold font-sans">Route {name}</div>
         <div className="ml-auto pr-4">
-          <div className="inline text-4xl font-mono">{time}</div>
+          <div className={`inline ${Number(time) >= 60 ? "" : "hidden"}`}>
+            <div className="inline text-4xl font-mono">
+              {Math.floor(Number(time) / 60)}
+            </div>
+            <div className="inline ml-1 mr-1 text-gray-500 text-end">h</div>
+          </div>
+          <div className="inline text-4xl font-mono">
+            {time === "--" ? "--" : Number(time) % 60}
+          </div>
           <div className="inline ml-1 text-gray-500 text-end">min</div>
         </div>
       </div>
