@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { MdOutlineAdd } from "react-icons/md";
 import { stops, routes } from "@/app/utils";
@@ -11,14 +13,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MdCheckBox } from "react-icons/md";
 
 function RouteItem({ route, promo }: { route: string; promo: string }) {
-  const [selected, setSelected] = useState(
-    localStorage.getItem(route) === "true"
-  );
+  const [selected, setSelected] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem(route) === "true") {
+      setSelected(true);
+    } else {
+      setSelected(false);
+    }
+  }, []);
 
   return (
     <div
