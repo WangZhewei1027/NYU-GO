@@ -32,9 +32,14 @@ const Card: React.FC<CardProps> = ({ name }) => {
   return (
     <div
       className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[10px] ${routes[name]?.borderColor}`}
-      onClick={() => setIsClicked(!isClicked)}
     >
-      <div className="flex items-center w-full h-20">
+      <div
+        className="flex items-center w-full h-20"
+        onClick={() => {
+          setIsClicked(!isClicked);
+          console.log("clicked");
+        }}
+      >
         <div className="ml-2 text-xl font-bold font-sans">Route {name}</div>
         <div className="ml-auto pr-4">
           {/* 动态数据加载时显示占位符 */}

@@ -91,7 +91,7 @@ export default function Stops({
             {stops.map((stop, index) => (
               <div
                 key={index}
-                className={`relative flex items-center pl-12 pr-4 py-4 cursor-pointer hover:bg-gray-100 transition `}
+                className={`relative flex items-center pl-12 pr-4 py-4 transition transform active:scale-95 active:opacity-80 `}
                 onClick={() => {
                   setSelectedStop(stop); // 更新选中的站点
                   (
