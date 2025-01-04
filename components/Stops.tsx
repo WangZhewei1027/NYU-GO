@@ -43,6 +43,13 @@ export default function Stops({
     fetchStops();
   }, [route]);
 
+  useEffect(() => {
+    const storedStop = localStorage.getItem(`route_${route}_${isFrom}`);
+    if (storedStop) {
+      setSelectedStop(storedStop);
+    }
+  }, []);
+
   // 使用 useLayoutEffect 确保在渲染完成后计算竖线高度
   useLayoutEffect(() => {
     if (containerRef.current && lineRef.current) {
@@ -94,6 +101,7 @@ export default function Stops({
                 className={`relative flex items-center pl-12 pr-4 py-4 transition transform active:scale-95 active:opacity-80 `}
                 onClick={() => {
                   setSelectedStop(stop); // 更新选中的站点
+                  localStorage.setItem(`route_${route}_${isFrom}`, stop); // 保存到本地存储
                   (
                     document.querySelector('[data-state="open"]') as HTMLElement
                   )?.click(); // 关闭对话框
