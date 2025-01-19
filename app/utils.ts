@@ -14,13 +14,9 @@ export const stops: string[] = [
 
 const specialStops: string[] = ["6 MetroTech", "715 Broadway"];
 
-export async function getRemainingTime(
-  route: string,
-  stop: string
-): Promise<number> {
+// 日期和文件名生成
+function getFilenameForRoute(route: string): string {
   const date = new Date();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
   const dayOfWeek = date.getDay();
 
   let _dayOfWeek = "mt";
@@ -28,52 +24,58 @@ export async function getRemainingTime(
     _dayOfWeek = "w";
   } else if (dayOfWeek === 5) {
     _dayOfWeek = "f";
-  } else {
-    _dayOfWeek = "mt";
   }
 
-  const filename = `/route_${route}_${_dayOfWeek}.csv`;
-  //console.log("Fetching file:", filename);
+  return `/route_${route}_${_dayOfWeek}.csv`;
+}
 
-  type RouteStop = {
-    [stop: string]: string;
-  };
-  let data: RouteStop[] = [];
-  await fetch(filename)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.text();
-    })
-    .then((csvText) => {
-      Papa.parse<{ stop: string; time: string }>(csvText, {
-        header: true, // 如果 CSV 包含表头
-        skipEmptyLines: true, // 跳过空行
-        complete: (results) => {
-          //console.log("Parsed CSV Data:", results.data);
-          data = results.data;
-        },
-        error: (error: Error) => {
-          console.error("Error parsing CSV:", error);
-        },
+// CSV 文件读取和解析
+async function fetchAndParseCSV<T>(filename: string): Promise<T[]> {
+  try {
+    const response = await fetch(filename);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${filename}`);
+    }
+    const csvText = await response.text();
+
+    return new Promise((resolve, reject) => {
+      Papa.parse<T>(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => resolve(results.data),
+        error: (error: Error) => reject(error),
       });
-    })
-    .catch((error) => {
-      console.error("Error fetching CSV:", error);
     });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.warn(`Error fetching or parsing CSV: ${error.message}`);
+    } else {
+      console.warn(`Error fetching or parsing CSV: ${error}`);
+    }
+    return [];
+  }
+}
+
+export async function getRemainingTime(
+  route: string,
+  currentLocation: string
+): Promise<number> {
+  const date = new Date();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  const filename = getFilenameForRoute(route);
+  const data = await fetchAndParseCSV<{ [stop: string]: string }>(filename);
 
   if (data.length > 0) {
     for (const entry of data) {
       for (const [key, value] of Object.entries(entry)) {
-        //key是表里的站名，带departure或arrival
-        //stop是手动传入的，不带departure或arrival
-        let _stop = stop;
-        if (specialStops.includes(stop)) {
-          _stop = stop + " Departure";
+        let _stop = currentLocation;
+        if (specialStops.includes(currentLocation)) {
+          _stop = currentLocation + " Departure";
         }
+
         if (key.toLowerCase().includes(_stop.toLowerCase())) {
-          //console.log(value);
           const [time, period] = value.split(" ");
           // eslint-disable-next-line prefer-const
           let [entryHour, entryMinute] = time.split(":").map(Number);
@@ -84,27 +86,107 @@ export async function getRemainingTime(
           }
           const remainingMinutes =
             (entryHour - hour) * 60 + (entryMinute - minute);
-          // console.log(
-          //   `Stop: ${stop}, Entry Time: ${entry.time}, Current Time: ${hour}:${minute}, Remaining Minutes: ${remainingMinutes}`
-          // );
           if (remainingMinutes >= 0) {
-            //console.log("Remaining Minutes:", remainingMinutes);
             return remainingMinutes;
           }
         }
       }
     }
   }
-  console.log("No valid time found");
+
+  console.log(`Route ${route}: No valid time found`);
   return -1; // Return -1 if no valid time is found
 }
 
-export function getFromTime(route: string): string[] {
-  return ["9:55 am", "10:00 am", "10:05 am"];
+export async function getSchedule(
+  route: string,
+  stopFrom: string,
+  stopTo: string
+): Promise<{ fromSchedule: string[]; toSchedule: string[] }> {
+  const date = new Date();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  const filename = getFilenameForRoute(route);
+  const data = await fetchAndParseCSV<{ [stop: string]: string }>(filename);
+
+  let _stopFrom = stopFrom;
+  let _stopTo = stopTo;
+
+  if (specialStops.includes(stopFrom)) {
+    _stopFrom = stopFrom + " Departure";
+  }
+  if (specialStops.includes(stopTo)) {
+    _stopTo = stopTo + " Arrival";
+  }
+
+  const fromSchedule: string[] = [];
+  const toSchedule: string[] = [];
+
+  if (data.length > 0) {
+    for (const entry of data) {
+      for (const [key, value] of Object.entries(entry)) {
+        if (key.toLowerCase().includes(_stopFrom.toLowerCase())) {
+          fromSchedule.push(value);
+        }
+        if (key.toLowerCase().includes(_stopTo.toLowerCase())) {
+          toSchedule.push(value);
+        }
+      }
+    }
+  }
+
+  return { fromSchedule, toSchedule };
 }
 
-export function getToTime(route: string): string[] {
-  return ["11:00 am", "11:05 am", "11:10 am"];
+function convertTimeToMinutes(item: string): number {
+  const [time, period] = item.split(" ");
+  // eslint-disable-next-line prefer-const
+  let [entryHour, entryMinute] = time.split(":").map(Number);
+  if (period === "PM" && entryHour !== 12) {
+    entryHour += 12;
+  } else if (period === "AM" && entryHour === 12) {
+    entryHour = 0;
+  }
+  return entryHour * 60 + entryMinute;
+}
+
+export async function getRecentSchedule(
+  route: string,
+  stopFrom: string,
+  stopTo: string
+): Promise<{ fromSchedule: string[]; toSchedule: string[] }> {
+  const date = new Date();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  const { fromSchedule, toSchedule } = await getSchedule(
+    route,
+    stopFrom,
+    stopTo
+  );
+
+  let recentFromSchedule: string[] = [];
+  let recentToSchedule: string[] = [];
+
+  let i = 0;
+
+  const currentMinutes = hour * 60 + minute;
+
+  for (let index = 0; index < fromSchedule.length; index++) {
+    const item = fromSchedule[index];
+    const mins = convertTimeToMinutes(item);
+
+    if (mins >= currentMinutes) {
+      i = index;
+      break;
+    }
+  }
+
+  recentFromSchedule = fromSchedule.slice(i, i + 3);
+  recentToSchedule = toSchedule.slice(i, i + 3);
+
+  return { fromSchedule: recentFromSchedule, toSchedule: recentToSchedule };
 }
 
 interface Route {
@@ -150,15 +232,6 @@ export const routes: Record<string, Route> = {
     bgColor: "bg-yellow-400",
   },
 };
-
-export function getSchedule(
-  route: string,
-  stopFrom: string,
-  stopTo: string,
-  time: Date
-): string[] {
-  return ["9:55 am", "10:00 am", "10:05 am"];
-}
 
 interface RouteStop {
   route: string;
@@ -211,12 +284,12 @@ async function getStopsData(): Promise<RouteStop[]> {
           data = results.data as unknown as RouteStop[];
         },
         error: (error: Error) => {
-          console.error("Error parsing CSV:", error);
+          console.warn("Error parsing CSV:", error);
         },
       });
     })
     .catch((error) => {
-      console.error("Error fetching CSV:", error);
+      console.warn("Error fetching CSV:", error);
     });
 
   return data;
@@ -234,6 +307,5 @@ export async function getThisRouteStops(route: string): Promise<string[]> {
       }
     }
   }
-  console.log(stops);
   return stops;
 }

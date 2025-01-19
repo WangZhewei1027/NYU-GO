@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import { getRemainingTime, routes } from "@/app/utils";
+import { getRemainingTime, routes, getRecentSchedule } from "@/app/utils";
 import Stops from "@/components/Stops";
 import { useStore, StoreState } from "@/app/store";
 
@@ -13,6 +13,10 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ name }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [time, setTime] = useState<string | null>(null); // 初始值为 null
+  const [stopFrom, setStopFrom] = useState<string[]>(["-"]);
+  const [stopTo, setStopTo] = useState<string[]>(["-"]);
+  const [currentStopFrom, setCurrentStopFrom] = useState<string>("");
+  const [currentStopTo, setCurrentStopTo] = useState<string>("");
 
   const store: StoreState = useStore() as StoreState;
 
@@ -28,6 +32,21 @@ const Card: React.FC<CardProps> = ({ name }) => {
 
     fetchRemainingTime();
   }, [name, store.currentLocation]);
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      const { fromSchedule, toSchedule } = await getRecentSchedule(
+        name,
+        currentStopFrom,
+        currentStopTo
+      );
+
+      setStopFrom(fromSchedule);
+      setStopTo(toSchedule);
+    };
+
+    fetchSchedule();
+  }, [name, currentStopFrom, currentStopTo]);
 
   return (
     <div
@@ -67,7 +86,7 @@ const Card: React.FC<CardProps> = ({ name }) => {
       </div>
       <div
         className={`overflow-hidden transition-all duration-500 ${
-          isClicked ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
+          isClicked ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
         } items-center w-full`}
       >
         <div className="flex flex-col p-2">
@@ -76,23 +95,35 @@ const Card: React.FC<CardProps> = ({ name }) => {
               <div className="text-base font-bold">From</div>
               <div className="w-full mt-2">
                 <Suspense fallback={<div>Loading...</div>}>
-                  <Stops route={name} isFrom={true} />
+                  <Stops
+                    route={name}
+                    isFrom={true}
+                    callback={setCurrentStopFrom}
+                  />
                 </Suspense>
               </div>
-              <div className="text-base text-center mt-2">9:55 am</div>
-              <div className="text-base text-center mt-2">10:10 am</div>
-              <div className="text-base text-center mt-2">10:30 am</div>
+              {stopFrom.map((stop, index) => (
+                <div key={index} className="text-base text-center mt-2">
+                  {stop}
+                </div>
+              ))}
             </div>
             <div className="flex-1 overflow-hidden flex flex-col  border-l border-gray-300 border-dashed pl-2">
               <div className="text-base font-bold">To</div>
               <div className="w-full mt-2">
                 <Suspense fallback={<div>Loading...</div>}>
-                  <Stops route={name} isFrom={false} />
+                  <Stops
+                    route={name}
+                    isFrom={false}
+                    callback={setCurrentStopTo}
+                  />
                 </Suspense>
               </div>
-              <div className="text-base text-center mt-2">9:55 am</div>
-              <div className="text-base text-center mt-2">10:10 am</div>
-              <div className="text-base text-center mt-2">10:30 am</div>
+              {stopTo.map((stop, index) => (
+                <div key={index} className="text-base text-center mt-2">
+                  {stop}
+                </div>
+              ))}
             </div>
           </div>
           <div className="ml-auto space-x-2 mt-4">

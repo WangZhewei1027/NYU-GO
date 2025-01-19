@@ -19,9 +19,11 @@ import { getThisRouteStops, routes } from "@/app/utils";
 export default function Stops({
   route,
   isFrom,
+  callback,
 }: {
   route: string;
   isFrom: boolean;
+  callback: (stop: string) => void;
 }) {
   const [selectedStop, setSelectedStop] = useState("Select Stop"); // 默认选中的站点
   const store: StoreState = useStore() as StoreState; // 全局状态管理
@@ -47,6 +49,7 @@ export default function Stops({
     const storedStop = localStorage.getItem(`route_${route}_${isFrom}`);
     if (storedStop) {
       setSelectedStop(storedStop);
+      callback(storedStop);
     }
   }, []);
 
@@ -101,6 +104,7 @@ export default function Stops({
                 className={`relative flex items-center pl-12 pr-4 py-4 transition transform active:scale-95 active:opacity-80 `}
                 onClick={() => {
                   setSelectedStop(stop); // 更新选中的站点
+                  callback(stop); // 回调函数
                   localStorage.setItem(`route_${route}_${isFrom}`, stop); // 保存到本地存储
                   (
                     document.querySelector('[data-state="open"]') as HTMLElement
