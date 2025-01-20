@@ -213,8 +213,8 @@ export const routes: Record<string, Route> = {
   },
   E: {
     promo: "Points North of WSQ",
-    borderColor: "border-amber-400",
-    bgColor: "bg-amber-400",
+    borderColor: "border-brown-500",
+    bgColor: "bg-brown-500",
   },
   F: {
     promo: "3rd Avenue Express",
