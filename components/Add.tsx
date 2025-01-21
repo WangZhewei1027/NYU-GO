@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { MdOutlineAdd } from "react-icons/md";
-import { stops, routes } from "@/app/utils";
+import { routes } from "@/app/utils/utils";
 import {
   Dialog,
   DialogClose,
@@ -14,7 +14,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { MdCheckBox } from "react-icons/md";
 
 function RouteItem({ route, promo }: { route: string; promo: string }) {

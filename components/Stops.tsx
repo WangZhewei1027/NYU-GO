@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useStore, StoreState } from "@/app/store";
-import { getThisRouteStops, routes } from "@/app/utils";
+import { getThisRouteStops, routes } from "@/app/utils/utils";
 
 export default function Stops({
   route,

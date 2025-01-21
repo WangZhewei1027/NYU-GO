@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import { getRemainingTime, routes, getRecentSchedule } from "@/app/utils";
+import { getRemainingTime, routes, getRecentSchedule } from "@/app/utils/utils";
 import Stops from "@/components/Stops";
 import { useStore, StoreState } from "@/app/store";
 import Sidebar from "@/components/Sidebar"; // 引入 Sidebar 组件

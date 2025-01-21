@@ -1,32 +1,20 @@
 import Papa from "papaparse";
 
-export const stops: string[] = [
-  "715 Broadway Departure",
-  "Broadway & Broome St.",
-  "80 Lafayette",
-  "Metro Tech Way",
-  "6 MetroTech Arrival",
-  "6 MetroTech Departure",
-  "Cadman Plaza & Clark St.",
-  "Cleveland & Spring St.",
-  "715 Broadway Arrival",
-];
+const specialStops: string[] = ["6 MetroTech", "715 Broadway"]; //分departure和arrival两种情况的站点
 
-const specialStops: string[] = ["6 MetroTech", "715 Broadway"];
-
-// 日期和文件名生成
+// 通过route获取文件名
 function getFilenameForRoute(route: string): string {
   const date = new Date();
   const dayOfWeek = date.getDay();
 
-  let _dayOfWeek = "mt";
+  let dayLabel = "mt";
   if (dayOfWeek === 0 || dayOfWeek === 6) {
-    _dayOfWeek = "w";
+    dayLabel = "w";
   } else if (dayOfWeek === 5) {
-    _dayOfWeek = "f";
+    dayLabel = "f";
   }
 
-  return `/route_${route}_${_dayOfWeek}.csv`;
+  return `/route_${route}_${dayLabel}.csv`;
 }
 
 // CSV 文件读取和解析
@@ -67,28 +55,34 @@ export async function getRemainingTime(
   const filename = getFilenameForRoute(route);
   const data = await fetchAndParseCSV<{ [stop: string]: string }>(filename);
 
-  if (data.length > 0) {
-    for (const entry of data) {
-      for (const [key, value] of Object.entries(entry)) {
-        let _stop = currentLocation;
-        if (specialStops.includes(currentLocation)) {
-          _stop = currentLocation + " Departure";
+  if (!(data.length > 0)) {
+    console.log(`Route ${route}: No data found`);
+    return -1; // Return -1 if no data is found
+  }
+
+  for (const entry of data) {
+    for (const [key, value] of Object.entries(entry)) {
+      let _currentLocation = currentLocation;
+      if (specialStops.includes(currentLocation)) {
+        _currentLocation = currentLocation + " Departure";
+      }
+
+      if (key.toLowerCase().includes(_currentLocation.toLowerCase())) {
+        const [time, period] = value.split(" ");
+
+        // eslint-disable-next-line prefer-const
+        let [entryHour, entryMinute] = time.split(":").map(Number);
+        if (period === "PM" && entryHour !== 12) {
+          entryHour += 12;
+        } else if (period === "AM" && entryHour === 12) {
+          entryHour = 0;
         }
 
-        if (key.toLowerCase().includes(_stop.toLowerCase())) {
-          const [time, period] = value.split(" ");
-          // eslint-disable-next-line prefer-const
-          let [entryHour, entryMinute] = time.split(":").map(Number);
-          if (period === "PM" && entryHour !== 12) {
-            entryHour += 12;
-          } else if (period === "AM" && entryHour === 12) {
-            entryHour = 0;
-          }
-          const remainingMinutes =
-            (entryHour - hour) * 60 + (entryMinute - minute);
-          if (remainingMinutes >= 0) {
-            return remainingMinutes;
-          }
+        const remainingMinutes =
+          (entryHour - hour) * 60 + (entryMinute - minute);
+
+        if (remainingMinutes >= 0) {
+          return remainingMinutes;
         }
       }
     }

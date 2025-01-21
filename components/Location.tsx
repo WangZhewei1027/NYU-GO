@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { getAllStops, StopRoute, routes } from "@/app/utils";
+import { getAllStops, StopRoute, routes } from "@/app/utils/utils";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { MdOutlineSearch } from "react-icons/md";

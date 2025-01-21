@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { MdOutlineArrowBackIos } from "react-icons/md";
 import Stops from "./Stops";
 import { useState, useEffect, useRef } from "react";
-import { getSchedule } from "@/app/utils";
+import { getSchedule } from "@/app/utils/utils";
 
 interface SidebarProps {
   isOpen: boolean;
