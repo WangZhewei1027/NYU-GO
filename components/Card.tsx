@@ -30,7 +30,13 @@ const Card: React.FC<CardProps> = ({ name }) => {
       setTime(remainingTime === -1 ? "--" : remainingTime.toString());
     };
 
-    fetchRemainingTime();
+    const interval = setInterval(() => {
+      fetchRemainingTime();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [name, store.currentLocation]);
 
   useEffect(() => {

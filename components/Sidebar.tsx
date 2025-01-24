@@ -5,6 +5,7 @@ import { MdOutlineArrowBackIos } from "react-icons/md";
 import Stops from "./Stops";
 import { useState, useEffect, useRef } from "react";
 import { getSchedule } from "@/app/utils/utils";
+import { MdOutlineArrowForward } from "react-icons/md";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -52,7 +53,7 @@ export default function Sidebar({ isOpen, onClose, name }: SidebarProps) {
       <motion.div
         ref={sidebarRef}
         tabIndex={-1} // 让 Sidebar 可聚焦
-        className="fixed !top-0 !mt-0 right-0 h-full w-full bg-white z-50 outline-none overflow-y-auto"
+        className="fixed !top-0 !mt-0 right-0 h-full w-full bg-white z-50 outline-none flex flex-col"
         initial={{ x: "100%" }}
         animate={{ x: isOpen ? 0 : "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -80,10 +81,19 @@ export default function Sidebar({ isOpen, onClose, name }: SidebarProps) {
         <div className="text-2xl font-bold px-4">Route {name}</div>
 
         {/* 选择出发站和到达站 */}
-        <div className="flex flex-row px-4 space-x-4 mt-4">
+        <div className="flex p-4 border-b items-center">
           <div className="w-1/2">
-            <div className="text-base font-bold mb-2">From</div>
             <Stops route={name} isFrom={true} callback={setCurrentStopFrom} />
+          </div>
+          <MdOutlineArrowForward className="mx-1" />
+          <div className="w-1/2">
+            <Stops route={name} isFrom={false} callback={setCurrentStopTo} />
+          </div>
+        </div>
+
+        {/* 可滚动的时间表 */}
+        <div className="flex px-4 space-x-4 overflow-y-auto">
+          <div className="w-1/2">
             {fromSchedule.map((stop, index) => (
               <div key={index} className="text-sm text-center mt-2">
                 {stop}
@@ -91,13 +101,13 @@ export default function Sidebar({ isOpen, onClose, name }: SidebarProps) {
             ))}
           </div>
           <div className="w-1/2">
-            <div className="text-base font-bold mb-2">To</div>
-            <Stops route={name} isFrom={false} callback={setCurrentStopTo} />
             {toSchedule.map((stop, index) => (
               <div key={index} className="text-sm text-center mt-2">
                 {stop}
               </div>
             ))}
+            {/* 滚动占位块 */}
+            <div className="w-full h-16"></div>
           </div>
         </div>
       </motion.div>
