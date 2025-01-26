@@ -95,14 +95,14 @@ export default function Sidebar({ isOpen, onClose, name }: SidebarProps) {
         <div className="flex px-4 space-x-4 overflow-y-auto">
           <div className="w-1/2">
             {fromSchedule.map((stop, index) => (
-              <div key={index} className="text-sm text-center mt-2">
+              <div key={index} className="text-center mt-2">
                 {stop}
               </div>
             ))}
           </div>
           <div className="w-1/2">
             {toSchedule.map((stop, index) => (
-              <div key={index} className="text-sm text-center mt-2">
+              <div key={index} className="text-center mt-2">
                 {stop}
               </div>
             ))}

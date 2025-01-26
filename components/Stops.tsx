@@ -59,7 +59,7 @@ export default function Stops({
       const containerHeight = containerRef.current.scrollHeight; // 获取容器的实际内容高度
       lineRef.current.style.height = `${containerHeight}px`; // 动态设置竖线高度
     }
-  }, [stops]); // stops 渲染完成后触发
+  }, [containerRef.current]); // stops 渲染完成后触发
 
   return (
     <>
