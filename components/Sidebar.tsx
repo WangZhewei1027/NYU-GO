@@ -82,11 +82,11 @@ export default function Sidebar({ isOpen, onClose, name }: SidebarProps) {
 
         {/* 选择出发站和到达站 */}
         <div className="flex p-4 border-b items-center">
-          <div className="w-1/2">
+          <div className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis">
             <Stops route={name} isFrom={true} callback={setCurrentStopFrom} />
           </div>
-          <MdOutlineArrowForward className="mx-1" />
-          <div className="w-1/2">
+          <MdOutlineArrowForward className="mx-1 flex-shrink-0" />
+          <div className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis">
             <Stops route={name} isFrom={false} callback={setCurrentStopTo} />
           </div>
         </div>

@@ -6,6 +6,7 @@ import { getRemainingTime, routes, getRecentSchedule } from "@/app/utils/utils";
 import Stops from "@/components/Stops";
 import { useStore, StoreState } from "@/app/store";
 import Sidebar from "@/components/Sidebar"; // 引入 Sidebar 组件
+import { MdOutlineArrowForward } from "react-icons/md";
 
 interface CardProps {
   name: string;
@@ -92,14 +93,13 @@ const Card: React.FC<CardProps> = ({ name }) => {
         {/* 详细信息 */}
         <div
           className={`overflow-hidden transition-all duration-500 ${
-            isClicked ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+            isClicked ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
           } items-center w-full`}
         >
           <div className="flex flex-col p-2">
             {/* 站点选择 */}
             <div className="flex flex-row">
               <div className="flex-1 overflow-hidden flex flex-col pr-2">
-                <div className="text-base font-bold">From</div>
                 <div className="w-full mt-2">
                   <Suspense fallback={<div>Loading...</div>}>
                     <Stops
@@ -115,8 +115,8 @@ const Card: React.FC<CardProps> = ({ name }) => {
                   </div>
                 ))}
               </div>
-              <div className="flex-1 overflow-hidden flex flex-col border-l border-gray-300 border-dashed pl-2">
-                <div className="text-base font-bold">To</div>
+              <MdOutlineArrowForward className="mt-4" />
+              <div className="flex-1 overflow-hidden flex flex-col pl-2">
                 <div className="w-full mt-2">
                   <Suspense fallback={<div>Loading...</div>}>
                     <Stops
@@ -135,7 +135,7 @@ const Card: React.FC<CardProps> = ({ name }) => {
             </div>
 
             {/* 按钮 */}
-            <div className="ml-auto space-x-2 mt-4">
+            <div className="ml-auto space-x-2 mt-6">
               <Button
                 variant={"outline"}
                 className={`h-12 rounded-full text-base ${routes[name].borderColor}`}

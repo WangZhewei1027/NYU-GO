@@ -71,7 +71,7 @@ export default function Stops({
             className="p-2 text-base w-full max-w-full flex items-center justify-between"
           >
             <span className="truncate">{selectedStop}</span>
-            <MdArrowDropDown className="shrink-0 text-gray-500 ml-2" />
+            <MdArrowDropDown className="shrink-0 text-gray-500" />
           </Button>
         </DialogTrigger>
 
