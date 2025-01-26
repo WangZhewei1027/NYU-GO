@@ -114,6 +114,8 @@ export async function getSchedule(
     _stopTo = stopTo + " Arrival";
   }
 
+  console.log(`开始计算从${_stopFrom}到${_stopTo}的时刻表`);
+
   const fromSchedule: string[] = [];
   const toSchedule: string[] = [];
 
