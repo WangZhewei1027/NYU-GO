@@ -3,9 +3,9 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { getRemainingTime, routes, getRecentSchedule } from "@/app/utils/utils";
-import Stops from "@/components/Stops";
+import Stops from "@/components/Card/Stops";
 import { useStore, StoreState } from "@/app/store";
-import Sidebar from "@/components/Sidebar"; // 引入 Sidebar 组件
+import Sidebar from "@/components/Card/Sidebar"; // 引入 Sidebar 组件
 import { MdOutlineArrowForward } from "react-icons/md";
 
 interface CardProps {
@@ -21,7 +21,6 @@ const Card: React.FC<CardProps> = ({ name }) => {
   const [currentStopTo, setCurrentStopTo] = useState<string>("");
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // 控制 Sidebar 显示
-  const [fullSchedule, setFullSchedule] = useState<string[]>([]); // 完整时刻表
 
   const store: StoreState = useStore() as StoreState;
 
@@ -140,12 +139,6 @@ const Card: React.FC<CardProps> = ({ name }) => {
                 variant={"outline"}
                 className={`h-12 rounded-full text-base ${routes[name].borderColor}`}
                 onClick={async () => {
-                  const { fromSchedule, toSchedule } = await getRecentSchedule(
-                    name,
-                    currentStopFrom,
-                    currentStopTo
-                  );
-                  setFullSchedule([...fromSchedule, ...toSchedule]);
                   setIsSidebarOpen(true);
                 }}
               >

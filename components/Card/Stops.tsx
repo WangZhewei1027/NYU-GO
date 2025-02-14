@@ -15,6 +15,7 @@ import {
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useStore, StoreState } from "@/app/store";
 import { getThisRouteStops, routes } from "@/app/utils/utils";
+import { shallow } from "zustand/shallow";
 
 export default function Stops({
   route,
@@ -26,11 +27,14 @@ export default function Stops({
   callback: (stop: string) => void;
 }) {
   const [selectedStop, setSelectedStop] = useState("Select Stop"); // 默认选中的站点
-  const store: StoreState = useStore() as StoreState; // 全局状态管理
   const [stops, setStops] = useState<string[]>([]);
 
   const lineRef = useRef<HTMLDivElement>(null); // 时间轴竖线的引用
   const containerRef = useRef<HTMLDivElement>(null); // 容器的引用
+
+  const currentLocation = useStore(
+    (state) => (state as StoreState).currentLocation
+  );
 
   // 加载站点数据
   useEffect(() => {
@@ -47,11 +51,20 @@ export default function Stops({
 
   useEffect(() => {
     const storedStop = localStorage.getItem(`route_${route}_${isFrom}`);
+
     if (storedStop) {
       setSelectedStop(storedStop);
       callback(storedStop);
     }
   }, []);
+
+  useEffect(() => {
+    console.log(currentLocation);
+    if (isFrom && currentLocation) {
+      setSelectedStop(currentLocation);
+      callback(currentLocation);
+    }
+  }, [currentLocation]);
 
   // 使用 useLayoutEffect 确保在渲染完成后计算竖线高度
   useLayoutEffect(() => {

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { getAllStops, StopRoute, routes } from "@/app/utils/utils";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { MdOutlineSearch } from "react-icons/md";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -25,12 +25,15 @@ export default function Location() {
 
   const store: StoreState = useStore() as StoreState;
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchStops() {
       const stops = await getAllStops();
       setStopRoutes(stops);
     }
-    setSelectedStop(localStorage.getItem("currentLocation") || "715 Broadway");
+    const currentLocation =
+      localStorage.getItem("currentLocation") || "715 Broadway";
+    setSelectedStop(currentLocation);
+    store.currentLocation = currentLocation;
     fetchStops();
   }, []);
 
