@@ -57,4 +57,6 @@
 - 修复stops过多时的ui问题（例如route w）
 - 调整full schedule字体
 
+#### 2025.2.14.0
 
+- 修复full schedule与上层站点的同步问题

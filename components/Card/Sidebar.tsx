@@ -2,20 +2,28 @@
 
 import { motion } from "framer-motion";
 import { MdOutlineArrowBackIos } from "react-icons/md";
-import Stops from "./Stops";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { getSchedule } from "@/app/utils/utils";
 import { MdOutlineArrowForward } from "react-icons/md";
+import FullStops from "./FullStops";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   name: string;
+  from: string;
+  to: string;
 }
 
-export default function Sidebar({ isOpen, onClose, name }: SidebarProps) {
-  const [currentStopFrom, setCurrentStopFrom] = useState<string>("");
-  const [currentStopTo, setCurrentStopTo] = useState<string>("");
+export default function Sidebar({
+  isOpen,
+  onClose,
+  name,
+  from,
+  to,
+}: SidebarProps) {
+  const [currentStopFrom, setCurrentStopFrom] = useState<string>(from);
+  const [currentStopTo, setCurrentStopTo] = useState<string>(to);
 
   const [fromSchedule, setFromSchedule] = useState<string[]>([]);
   const [toSchedule, setToSchedule] = useState<string[]>([]);
@@ -43,6 +51,11 @@ export default function Sidebar({ isOpen, onClose, name }: SidebarProps) {
 
     fetchSchedule();
   }, [name, currentStopFrom, currentStopTo]);
+
+  useEffect(() => {
+    setCurrentStopFrom(from);
+    setCurrentStopTo(to);
+  }, [from, to]);
 
   return (
     <>
@@ -83,11 +96,21 @@ export default function Sidebar({ isOpen, onClose, name }: SidebarProps) {
         {/* 选择出发站和到达站 */}
         <div className="flex p-4 border-b items-center">
           <div className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis">
-            <Stops route={name} isFrom={true} callback={setCurrentStopFrom} />
+            <FullStops
+              route={name}
+              isFrom={true}
+              callback={setCurrentStopFrom}
+              defaultStop={from}
+            />
           </div>
           <MdOutlineArrowForward className="mx-1 flex-shrink-0" />
           <div className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis">
-            <Stops route={name} isFrom={false} callback={setCurrentStopTo} />
+            <FullStops
+              route={name}
+              isFrom={false}
+              callback={setCurrentStopTo}
+              defaultStop={to}
+            />
           </div>
         </div>
 

@@ -24,6 +24,7 @@ const Card: React.FC<CardProps> = ({ name }) => {
 
   const store: StoreState = useStore() as StoreState;
 
+  // 计算剩余时间
   useEffect(() => {
     const fetchRemainingTime = async () => {
       const remainingTime = await getRemainingTime(name, store.currentLocation);
@@ -160,6 +161,8 @@ const Card: React.FC<CardProps> = ({ name }) => {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         name={name}
+        from={currentStopFrom}
+        to={currentStopTo}
       />
     </>
   );
