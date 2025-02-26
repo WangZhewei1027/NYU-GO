@@ -41,7 +41,7 @@ interface ShuttleData {
   time: ShuttleTime; // 线路更新时间
 }
 
-export default async function getBusId2Route(): Promise<{
+export async function getBusId2Route(): Promise<{
   [key: string]: string;
 }> {
   const data: { [key: number]: string } = {};
@@ -64,4 +64,74 @@ export default async function getBusId2Route(): Promise<{
   }
 
   return data;
+}
+
+function distance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number,
+  unit: "km" | "m" = "km"
+): number {
+  const R = unit === "km" ? 6371 : 6371000; // 地球半径：千米 or 米
+
+  const toRad = (angle: number) => (angle * Math.PI) / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // 返回单位为 km 或 m
+}
+
+export async function getNearestBusLocation(
+  name: string,
+  stop_lat: number,
+  stop_lon: number
+) {
+  // 获取所有公交车数据
+  console.log("🚍 获取所有公交车数据...");
+  const response: ShuttleData = await fetch(
+    "https://nyu-go-backend-production.up.railway.app/shuttle-data"
+  )
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error("❌ 请求失败:", error);
+      throw new Error("Failed to fetch shuttle data");
+    });
+
+  console.log("📡 Shuttle 数据:", response);
+
+  let lat = 0;
+  let lon = 0;
+  let nearest_dist = Infinity;
+
+  for (const [key, value] of Object.entries(response.buses)) {
+    if (value[0].route.split(" ")[1].toLowerCase() === name.toLowerCase()) {
+      const latitude = value[0].latitude;
+      const longitude = value[0].longitude;
+      const dist = distance(
+        stop_lat,
+        stop_lon,
+        Number(latitude),
+        Number(longitude),
+        "km"
+      );
+      if (dist < nearest_dist) {
+        nearest_dist = dist;
+        lat = Number(latitude);
+        lon = Number(longitude);
+      }
+    }
+  }
+
+  return {
+    latitude: lat,
+    longitude: lon,
+    distance: nearest_dist,
+  };
 }

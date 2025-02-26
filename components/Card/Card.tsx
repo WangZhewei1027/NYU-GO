@@ -7,6 +7,8 @@ import Stops from "@/components/Card/Stops";
 import { useStore, StoreState } from "@/app/store";
 import Sidebar from "@/components/Card/Sidebar"; // 引入 Sidebar 组件
 import { MdOutlineArrowForward } from "react-icons/md";
+import { getNearestBusLocation } from "@/app/utils/getBusInfo";
+import { calculateTime, getStopPosition } from "@/app/utils/calculateTime";
 
 interface CardProps {
   name: string;
@@ -15,6 +17,7 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ name }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [time, setTime] = useState<string | null>(null);
+  const [actualTime, setActualTime] = useState<string | null>(null);
   const [stopFrom, setStopFrom] = useState<string[]>(["-"]);
   const [stopTo, setStopTo] = useState<string[]>(["-"]);
   const [currentStopFrom, setCurrentStopFrom] = useState<string>("");
@@ -40,6 +43,8 @@ const Card: React.FC<CardProps> = ({ name }) => {
     };
   }, [name, store.currentLocation]);
 
+  useEffect(() => {}, [name, store.currentLocation]);
+
   useEffect(() => {
     const fetchSchedule = async () => {
       const { fromSchedule, toSchedule } = await getRecentSchedule(
@@ -54,6 +59,50 @@ const Card: React.FC<CardProps> = ({ name }) => {
 
     fetchSchedule();
   }, [name, currentStopFrom, currentStopTo]);
+
+  // 获取实际时间
+  useEffect(() => {
+    const fetchRemainingTime = async () => {
+      getStopPosition(store.currentLocation);
+      const position = getStopPosition(store.currentLocation);
+
+      if (!position) {
+        console.error("🚍 当前位置: ", store.currentLocation, "未找到坐标");
+        return null;
+      }
+
+      const { latitude, longitude } = position;
+      console.log(`🚍 当前位置: ${store.currentLocation}`, latitude, longitude);
+
+      const busLocation = await getNearestBusLocation(
+        name,
+        latitude,
+        longitude
+      );
+      if (!busLocation) {
+        console.error("🚍 未找到公交车位置");
+        return null;
+      }
+      console.log("🚍 公交车位置: ", busLocation);
+
+      const time = calculateTime(
+        position.latitude,
+        position.longitude,
+        busLocation.latitude,
+        busLocation.longitude
+      );
+      console.log("🚍 预计到达时间: ", time);
+      setActualTime(time.toString());
+    };
+
+    const interval = setInterval(() => {
+      fetchRemainingTime();
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [name, store.currentLocation]);
 
   return (
     <>
@@ -83,6 +132,28 @@ const Card: React.FC<CardProps> = ({ name }) => {
                 )}
                 <div className="inline text-4xl font-mono">
                   {time === "--" ? "--" : Number(time) % 60}
+                </div>
+                <div className="inline ml-1 text-gray-500 text-end">min</div>
+                <div className="inline text-4xl font-thin"> / </div>
+              </>
+            )}
+
+            {actualTime === null ? (
+              <div className="text-gray-500 text-xl font-mono">--</div>
+            ) : (
+              <>
+                {Number(time) >= 60 && (
+                  <div className="inline">
+                    <div className="inline text-xl font-mono">
+                      {Math.floor(Number(actualTime) / 60)}
+                    </div>
+                    <div className="inline ml-1 mr-1 text-gray-500 text-end">
+                      h
+                    </div>
+                  </div>
+                )}
+                <div className="inline text-xl font-mono">
+                  {time === "--" ? "--" : Number(actualTime) % 60}
                 </div>
                 <div className="inline ml-1 text-gray-500 text-end">min</div>
               </>
