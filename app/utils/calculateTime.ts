@@ -1,5 +1,6 @@
 import stops from "@/app/utils/stops.json";
 
+// 输出出发点和到达点的坐标，返回所需时间
 export function calculateTime(
   shuttleLat: number,
   shuttleLon: number,
@@ -35,6 +36,7 @@ export function calculateTime(
   return Math.round(estimatedTime); // 四舍五入返回分钟数
 }
 
+// 从stops.json中获取站点坐标
 export function getStopPosition(stopName: string) {
   const stop = Object.values(stops.stops).find((stop) =>
     stop.name.toLowerCase().includes(stopName.toLowerCase())

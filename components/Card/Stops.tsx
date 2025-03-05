@@ -15,7 +15,6 @@ import {
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useStore, StoreState } from "@/app/store";
 import { getThisRouteStops, routes } from "@/app/utils/utils";
-import { shallow } from "zustand/shallow";
 
 export default function Stops({
   route,

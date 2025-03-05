@@ -73,7 +73,7 @@ function distance(
   lon2: number,
   unit: "km" | "m" = "km"
 ): number {
-  const R = unit === "km" ? 6371 : 6371000; // 地球半径：千米 or 米
+  const r = unit === "km" ? 6371 : 6371000; // 地球半径：千米 or 米
 
   const toRad = (angle: number) => (angle * Math.PI) / 180;
 
@@ -85,13 +85,13 @@ function distance(
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  return R * c; // 返回单位为 km 或 m
+  return r * c; // 返回单位为 km 或 m
 }
 
 export async function getNearestBusLocation(
   name: string,
-  stop_lat: number,
-  stop_lon: number
+  stopLat: number,
+  stopLon: number
 ) {
   // 获取所有公交车数据
   console.log("🚍 获取所有公交车数据...");
@@ -108,21 +108,21 @@ export async function getNearestBusLocation(
 
   let lat = 0;
   let lon = 0;
-  let nearest_dist = Infinity;
+  let nearestDist = Infinity;
 
   for (const [key, value] of Object.entries(response.buses)) {
     if (value[0].route.split(" ")[1].toLowerCase() === name.toLowerCase()) {
       const latitude = value[0].latitude;
       const longitude = value[0].longitude;
       const dist = distance(
-        stop_lat,
-        stop_lon,
+        stopLat,
+        stopLon,
         Number(latitude),
         Number(longitude),
         "km"
       );
-      if (dist < nearest_dist) {
-        nearest_dist = dist;
+      if (dist < nearestDist) {
+        nearestDist = dist;
         lat = Number(latitude);
         lon = Number(longitude);
       }
@@ -132,6 +132,6 @@ export async function getNearestBusLocation(
   return {
     latitude: lat,
     longitude: lon,
-    distance: nearest_dist,
+    distance: nearestDist,
   };
 }
