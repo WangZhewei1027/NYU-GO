@@ -6,7 +6,6 @@ import { MdOutlineArrowForward } from "react-icons/md";
 import { useShuttleData } from "./useShuttleData";
 import TimeDisplay from "@/components/Card/TimeDisplay";
 import StopSelector from "@/components/Card/StopSelector";
-import { transition } from "d3";
 
 interface CardProps {
   name: string;
@@ -36,7 +35,7 @@ export default function Card({ name }: CardProps) {
           onClick={() => setIsClicked(!isClicked)}
         >
           <div className="ml-2 text-xl font-bold font-sans">Route {name}</div>
-          <TimeDisplay time={time} actualTime={actualTime} />
+          <TimeDisplay time={time} />
         </div>
 
         {/* 卡片展开的动画，展示详细信息 */}

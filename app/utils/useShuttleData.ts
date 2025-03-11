@@ -1,8 +1,11 @@
 import { use, useEffect, useState } from "react";
 import { getBusInfo, BusInfo } from "./getBusInfo";
+import { useStore, StoreState } from "@/app/store";
 
 export default function useShuttleData() {
   const [shuttleData, setShuttleData] = useState<BusInfo>({});
+
+  const store: StoreState = useStore() as StoreState;
 
   // 启动时fetch第一次的所有shuttle数据
   useEffect(() => {
@@ -56,6 +59,7 @@ export default function useShuttleData() {
 
   useEffect(() => {
     //console.log("🚍 更新后的公交数据:", shuttleData);
+    store.shuttleData = shuttleData;
   }, [shuttleData]);
 
   return shuttleData;

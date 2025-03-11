@@ -5,6 +5,7 @@ import Card from "@/components/Card/Card";
 import Add from "@/components/Add";
 import Location from "@/components/Location";
 import { useStore, StoreState } from "@/app/store";
+import useShuttleData from "@/app/utils/useShuttleData";
 
 const routes = [
   { name: "A", time: "4", color: "pink" },
@@ -16,10 +17,12 @@ const routes = [
   { name: "W", time: "7", color: "amber" },
 ];
 
-const TrackPage = () => {
+export default function TrackPage() {
   const [visibleRoutes, setVisibleRoutes] = useState<string[]>([]);
 
   const store: StoreState = useStore() as StoreState;
+
+  //const shuttleData = useShuttleData();
 
   // 更新可见的路线
   const updateVisibleRoutes = () => {
@@ -73,11 +76,6 @@ const TrackPage = () => {
               <Card name={route.name} key={index} />
             )
         )}
-        {/* {!visibleRoutes.length && (
-          <div className="w-ful h-full text-center text-gray-400 font-bold text-xl mt-8">
-            No Routes Added
-          </div>
-        )} */}
         <div className="flex justify-center items-center">
           <div className="w-32">
             <Add />
@@ -87,6 +85,4 @@ const TrackPage = () => {
       </div>
     </div>
   );
-};
-
-export default TrackPage;
+}

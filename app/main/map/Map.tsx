@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
-import useShuttleData from "./useShuttleData";
+import useShuttleData from "@/app/utils/useShuttleData";
 
 export default function Map() {
   const shuttleData = useShuttleData();
@@ -16,6 +16,7 @@ export default function Map() {
       zoomAnimationThreshold={4} // ✅ 设置动画的阈值（默认4）
       style={{ zIndex: 0 }}
       className="map-container"
+      zoomControl={false}
     >
       {/* 🔥 使用 OpenStreetMap 作为地图 */}
       <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
