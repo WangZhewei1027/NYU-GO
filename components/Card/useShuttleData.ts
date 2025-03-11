@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getRemainingTime, getRecentSchedule } from "@/app/utils/utils";
-import { getNearestBusLocation } from "@/app/utils/getBusInfo";
+import { getNearestBusLocation } from "@/app/main/map-temp/getBusInfo";
 import { calculateTime, getStopPosition } from "@/app/utils/calculateTime";
 import { useStore, StoreState } from "@/app/store";
 

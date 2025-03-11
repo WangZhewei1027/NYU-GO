@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["picsum.photos"],
   },
+  reactStrictMode: false,
 };
 
 export default nextConfig;
