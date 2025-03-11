@@ -14,7 +14,7 @@ export default function useShuttleData() {
         setShuttleData(data);
       })
       .then(() => {
-        ws = new WebSocket("ws://nyu-go-backend-production.up.railway.app");
+        ws = new WebSocket("wss://nyu-go-backend-production.up.railway.app");
 
         ws.onopen = () => {
           console.log("✅ WebSocket 连接已建立");
