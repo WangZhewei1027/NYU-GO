@@ -14,7 +14,8 @@ export default function Map() {
       zoom={14}
       zoomAnimation={true} // ✅ 启用缩放动画
       zoomAnimationThreshold={4} // ✅ 设置动画的阈值（默认4）
-      style={{ width: "100%", height: "100%", zIndex: 0 }}
+      style={{ zIndex: 0 }}
+      className="map-container"
     >
       {/* 🔥 使用 OpenStreetMap 作为地图 */}
       <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
