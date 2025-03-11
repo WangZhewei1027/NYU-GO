@@ -44,8 +44,13 @@ export default function useShuttleData() {
       });
 
     return () => {
-      ws.close();
-      console.log("❌ WebSocket 连接已关闭");
+      if (!ws) return;
+      try {
+        ws.close();
+        console.log("❌ WebSocket 连接已关闭");
+      } catch (e) {
+        console.error("❌ WebSocket 关闭失败:", e);
+      }
     };
   }, []);
 

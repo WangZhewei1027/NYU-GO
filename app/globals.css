@@ -13,10 +13,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-html, body {
+html,
+body {
   touch-action: manipulation;
 }
-
 
 @layer base {
   :root {
@@ -85,10 +85,11 @@ html, body {
 
 .map-container {
   position: absolute;
-  top: env(safe-area-inset-top);  /* 适配 notch */
+  top: env(safe-area-inset-top); /* 适配 notch */
   left: 0;
   right: 0;
   bottom: 0;
   width: 100%;
   height: calc(100vh + env(safe-area-inset-bottom));
+  min-height: -webkit-fill-available;
 }
