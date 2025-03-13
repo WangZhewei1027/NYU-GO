@@ -189,6 +189,7 @@ interface Route {
   promo: string;
   borderColor?: string;
   bgColor?: string;
+  textColor?: string;
 }
 
 export const routes: Record<string, Route> = {
@@ -196,36 +197,43 @@ export const routes: Record<string, Route> = {
     promo: "Service to/from Tandon in Brooklyn",
     borderColor: "border-pink-400",
     bgColor: "bg-pink-400",
+    textColor: "text-pink-400",
   },
   B: {
     promo: "Points South of WSQ",
     borderColor: "border-purple-400",
     bgColor: "bg-purple-400",
+    textColor: "text-purple-400",
   },
   C: {
     promo: "Stuyvesant Town & Points North of WSQ",
     borderColor: "border-blue-400",
     bgColor: "bg-blue-400",
+    textColor: "text-blue-400",
   },
   E: {
     promo: "Points North of WSQ",
     borderColor: "border-brown-500",
     bgColor: "bg-brown-500",
+    textColor: "text-brown-500",
   },
   F: {
     promo: "3rd Avenue Express",
     borderColor: "border-green-400",
     bgColor: "bg-green-400",
+    textColor: "text-green-400",
   },
   G: {
     promo: "Greenwich Hall",
     borderColor: "border-cyan-400",
     bgColor: "bg-cyan-400",
+    textColor: "text-cyan-400",
   },
   W: {
     promo: "Weekend Service Combining Routes B, E, & G",
     borderColor: "border-yellow-400",
     bgColor: "bg-yellow-400",
+    textColor: "text-yellow-400",
   },
 };
 
