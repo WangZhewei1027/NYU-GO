@@ -30,7 +30,7 @@ export default function TrackPage() {
     return routes
       .map((route) => route.name)
       .filter((name) => localStorage.getItem(name) === "true");
-  }, []);
+  }, [visibleRoutes]);
 
   // ✅ 用 `useCallback` 避免 `setState` 触发多次渲染
   const updateVisibleRoutes = useCallback(() => {
