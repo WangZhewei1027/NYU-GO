@@ -1,4 +1,5 @@
 import { useStore, StoreState } from "@/app/store";
+import { getStopPosition } from "@/app/utils/calculateTime";
 
 interface TimeDisplayProps {
   time: string | null;
@@ -8,9 +9,7 @@ interface TimeDisplayProps {
 export default function TimeDisplay({ time, route }: TimeDisplayProps) {
   const store: StoreState = useStore() as StoreState;
 
-  console.log("🚍 当前路线:", route);
-
-  const distance = 3.8; // 模拟距离数据
+  const currentPosition = getStopPosition(store.currentLocation);
 
   return (
     <div className="ml-auto pr-4">
@@ -30,7 +29,7 @@ export default function TimeDisplay({ time, route }: TimeDisplayProps) {
           <span className="inline ml-1 text-gray-500 text-end">min</span>
         )}
       </div>
-      <div className="text-gray-500 text-sm ml-0">{`${distance} km away`}</div>
+      <div className="text-gray-500 text-sm ml-0">{`${3.8} km away`}</div>
     </div>
   );
 }
