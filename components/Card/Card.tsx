@@ -35,7 +35,7 @@ export default function Card({ name }: CardProps) {
           onClick={() => setIsClicked(!isClicked)}
         >
           <div className="ml-2 text-xl font-bold font-sans">Route {name}</div>
-          <TimeDisplay time={time} />
+          <TimeDisplay time={time} route={name} />
         </div>
 
         {/* 卡片展开的动画，展示详细信息 */}

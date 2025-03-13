@@ -2,10 +2,13 @@ import { useStore, StoreState } from "@/app/store";
 
 interface TimeDisplayProps {
   time: string | null;
+  route: string;
 }
 
-export default function TimeDisplay({ time }: TimeDisplayProps) {
+export default function TimeDisplay({ time, route }: TimeDisplayProps) {
   const store: StoreState = useStore() as StoreState;
+
+  console.log("🚍 当前路线:", route);
 
   const distance = 3.8; // 模拟距离数据
 

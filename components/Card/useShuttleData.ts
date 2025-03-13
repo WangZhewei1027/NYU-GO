@@ -24,7 +24,7 @@ export function useShuttleData(routeName: string) {
       setTime(remainingTime === -1 ? "--" : remainingTime.toString());
     };
 
-    const interval = setInterval(fetchRemainingTime, 1000);
+    const interval = setInterval(fetchRemainingTime, 5000);
     return () => clearInterval(interval);
   }, [routeName, store.currentLocation]);
 
@@ -43,28 +43,28 @@ export function useShuttleData(routeName: string) {
   }, [routeName, currentStopFrom, currentStopTo]);
 
   // 计算 **实际时间**
-  useEffect(() => {
-    const fetchActualTime = async () => {
-      const position = getStopPosition(store.currentLocation);
-      if (!position) return;
-      const busLocation = await getNearestBusLocation(
-        routeName,
-        position.latitude,
-        position.longitude
-      );
-      if (!busLocation) return;
-      const estimatedTime = calculateTime(
-        position.latitude,
-        position.longitude,
-        busLocation.latitude,
-        busLocation.longitude
-      );
-      setActualTime(estimatedTime.toString());
-    };
+  // useEffect(() => {
+  //   const fetchActualTime = async () => {
+  //     const position = getStopPosition(store.currentLocation);
+  //     if (!position) return;
+  //     const busLocation = await getNearestBusLocation(
+  //       routeName,
+  //       position.latitude,
+  //       position.longitude
+  //     );
+  //     if (!busLocation) return;
+  //     const estimatedTime = calculateTime(
+  //       position.latitude,
+  //       position.longitude,
+  //       busLocation.latitude,
+  //       busLocation.longitude
+  //     );
+  //     setActualTime(estimatedTime.toString());
+  //   };
 
-    const interval = setInterval(fetchActualTime, 10000);
-    return () => clearInterval(interval);
-  }, [routeName, store.currentLocation]);
+  //   const interval = setInterval(fetchActualTime, 10000);
+  //   return () => clearInterval(interval);
+  // }, [routeName, store.currentLocation]);
 
   return {
     time,
