@@ -56,7 +56,7 @@ export async function getRemainingTime(
   const data = await fetchAndParseCSV<{ [stop: string]: string }>(filename);
 
   if (!(data.length > 0)) {
-    console.log(`Route ${route}: No data found`);
+    // console.log(`Route ${route}: No data found`);
     return -1; // Return -1 if no data is found
   }
 
@@ -88,7 +88,7 @@ export async function getRemainingTime(
     }
   }
 
-  console.log(`Route ${route}: No valid time found`);
+  // console.log(`Route ${route}: No valid time found`);
   return -1; // Return -1 if no valid time is found
 }
 
