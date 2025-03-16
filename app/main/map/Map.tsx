@@ -8,6 +8,7 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet-defaulticon-compatibility";
 import useShuttleData from "@/app/utils/useShuttleData";
 import { routes } from "@/app/utils/utils";
+import stops from "@/app/utils/stops.json";
 
 // 🏷️ 提取路线字母，例如 "Route A" -> "A", "Express Bus C" -> "C"
 const getRouteLetter = (route: string) => {
@@ -28,6 +29,15 @@ const MarkerIcon = ({ letter }: { letter: string }) => (
   >
     <span className="font-black">{letter}</span>
   </div>
+);
+
+const StopIcon = () => (
+  <div
+    className={`w-2 h-2 flex items-center justify-center rounded-full bg-white border-2 border-black`}
+    style={{
+      boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
+    }}
+  ></div>
 );
 
 export default function Map() {
@@ -52,6 +62,24 @@ export default function Map() {
       {/* 🔥 使用 OpenStreetMap 作为地图 */}
       <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
 
+      {/* 🟢 渲染站点位置 */}
+      {Object.values(stops.stops).map((stop) => (
+        <Marker
+          key={stop.id}
+          position={[stop.latitude, stop.longitude]}
+          icon={L.divIcon({
+            className: "custom-stop",
+            html: ReactDOMServer.renderToString(<StopIcon />),
+            iconSize: [10, 10],
+            iconAnchor: [5, 5],
+          })}
+        >
+          <Popup>
+            {stop.name} ({stop.id})
+          </Popup>
+        </Marker>
+      ))}
+
       {/* 🔴 渲染 Shuttle 位置 */}
       {Object.entries(shuttleData).map(([busId, info]) => {
         const routeLetter = getRouteLetter(info.route);
@@ -73,6 +101,7 @@ export default function Map() {
             key={busId}
             position={[Number(info.latitude), Number(info.longitude)]}
             icon={iconCache[routeLetter]}
+            zIndexOffset={1000}
           >
             <Popup>
               🚌 {info.route}
