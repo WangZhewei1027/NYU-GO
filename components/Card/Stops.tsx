@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useStore, StoreState } from "@/app/store";
 import { getThisRouteStops, routes } from "@/app/utils/utils";
 
@@ -27,6 +27,7 @@ export default function Stops({
 }) {
   const [selectedStop, setSelectedStop] = useState("Select Stop"); // 默认选中的站点
   const [stops, setStops] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false); // Dialog 是否打开
 
   const lineRef = useRef<HTMLDivElement>(null); // 时间轴竖线的引用
   const containerRef = useRef<HTMLDivElement>(null); // 容器的引用
@@ -58,25 +59,30 @@ export default function Stops({
   }, []);
 
   useEffect(() => {
-    console.log(currentLocation);
     if (isFrom && currentLocation) {
       setSelectedStop(currentLocation);
       callback(currentLocation);
     }
   }, [currentLocation]);
 
-  // 使用 useLayoutEffect 确保在渲染完成后计算竖线高度
-  useLayoutEffect(() => {
-    console.log("🚍 Calculating line height...");
+  // 计算时间轴竖线的高度
+  function setLineHeight() {
     if (containerRef.current && lineRef.current) {
-      const containerHeight = containerRef.current.scrollHeight; // 获取容器的实际内容高度
-      lineRef.current.style.height = `${containerHeight}px`; // 动态设置竖线高度
+      console.log("📏 计算竖线高度:", containerRef.current.scrollHeight);
+      lineRef.current.style.height = `${containerRef.current.scrollHeight}px`;
     }
-  }, [containerRef.current, lineRef.current]); // stops 渲染完成后触发
+  }
+
+  // 在 Dialog 打开后，等待渲染完成再计算竖线高度
+  useEffect(() => {
+    if (isOpen) {
+      requestAnimationFrame(setLineHeight);
+    }
+  }, [isOpen, stops]); // stops 变化后也重新计算高度
 
   return (
     <>
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           {/* 按钮触发器 */}
           <Button
