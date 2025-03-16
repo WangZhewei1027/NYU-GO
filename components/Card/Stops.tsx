@@ -67,11 +67,12 @@ export default function Stops({
 
   // 使用 useLayoutEffect 确保在渲染完成后计算竖线高度
   useLayoutEffect(() => {
+    console.log("🚍 Calculating line height...");
     if (containerRef.current && lineRef.current) {
       const containerHeight = containerRef.current.scrollHeight; // 获取容器的实际内容高度
       lineRef.current.style.height = `${containerHeight}px`; // 动态设置竖线高度
     }
-  }, [containerRef.current]); // stops 渲染完成后触发
+  }, [containerRef.current, lineRef.current]); // stops 渲染完成后触发
 
   return (
     <>
@@ -113,7 +114,7 @@ export default function Stops({
             {stops.map((stop, index) => (
               <div
                 key={index}
-                className={`relative flex items-center pl-12 pr-4 py-4 transition transform active:scale-95 active:opacity-80 `}
+                className={`relative flex items-center pl-12 pr-4 py-4 transition transform`}
                 onClick={() => {
                   setSelectedStop(stop); // 更新选中的站点
                   callback(stop); // 回调函数

@@ -34,8 +34,12 @@ export default function Settings() {
 
       {/* 其他设置 */}
       <div className="bg-white rounded-lg  divide-y mt-4">
-        <SettingItem title="Help & Support" />
+        <SettingItem title="Support & Feedback" />
         <SettingItem title="About" />
+      </div>
+
+      <div className="bg-white rounded-lg  divide-y">
+        <SettingItem title="Km/Miles" rightElement={<Switch />} />
       </div>
 
       {/* 退出按钮 */}

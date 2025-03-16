@@ -6,6 +6,7 @@ import { MdOutlineArrowForward } from "react-icons/md";
 import { useShuttleData } from "./useShuttleData";
 import TimeDisplay from "@/components/Card/TimeDisplay";
 import StopSelector from "@/components/Card/StopSelector";
+import ProgressBar from "./ProgressBar";
 
 interface CardProps {
   name: string;
@@ -28,13 +29,19 @@ export default function Card({ name }: CardProps) {
   return (
     <>
       <div
-        className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[10px] ${routes[name]?.borderColor}`}
+        className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[8px] ${routes[name]?.borderColor}`}
       >
         <div
           className="flex items-center w-full h-20"
           onClick={() => setIsClicked(!isClicked)}
         >
-          <div className="ml-2 text-xl font-bold font-sans">Route {name}</div>
+          <div className="ml-4 whitespace-nowrap">
+            {/* <span className="inline ml-1 text-gray-500 mr-1">Route</span> */}
+            <span className="inline text-4xl font-mono">{name}</span>
+          </div>
+
+          <ProgressBar progress={60} routeName={name} className="mx-4" />
+
           <TimeDisplay time={time} route={name} />
         </div>
 
