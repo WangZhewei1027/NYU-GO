@@ -7,6 +7,8 @@ import Location from "@/components/Location";
 import { useStore, StoreState } from "@/app/store";
 import useShuttleData from "@/app/utils/useShuttleData";
 import { memo } from "react";
+import { HiOutlineBell } from "react-icons/hi";
+import { Button } from "@/components/ui/button";
 
 const routes = [
   { name: "A", time: "4", color: "pink" },
@@ -59,8 +61,11 @@ export default function TrackPage() {
   return (
     <div className="p-4">
       {/* Header */}
-      <div className="flex mb-6">
+      <div className="flex mb-6 items-center">
         <h1 className="text-3xl font-bold">Track</h1>
+        <Button className="ml-auto rounded-full p-2 w-9 h-9" variant="outline">
+          <HiOutlineBell className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Location */}

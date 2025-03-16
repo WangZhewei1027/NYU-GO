@@ -33,7 +33,7 @@ const MarkerIcon = ({ letter }: { letter: string }) => (
 
 const StopIcon = () => (
   <div
-    className={`w-2 h-2 flex items-center justify-center rounded-full bg-white border-2 border-black`}
+    className={`w-2 h-2 flex items-center justify-center rounded-full bg-white border-2 border-gray-500`}
     style={{
       boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
     }}
