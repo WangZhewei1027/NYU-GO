@@ -24,7 +24,9 @@ export function useShuttleData(routeName: string) {
       setTime(remainingTime === -1 ? "--" : remainingTime.toString());
     };
 
+    fetchRemainingTime();
     const interval = setInterval(fetchRemainingTime, 5000);
+
     return () => clearInterval(interval);
   }, [routeName, store.currentLocation]);
 
