@@ -59,7 +59,7 @@ export default function useShuttleData() {
 
   useEffect(() => {
     //console.log("🚍 更新后的公交数据:", shuttleData);
-    store.shuttleData = shuttleData;
+    store.setShuttleData(shuttleData);
   }, [shuttleData]);
 
   return shuttleData;
