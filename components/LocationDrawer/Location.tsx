@@ -19,11 +19,39 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { useStore, StoreState } from "@/app/store";
 
 export default function Location() {
-  const [StopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
+  const [stopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
   const [searchTerm, setSearchTerm] = useState(""); // 搜索框输入内容
   const [selectedStop, setSelectedStop] = useState("-");
+  const [position, setPosition] = useState<{
+    longitude: number;
+    latitude: number;
+  } | null>(null);
 
   const store: StoreState = useStore() as StoreState;
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log(
+          "高精度模式:",
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        setPosition({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error("获取位置失败:", error.message);
+      },
+      {
+        enableHighAccuracy: true, // 开启高精度模式（可能更耗电）
+        timeout: 5000, // 5秒超时
+        maximumAge: 0, // 禁止缓存
+      }
+    );
+  }, []);
 
   useEffect(() => {
     async function fetchStops() {
@@ -38,8 +66,8 @@ export default function Location() {
   }, []);
 
   // 根据搜索框内容过滤 StopRoutes
-  const filteredStops = StopRoutes
-    ? Object.entries(StopRoutes).filter(([key]) =>
+  const filteredStops = stopRoutes
+    ? Object.entries(stopRoutes).filter(([key]) =>
         key.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : [];

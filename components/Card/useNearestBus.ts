@@ -17,7 +17,6 @@ export function useNearestBus(route: string) {
       longitude: number
     ): { latitude: string; longitude: string } | null {
       const busData = store.shuttleData;
-      console.log(busData);
 
       let minDist = Infinity;
       let busLocation = null;

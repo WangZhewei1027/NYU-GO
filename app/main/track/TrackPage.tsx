@@ -3,9 +3,8 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Card from "@/components/Card/Card";
 import Add from "@/components/Add";
-import Location from "@/components/Location";
+import Location from "@/components/LocationDrawer/Location";
 import { useStore, StoreState } from "@/app/store";
-import useShuttleData from "@/app/utils/useShuttleData";
 import { memo } from "react";
 import { HiOutlineBell } from "react-icons/hi";
 import { Button } from "@/components/ui/button";

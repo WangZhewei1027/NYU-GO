@@ -75,7 +75,9 @@ export default function Card({ name }: CardProps) {
               Full Schedule
             </Button>
             <Button
-              onClick={() => setIsSidebarOpen(true)}
+              onClick={() => {
+                window.location.href = `/main/map`;
+              }}
               variant={"secondary"}
               className={`h-12 rounded-full text-base text-gray-50 ${routes[name].bgColor}`}
             >
