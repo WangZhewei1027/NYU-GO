@@ -115,4 +115,8 @@
 - 清理有关zustand的内容
 - 优化站点的数据结构
 - 重写stop drawer有关的逻辑部分
+- 重写stopName比较逻辑
   
+#### 2025.3.20.1
+
+- 完成收藏站点功能，并储存在localStorage中

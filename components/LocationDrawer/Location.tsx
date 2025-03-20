@@ -14,11 +14,14 @@ import { Button } from "@/components/ui/button";
 import { getAllStops, routes } from "@/app/utils/utils";
 import React, { useState, useEffect, use } from "react";
 import { Input } from "@/components/ui/input";
-import { MdOutlineSearch } from "react-icons/md";
+import { MdBookmark, MdOutlineSearch } from "react-icons/md";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { useStore, StoreState } from "@/app/store";
 import { StopRoute } from "@/types";
 import stopNameIsSame from "@/app/utils/stopNameIsSame";
+
+import { MdOutlineBookmarkBorder } from "react-icons/md";
+import { MdOutlineBookmark } from "react-icons/md";
 
 export default function Location() {
   const [stopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
@@ -30,6 +33,11 @@ export default function Location() {
   } | null>(null);
   const [filteredStops, setFilteredStops] = useState<StopRoute>(
     useStore.getState().stopsData
+  );
+  const [bookmarkedStops, setBookmarkedStops] = useState<string[]>(
+    localStorage.getItem("bookmarkedStops")
+      ? JSON.parse(localStorage.getItem("bookmarkedStops")!)
+      : []
   );
 
   useEffect(() => {
@@ -92,6 +100,89 @@ export default function Location() {
     setFilteredStops(filteredStops);
   }
 
+  function CardList() {
+    // 获取书签站点优先排序后的站点列表
+    const sortedStops = filteredStops
+      ? Object.entries(filteredStops).sort(([keyA], [keyB]) => {
+          const isBookmarkedA = bookmarkedStops.includes(keyA) ? -1 : 1;
+          const isBookmarkedB = bookmarkedStops.includes(keyB) ? -1 : 1;
+          return isBookmarkedA - isBookmarkedB;
+        })
+      : [];
+
+    return (
+      <div className="flex flex-col h-full overflow-y-auto px-8">
+        {sortedStops &&
+          sortedStops.map(([key, value], index) => (
+            <div
+              key={index}
+              className="flex flex-row py-4 border-b transition transform active:scale-95 active:opacity-80"
+              onClick={() => {
+                setSelectedStop(key);
+                useStore.getState().currentLocation = key;
+                localStorage.setItem("currentLocation", key);
+                (
+                  document.querySelector('[data-state="open"]') as HTMLElement
+                )?.click(); // 关闭对话框
+              }}
+            >
+              <div className="flex flex-col w-full">
+                <div>
+                  <div className="text-lg mb-1 inline">{key}</div>
+                </div>
+                <div>
+                  {value.routes.map((stop, index) => (
+                    <div
+                      className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
+                      key={index}
+                    >
+                      {stop}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col justify-center">
+                {bookmarkedStops.includes(key) ? (
+                  <MdOutlineBookmark
+                    className={`ml-2 text-amber-400 w-7 h-7`}
+                    onClick={(e) => {
+                      e.stopPropagation(); // 阻止事件冒泡
+                      setBookmarkedStops((prev) =>
+                        prev.filter((stop) => stop !== key)
+                      );
+                      localStorage.setItem(
+                        "bookmarkedStops",
+                        JSON.stringify(
+                          bookmarkedStops.filter((stop) => stop !== key)
+                        )
+                      );
+                    }}
+                  />
+                ) : (
+                  <MdOutlineBookmarkBorder
+                    className={`ml-2 text-gray-500 w-7 h-7`}
+                    onClick={(e) => {
+                      e.stopPropagation(); // 阻止事件冒泡
+                      setBookmarkedStops((prev) => [...prev, key]);
+                      localStorage.setItem(
+                        "bookmarkedStops",
+                        JSON.stringify([...bookmarkedStops, key])
+                      );
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+        {Object.keys(filteredStops).length === 0 && (
+          <div className="text-center text-gray-400 py-4 text-lg font-bold">
+            No stop found
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -121,42 +212,7 @@ export default function Location() {
           />
           <MdOutlineSearch className="w-8 h-8 text-gray-400 ml-2" />
         </div>
-        <div className="flex flex-col h-full overflow-y-auto px-8">
-          {filteredStops &&
-            Object.entries(filteredStops).map(([key, value], index) => (
-              <div
-                key={index}
-                className="py-4 border-b transition transform active:scale-95 active:opacity-80"
-                onClick={() => {
-                  setSelectedStop(key);
-                  useStore.getState().currentLocation = key;
-                  localStorage.setItem("currentLocation", key);
-                  (
-                    document.querySelector('[data-state="open"]') as HTMLElement
-                  )?.click(); // 关闭对话框
-                }}
-              >
-                <div>
-                  <div className="text-lg mb-1 inline">{key}</div>
-                </div>
-                <div>
-                  {value.routes.map((stop, index) => (
-                    <div
-                      className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
-                      key={index}
-                    >
-                      {stop}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          {Object.keys(filteredStops).length === 0 && (
-            <div className="text-center text-gray-400 py-4 text-lg font-bold">
-              No stop found
-            </div>
-          )}
-        </div>
+        <CardList />
         <DrawerFooter />
       </DrawerContent>
     </Drawer>
