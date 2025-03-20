@@ -11,12 +11,14 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { getAllStops, StopRoute, routes } from "@/app/utils/utils";
-import React, { useState, useEffect } from "react";
+import { getAllStops, routes } from "@/app/utils/utils";
+import React, { useState, useEffect, use } from "react";
 import { Input } from "@/components/ui/input";
 import { MdOutlineSearch } from "react-icons/md";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { useStore, StoreState } from "@/app/store";
+import { StopRoute } from "@/types";
+import stopNameIsSame from "@/app/utils/stopNameIsSame";
 
 export default function Location() {
   const [stopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
@@ -26,8 +28,9 @@ export default function Location() {
     longitude: number;
     latitude: number;
   } | null>(null);
-
-  const store: StoreState = useStore() as StoreState;
+  const [filteredStops, setFilteredStops] = useState<StopRoute>(
+    useStore.getState().stopsData
+  );
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -47,7 +50,7 @@ export default function Location() {
       },
       {
         enableHighAccuracy: true, // 开启高精度模式（可能更耗电）
-        timeout: 5000, // 5秒超时
+        timeout: 10000, // 5秒超时
         maximumAge: 0, // 禁止缓存
       }
     );
@@ -55,22 +58,39 @@ export default function Location() {
 
   useEffect(() => {
     async function fetchStops() {
-      const stops = await getAllStops();
+      const stops = useStore.getState().stopsData;
+      console.log("🚍 Stops data:", stops);
       setStopRoutes(stops);
     }
     const currentLocation =
       localStorage.getItem("currentLocation") || "715 Broadway";
     setSelectedStop(currentLocation);
-    store.currentLocation = currentLocation;
+    useStore.getState().currentLocation = currentLocation;
     fetchStops();
   }, []);
 
-  // 根据搜索框内容过滤 StopRoutes
-  const filteredStops = stopRoutes
-    ? Object.entries(stopRoutes).filter(([key]) =>
-        key.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
+  function handleSearch(searchTerm: string) {
+    setSearchTerm(searchTerm); // 更新搜索输入值
+
+    const allStops = useStore.getState().stopsData;
+
+    if (searchTerm === "") {
+      setFilteredStops(allStops); // 如果搜索框为空，则清空筛选结果
+      return;
+    }
+
+    const filteredStops = allStops
+      ? Object.keys(allStops).reduce((acc, key) => {
+          if (stopNameIsSame(key, searchTerm)) {
+            acc[key] = allStops[key]; // 保持数据结构
+          }
+          return acc;
+        }, {} as StopRoute)
+      : allStops;
+
+    console.log("🚍 Filtered stops:", filteredStops);
+    setFilteredStops(filteredStops);
+  }
 
   return (
     <Drawer>
@@ -97,19 +117,19 @@ export default function Location() {
             placeholder="Search a stop"
             className="w-[55%] shadow-none rounded-full text-lg"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)} // 更新搜索输入值
+            onChange={(e) => handleSearch(e.target.value)} // 更新搜索输入值
           />
           <MdOutlineSearch className="w-8 h-8 text-gray-400 ml-2" />
         </div>
         <div className="flex flex-col h-full overflow-y-auto px-8">
           {filteredStops &&
-            filteredStops.map(([key, value], index) => (
+            Object.entries(filteredStops).map(([key, value], index) => (
               <div
                 key={index}
                 className="py-4 border-b transition transform active:scale-95 active:opacity-80"
                 onClick={() => {
                   setSelectedStop(key);
-                  store.currentLocation = key;
+                  useStore.getState().currentLocation = key;
                   localStorage.setItem("currentLocation", key);
                   (
                     document.querySelector('[data-state="open"]') as HTMLElement
@@ -120,7 +140,7 @@ export default function Location() {
                   <div className="text-lg mb-1 inline">{key}</div>
                 </div>
                 <div>
-                  {value.map((stop, index) => (
+                  {value.routes.map((stop, index) => (
                     <div
                       className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
                       key={index}
@@ -131,9 +151,9 @@ export default function Location() {
                 </div>
               </div>
             ))}
-          {filteredStops.length === 0 && (
+          {Object.keys(filteredStops).length === 0 && (
             <div className="text-center text-gray-400 py-4 text-lg font-bold">
-              No stops found
+              No stop found
             </div>
           )}
         </div>
