@@ -87,7 +87,7 @@ export default function Stops({
           {/* 按钮触发器 */}
           <Button
             variant={"outline"}
-            className="p-2 text-base w-full max-w-full flex items-center justify-between"
+            className="p-2 text-base w-full max-w-full flex items-center justify-between shadow-none"
           >
             <span className="truncate">{selectedStop}</span>
             <MdArrowDropDown className="shrink-0 text-gray-500" />

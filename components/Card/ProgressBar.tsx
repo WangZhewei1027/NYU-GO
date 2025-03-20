@@ -46,7 +46,7 @@ export default function ProgressBar({
         style={{ width: `${computedProgress}%` }}
       ></div>
       <div
-        className="absolute text-gray-500 text-sm whitespace-nowrap"
+        className="absolute text-gray-500 text-sm whitespace-nowrap animate-pulse"
         style={{
           left: `${clampedProgress}%`,
           transform: "translateX(-50%)",

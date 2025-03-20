@@ -57,8 +57,10 @@ export default function TrackPage() {
     return () => clearInterval(intervalId);
   }, [updateVisibleRoutes]);
 
+  const MemoizedLocation = useMemo(() => <Location />, []);
+
   return (
-    <div className="p-4">
+    <div className="p-4 h-screen overflow-y-auto">
       {/* Header */}
       <div className="flex mb-6 items-center">
         <h1 className="text-3xl font-bold">Track</h1>
@@ -70,9 +72,7 @@ export default function TrackPage() {
       {/* Location */}
       <div className="mb-8 text-base">
         Departing from &nbsp;
-        <div className="max-w-48 inline-block">
-          <Location />
-        </div>
+        <div className="max-w-48 inline-block">{MemoizedLocation}</div>
         &nbsp; in
       </div>
 
