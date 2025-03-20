@@ -17,20 +17,19 @@ import { Input } from "@/components/ui/input";
 import { MdBookmark, MdOutlineSearch } from "react-icons/md";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { useStore, StoreState } from "@/app/store";
-import { StopRoute } from "@/types";
+import { StopRoute, Position } from "@/types";
 import stopNameIsSame from "@/app/utils/stopNameIsSame";
 
 import { MdOutlineBookmarkBorder } from "react-icons/md";
 import { MdOutlineBookmark } from "react-icons/md";
 
+import { haversineDistance } from "../Card/haversineDistance";
+import { MdAssistantNavigation } from "react-icons/md";
+
 export default function Location() {
   const [stopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
   const [searchTerm, setSearchTerm] = useState(""); // 搜索框输入内容
   const [selectedStop, setSelectedStop] = useState("-");
-  const [position, setPosition] = useState<{
-    longitude: number;
-    latitude: number;
-  } | null>(null);
   const [filteredStops, setFilteredStops] = useState<StopRoute>(
     useStore.getState().stopsData
   );
@@ -39,30 +38,7 @@ export default function Location() {
       ? JSON.parse(localStorage.getItem("bookmarkedStops")!)
       : []
   );
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        console.log(
-          "高精度模式:",
-          position.coords.latitude,
-          position.coords.longitude
-        );
-        setPosition({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      (error) => {
-        console.error("获取位置失败:", error.message);
-      },
-      {
-        enableHighAccuracy: true, // 开启高精度模式（可能更耗电）
-        timeout: 10000, // 5秒超时
-        maximumAge: 0, // 禁止缓存
-      }
-    );
-  }, []);
+  const [nearestStop, setNearestStop] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchStops() {
@@ -100,6 +76,80 @@ export default function Location() {
     setFilteredStops(filteredStops);
   }
 
+  function getNearestStop(position: Position | null): string | null {
+    if (!position) return null;
+
+    let nearestStop = null;
+    let minDistance = Infinity;
+
+    if (stopRoutes) {
+      Object.entries(stopRoutes).forEach(([key, value]) => {
+        const distance = haversineDistance(
+          position.latitude,
+          position.longitude,
+          value.position.latitude,
+          value.position.longitude
+        );
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestStop = key;
+        }
+      });
+    }
+
+    return nearestStop;
+  }
+
+  const location = useStore((state) => state.location);
+  useEffect(() => {
+    const nearestStop = getNearestStop(location);
+    if (nearestStop) {
+      setNearestStop(nearestStop);
+    }
+  }, [location, stopRoutes]);
+
+  function NearestStop() {
+    return (
+      <div
+        className="flex flex-row py-8 border-b transition transform active:scale-95 active:opacity-80"
+        onClick={() => {
+          setSelectedStop(nearestStop!);
+          useStore.getState().currentLocation = nearestStop!;
+          localStorage.setItem("currentLocation", nearestStop!);
+          (
+            document.querySelector('[data-state="open"]') as HTMLElement
+          )?.click();
+        }}
+      >
+        <div className="flex flex-col w-full justify-center">
+          <div className="mb-1">
+            <div className="text-sm text-gray-400 mb-1 inline animate-pulse">
+              <MdAssistantNavigation className="inline mr-1" />
+              <span className="align-text-top font-bold">Nearest Stop</span>
+            </div>
+          </div>
+          <div className="block">
+            {nearestStop && (
+              <div className={`text-lg mb-1 inline`}>{nearestStop}</div>
+            )}
+            <div>
+              {stopRoutes &&
+                nearestStop &&
+                stopRoutes[nearestStop]?.routes.map((stop, index) => (
+                  <div
+                    className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
+                    key={index}
+                  >
+                    {stop}
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function CardList() {
     // 获取书签站点优先排序后的站点列表
     const sortedStops = filteredStops
@@ -112,6 +162,7 @@ export default function Location() {
 
     return (
       <div className="flex flex-col h-full overflow-y-auto px-8">
+        {nearestStop && <NearestStop />}
         {sortedStops &&
           sortedStops.map(([key, value], index) => (
             <div

@@ -3,7 +3,7 @@ import { BusInfo } from "./utils/getBusInfo";
 import { devtools } from "zustand/middleware";
 
 import initStopsData from "@/app/utils/initStopsData";
-import { StopRoute } from "@/types";
+import { StopRoute, Position } from "@/types";
 
 export type PersonalData = {
   name: string;
@@ -11,6 +11,8 @@ export type PersonalData = {
 };
 
 export type StoreState = {
+  location: Position;
+  setLocation: (locations: Position) => void;
   personalData: PersonalData;
   setPersonalData: (data: PersonalData) => void;
   currentLocation: string;
@@ -23,6 +25,7 @@ export type StoreState = {
 export const useStore = create<StoreState>()(
   devtools((set) => ({
     stopsData: initStopsData(),
+    setLocation: (location: Position) => set({ location }),
     personalData: {},
     setPersonalData: (data: PersonalData) => set({ personalData: data }),
     currentLocation: "715 Broadway",
