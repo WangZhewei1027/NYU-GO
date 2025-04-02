@@ -9,6 +9,8 @@ import "leaflet-defaulticon-compatibility";
 import useShuttleData from "@/app/utils/useShuttleData";
 import { routes } from "@/app/utils/utils";
 import stops from "@/app/utils/stops.json";
+import { useStore } from "@/app/store";
+import StopMarkers from "./StopMakers";
 
 // 🏷️ 提取路线字母，例如 "Route A" -> "A", "Express Bus C" -> "C"
 const getRouteLetter = (route: string) => {
@@ -34,6 +36,17 @@ const MarkerIcon = ({ letter }: { letter: string }) => (
 const StopIcon = () => (
   <div
     className={`w-2 h-2 flex items-center justify-center rounded-full bg-white border-2 border-gray-500`}
+    style={
+      {
+        //boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
+      }
+    }
+  ></div>
+);
+
+const UserLocation = () => (
+  <div
+    className={`w-2 h-2 flex items-center justify-center rounded-full bg-blue-400 border-2 border-blue-600`}
     style={{
       boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
     }}
@@ -62,26 +75,13 @@ export default function Map() {
       {/* 🔥 使用 OpenStreetMap 作为地图 */}
       <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
 
-      {/* 🟢 渲染站点位置 */}
-      {Object.values(stops.stops).map((stop) => (
-        <Marker
-          key={stop.id}
-          position={[stop.latitude, stop.longitude]}
-          icon={L.divIcon({
-            className: "custom-stop",
-            html: ReactDOMServer.renderToString(<StopIcon />),
-            iconSize: [10, 10],
-            iconAnchor: [5, 5],
-          })}
-        >
-          <Popup>
-            {stop.name} ({stop.id})
-          </Popup>
-        </Marker>
-      ))}
+      <StopMarkers />
 
       {/* 🔴 渲染 Shuttle 位置 */}
       {Object.entries(shuttleData).map(([busId, info]) => {
+        if (!info.latitude || !info.longitude || !info.route) {
+          return null; // 确保数据完整
+        }
         const routeLetter = getRouteLetter(info.route);
 
         // ✅ **使用缓存的 icon，避免重复创建**
@@ -112,6 +112,28 @@ export default function Map() {
           </Marker>
         );
       })}
+
+      {/* 🔴 渲染 User 位置 */}
+      <Marker
+        position={[
+          useStore.getState().location.latitude,
+          useStore.getState().location.longitude,
+        ]}
+        icon={L.divIcon({
+          className: "custom-user-location",
+          html: ReactDOMServer.renderToString(<UserLocation />),
+          iconSize: [10, 10],
+          iconAnchor: [5, 5],
+        })}
+        zIndexOffset={2000} // 确保用户位置在最上层
+      >
+        <Popup>
+          📍 Your Location
+          <br />
+          Latitude: {useStore.getState().location.latitude.toFixed(4)},
+          Longitude: {useStore.getState().location.longitude.toFixed(4)}
+        </Popup>
+      </Marker>
     </MapContainer>
   );
 }

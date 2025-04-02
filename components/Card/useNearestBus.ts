@@ -18,6 +18,14 @@ export function useNearestBus(route: string) {
     ): { latitude: string; longitude: string } | null {
       const busData = store.shuttleData;
 
+      if (
+        !busData ||
+        Object.prototype.hasOwnProperty.call(busData, "undefined")
+      ) {
+        console.log("Bus data is { 'undefined': {} }, returning early.");
+        return null;
+      }
+
       let minDist = Infinity;
       let busLocation = null;
       Object.entries(busData).forEach(([busId, busInfo]) => {

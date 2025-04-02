@@ -24,6 +24,7 @@ export type StoreState = {
 
 export const useStore = create<StoreState>()(
   devtools((set) => ({
+    location: { latitude: 0, longitude: 0 }, // 默认位置
     stopsData: initStopsData(),
     setLocation: (location: Position) => set({ location }),
     personalData: {},
