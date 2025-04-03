@@ -1,5 +1,6 @@
 import { routes } from "@/app/utils/utils";
 import { useNearestBus } from "./useNearestBus";
+import { useStore, StoreState } from "@/app/store";
 
 function convertDistToProgress(dist: number | null): number {
   if (dist === null) return 0; // Default to 0 if no data
@@ -14,12 +15,27 @@ function convertDistToProgress(dist: number | null): number {
   return Math.min(100, Math.max(0, progress));
 }
 
-function convertDist(dist: number | null): string | null {
+function convertDist(
+  dist: number | null,
+  unit: "metric" | "imperial"
+): string | null {
   if (dist === null) return null;
-  if (dist > 1) {
-    return `${dist.toFixed(1)} km`;
+  if (unit === "imperial") {
+    // 将公里转换为英里（1 km ≈ 0.621371 mi）和英尺（1 m ≈ 3.28084 ft）
+    const miles = dist * 0.621371;
+    if (miles > 1) {
+      return `${miles.toFixed(1)} mi`;
+    } else {
+      const feet = dist * 1000 * 3.28084;
+      return `${feet.toFixed(0)} ft`;
+    }
   } else {
-    return `${(dist * 1000).toFixed(0)} m`;
+    // 默认使用公制显示
+    if (dist > 1) {
+      return `${dist.toFixed(1)} km`;
+    } else {
+      return `${(dist * 1000).toFixed(0)} m`;
+    }
   }
 }
 
@@ -32,10 +48,12 @@ export default function ProgressBar({
   progress?: number;
   className?: string;
 }) {
+  const unit = useStore((state: StoreState) => state.unit);
+
   const dist = useNearestBus(routeName);
   const computedProgress = convertDistToProgress(dist);
   const clampedProgress = Math.min(90, Math.max(15, computedProgress)); // Avoid text going out of bounds
-  const convertedDist = convertDist(dist);
+  const convertedDist = convertDist(dist, unit);
 
   return (
     <div

@@ -20,6 +20,8 @@ export type StoreState = {
   shuttleData: BusInfo;
   setShuttleData: (data: BusInfo) => void;
   stopsData: StopRoute;
+  unit: "metric" | "imperial"; // 添加单位类型
+  setUnit: (unit: "metric" | "imperial") => void;
 };
 
 export const useStore = create<StoreState>()(
@@ -34,5 +36,7 @@ export const useStore = create<StoreState>()(
       set({ currentLocation: newLocation }),
     shuttleData: {},
     setShuttleData: (data: BusInfo) => set({ shuttleData: data }),
+    unit: "metric", // 默认单位为公制
+    setUnit: (unit: "metric" | "imperial") => set({ unit }),
   }))
 );

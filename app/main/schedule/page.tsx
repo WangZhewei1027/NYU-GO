@@ -1,12 +1,22 @@
+"use client";
+import { use, useState, useEffect } from "react";
 import React from "react";
 import { Switch } from "@/components/ui/switch"; // 使用 ShadCN UI 的 Switch 组件
 import { ChevronRight } from "lucide-react"; // 右箭头图标
 import Image from "next/image";
+import ProgressBar from "@/components/Card/ProgressBar";
+import { useStore, StoreState } from "@/app/store";
+import { shallow } from "zustand/shallow";
 
 export default function Settings() {
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       {/* 个人信息卡片 */}
+      <div className="flex mb-6 items-center">
+        <h1 className="text-3xl font-bold">Settings</h1>
+      </div>
+
+      {/* 个人信息 */}
       <div className="bg-white rounded-lg  p-4 mb-4">
         <div className="flex items-center">
           <Image
@@ -23,49 +33,75 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* 设置列表 */}
-      <div className="bg-white rounded-lg  divide-y">
-        {/* 账户设置 */}
-        <SettingItem title="Account" />
-        <SettingItem title="Privacy" />
-        <SettingItem title="Notifications" rightElement={<Switch />} />
-        <SettingItem title="Appearance" />
-      </div>
-
       {/* 其他设置 */}
-      <div className="bg-white rounded-lg  divide-y mt-4">
+      {/* <div className="bg-white rounded-lg  divide-y mt-4">
         <SettingItem title="Support & Feedback" />
         <SettingItem title="About" />
       </div>
 
       <div className="bg-white rounded-lg  divide-y">
         <SettingItem title="Km/Miles" rightElement={<Switch />} />
+      </div> */}
+
+      <div className="mt-4">
+        {/* <span className="text-lg font-semibold text-gray-900">
+          Measurement Units
+        </span> */}
+        <UnitToggle />
       </div>
 
       {/* 退出按钮 */}
-      <div className="mt-6 text-center">
+      {/* <div className="mt-6 text-center">
         <button className="text-red-500 font-bold text-lg">Log Out</button>
-      </div>
+      </div> */}
     </div>
   );
 }
 
 // 设置项组件
-function SettingItem({
-  title,
-  rightElement,
-}: {
-  title: string;
-  rightElement?: React.ReactNode;
-}) {
+function UnitToggle() {
+  const unit = useStore((state: StoreState) => state.unit);
+  const setUnit = useStore((state: StoreState) => state.setUnit);
+
+  const [isMetric, setIsMetric] = useState(
+    localStorage.getItem("unit") !== null
+      ? localStorage.getItem("unit") === "metric"
+      : true
+  );
+
+  const toggle = () => {
+    const newUnit = isMetric ? "imperial" : "metric";
+    setUnit(newUnit);
+    setIsMetric(!isMetric);
+    localStorage.setItem("unit", newUnit);
+  };
+
   return (
-    <div className="flex items-center justify-between p-4">
-      <span className="text-lg">{title}</span>
-      {rightElement ? (
-        rightElement
-      ) : (
-        <ChevronRight className="w-5 h-5 text-gray-400" />
-      )}
+    <div
+      className="w-full h-12 relative cursor-pointer select-none"
+      onClick={toggle}
+    >
+      <div className="absolute inset-0 bg-white rounded-lg" />
+      <div
+        className="absolute top-0 left-0 h-full w-1/2 bg-gray-900 rounded-lg transition-transform duration-300"
+        style={{ transform: isMetric ? "translateX(0%)" : "translateX(100%)" }}
+      />
+      <div className="relative flex justify-around items-center h-full">
+        <span
+          className={`z-10 text-lg font-semibold ${
+            isMetric ? "text-white" : "text-gray-900"
+          }`}
+        >
+          Metric
+        </span>
+        <span
+          className={`z-10 text-lg font-semibold ${
+            !isMetric ? "text-white" : "text-gray-900"
+          }`}
+        >
+          Imperial
+        </span>
+      </div>
     </div>
   );
 }
