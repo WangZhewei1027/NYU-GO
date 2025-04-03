@@ -50,7 +50,7 @@ export default function ProgressBar({
 }) {
   const unit = useStore((state: StoreState) => state.unit);
 
-  const dist = useNearestBus(routeName);
+  const dist = progress ? progress : useNearestBus(routeName);
   const computedProgress = convertDistToProgress(dist);
   const clampedProgress = Math.min(90, Math.max(15, computedProgress)); // Avoid text going out of bounds
   const convertedDist = convertDist(dist, unit);

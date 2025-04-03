@@ -40,7 +40,7 @@ export default function Card({ name }: CardProps) {
             <span className="inline text-4xl font-mono">{name}</span>
           </div>
 
-          <ProgressBar progress={60} routeName={name} className="mx-4" />
+          <ProgressBar routeName={name} className="mx-4" />
 
           <TimeDisplay time={time} route={name} />
         </div>
