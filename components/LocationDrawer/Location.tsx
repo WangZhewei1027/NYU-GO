@@ -1,238 +1,205 @@
 "use client";
 
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Drawer,
-  DrawerClose,
+  DrawerTrigger,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
+  DrawerDescription,
+  DrawerFooter,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { getAllStops, routes } from "@/app/utils/utils";
-import React, { useState, useEffect, use } from "react";
 import { Input } from "@/components/ui/input";
-import { MdBookmark, MdOutlineSearch } from "react-icons/md";
-import { MdOutlineLocationOn } from "react-icons/md";
-import { useStore, StoreState } from "@/app/store";
+import { routes } from "@/app/utils/utils";
+import { useStore } from "@/app/store";
 import { StopRoute, Position } from "@/types";
 import stopNameIsSame from "@/app/utils/stopNameIsSame";
-
-import { MdOutlineBookmarkBorder } from "react-icons/md";
-import { MdOutlineBookmark } from "react-icons/md";
-
 import { haversineDistance } from "../Card/haversineDistance";
-import { MdAssistantNavigation } from "react-icons/md";
+import {
+  MdOutlineLocationOn,
+  MdOutlineSearch,
+  MdOutlineBookmark,
+  MdOutlineBookmarkBorder,
+  MdAssistantNavigation,
+} from "react-icons/md";
+import { motion, LayoutGroup } from "framer-motion";
 
 export default function Location() {
-  const [stopRoutes, setStopRoutes] = React.useState<StopRoute | null>(null);
-  const [searchTerm, setSearchTerm] = useState(""); // 搜索框输入内容
+  const [stopRoutes, setStopRoutes] = useState<StopRoute | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedStop, setSelectedStop] = useState("-");
   const [filteredStops, setFilteredStops] = useState<StopRoute>(
     useStore.getState().stopsData
   );
   const [bookmarkedStops, setBookmarkedStops] = useState<string[]>(
-    localStorage.getItem("bookmarkedStops")
-      ? JSON.parse(localStorage.getItem("bookmarkedStops")!)
-      : []
+    JSON.parse(localStorage.getItem("bookmarkedStops") || "[]")
   );
   const [nearestStop, setNearestStop] = useState<string | null>(null);
+  const location = useStore((state) => state.location);
 
+  // 初始化 stops 及选中项
   useEffect(() => {
-    async function fetchStops() {
-      const stops = useStore.getState().stopsData;
-      console.log("🚍 Stops data:", stops);
-      setStopRoutes(stops);
-    }
+    const stops = useStore.getState().stopsData;
+    setStopRoutes(stops);
     const currentLocation =
       localStorage.getItem("currentLocation") || "715 Broadway";
     setSelectedStop(currentLocation);
     useStore.getState().currentLocation = currentLocation;
-    fetchStops();
   }, []);
 
-  function handleSearch(searchTerm: string) {
-    setSearchTerm(searchTerm); // 更新搜索输入值
-
-    const allStops = useStore.getState().stopsData;
-
-    if (searchTerm === "") {
-      setFilteredStops(allStops); // 如果搜索框为空，则清空筛选结果
-      return;
-    }
-
-    const filteredStops = allStops
-      ? Object.keys(allStops).reduce((acc, key) => {
-          if (stopNameIsSame(key, searchTerm)) {
-            acc[key] = allStops[key]; // 保持数据结构
-          }
-          return acc;
-        }, {} as StopRoute)
-      : allStops;
-
-    console.log("🚍 Filtered stops:", filteredStops);
-    setFilteredStops(filteredStops);
-  }
-
-  function getNearestStop(position: Position | null): string | null {
-    if (!position) return null;
-
-    let nearestStop = null;
-    let minDistance = Infinity;
-
-    if (stopRoutes) {
+  // 根据当前位置计算最近站点
+  useEffect(() => {
+    if (location && stopRoutes) {
+      let minDistance = Infinity;
+      let nearest: string | null = null;
       Object.entries(stopRoutes).forEach(([key, value]) => {
         const distance = haversineDistance(
-          position.latitude,
-          position.longitude,
+          location.latitude,
+          location.longitude,
           value.position.latitude,
           value.position.longitude
         );
         if (distance < minDistance) {
           minDistance = distance;
-          nearestStop = key;
+          nearest = key;
         }
       });
-    }
-
-    return nearestStop;
-  }
-
-  const location = useStore((state) => state.location);
-  useEffect(() => {
-    const nearestStop = getNearestStop(location);
-    if (nearestStop) {
-      setNearestStop(nearestStop);
+      setNearestStop(nearest);
     }
   }, [location, stopRoutes]);
 
-  function NearestStop() {
-    return (
-      <div
-        className="flex flex-row py-8 border-b transition transform active:scale-95 active:opacity-80"
-        onClick={() => {
-          setSelectedStop(nearestStop!);
-          useStore.getState().currentLocation = nearestStop!;
-          localStorage.setItem("currentLocation", nearestStop!);
-          (
-            document.querySelector('[data-state="open"]') as HTMLElement
-          )?.click();
-        }}
-      >
-        <div className="flex flex-col w-full justify-center">
-          <div className="mb-1">
-            <div className="text-sm text-gray-400 mb-1 inline animate-pulse">
-              <MdAssistantNavigation className="inline mr-1" />
-              <span className="align-text-top font-bold">Nearest Stop</span>
+  // 搜索过滤
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    if (!term) {
+      setFilteredStops(useStore.getState().stopsData);
+      return;
+    }
+    const allStops = useStore.getState().stopsData;
+    const filtered = Object.keys(allStops).reduce((acc, key) => {
+      if (stopNameIsSame(key, term)) {
+        acc[key] = allStops[key];
+      }
+      return acc;
+    }, {} as StopRoute);
+    setFilteredStops(filtered);
+  };
+
+  // 切换书签
+  const toggleBookmark = (key: string) => {
+    const updated = bookmarkedStops.includes(key)
+      ? bookmarkedStops.filter((stop) => stop !== key)
+      : [...bookmarkedStops, key];
+    setBookmarkedStops(updated);
+    localStorage.setItem("bookmarkedStops", JSON.stringify(updated));
+  };
+
+  // 排序：书签的站点置顶
+  const sortedStops = useMemo(() => {
+    return filteredStops
+      ? Object.entries(filteredStops).sort(
+          ([a], [b]) =>
+            (bookmarkedStops.includes(a) ? -1 : 1) -
+            (bookmarkedStops.includes(b) ? -1 : 1)
+        )
+      : [];
+  }, [filteredStops, bookmarkedStops]);
+
+  // 选择站点统一逻辑
+  const handleSelectStop = (key: string) => {
+    setSelectedStop(key);
+    useStore.getState().currentLocation = key;
+    localStorage.setItem("currentLocation", key);
+    const openElement = document.querySelector('[data-state="open"]');
+    if (openElement instanceof HTMLElement) {
+      openElement.click();
+    }
+  };
+
+  // 通用的站点卡片组件
+  const StopCard = ({
+    stopKey,
+    value,
+    showBookmark = true,
+  }: {
+    stopKey: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    value: any;
+    showBookmark?: boolean;
+  }) => (
+    <div
+      className="flex flex-row py-4 border-b transition transform active:scale-95 active:opacity-80"
+      onClick={() => handleSelectStop(stopKey)}
+    >
+      <div className="flex flex-col w-full">
+        <div className="text-lg mb-1 inline">{stopKey}</div>
+        <div>
+          {value.routes.map((route: string, idx: number) => (
+            <div
+              key={idx}
+              className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[route]?.bgColor} text-gray-900 font-bold`}
+            >
+              {route}
             </div>
+          ))}
+        </div>
+      </div>
+      {showBookmark && (
+        <div className="flex flex-col justify-center">
+          {bookmarkedStops.includes(stopKey) ? (
+            <MdOutlineBookmark
+              className="ml-2 text-amber-400 w-7 h-7"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleBookmark(stopKey);
+              }}
+            />
+          ) : (
+            <MdOutlineBookmarkBorder
+              className="ml-2 text-gray-500 w-7 h-7"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleBookmark(stopKey);
+              }}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  // 最近站点组件（无需书签操作）
+  const NearestStopCard = ({ stopKey }: { stopKey: string }) => (
+    <div
+      className="flex flex-row py-8 border-b transition transform active:scale-95 active:opacity-80"
+      onClick={() => handleSelectStop(stopKey)}
+    >
+      <div className="flex flex-col w-full justify-center">
+        <div className="mb-1">
+          <div className="text-sm text-gray-400 mb-1 inline animate-pulse">
+            <MdAssistantNavigation className="inline mr-1" />
+            <span className="align-text-top font-bold">Nearest Stop</span>
           </div>
-          <div className="block">
-            {nearestStop && (
-              <div className={`text-lg mb-1 inline`}>{nearestStop}</div>
-            )}
-            <div>
-              {stopRoutes &&
-                nearestStop &&
-                stopRoutes[nearestStop]?.routes.map((stop, index) => (
-                  <div
-                    className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
-                    key={index}
-                  >
-                    {stop}
-                  </div>
-                ))}
-            </div>
+        </div>
+        <div className="block">
+          <div className="text-lg mb-1 inline">{stopKey}</div>
+          <div>
+            {stopRoutes &&
+              stopRoutes[stopKey]?.routes.map((route: string, idx: number) => (
+                <div
+                  key={idx}
+                  className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[route]?.bgColor} text-gray-900 font-bold`}
+                >
+                  {route}
+                </div>
+              ))}
           </div>
         </div>
       </div>
-    );
-  }
-
-  function CardList() {
-    // 获取书签站点优先排序后的站点列表
-    const sortedStops = filteredStops
-      ? Object.entries(filteredStops).sort(([keyA], [keyB]) => {
-          const isBookmarkedA = bookmarkedStops.includes(keyA) ? -1 : 1;
-          const isBookmarkedB = bookmarkedStops.includes(keyB) ? -1 : 1;
-          return isBookmarkedA - isBookmarkedB;
-        })
-      : [];
-
-    return (
-      <div className="flex flex-col h-full overflow-y-auto px-8">
-        {nearestStop && <NearestStop />}
-        {sortedStops &&
-          sortedStops.map(([key, value], index) => (
-            <div
-              key={index}
-              className="flex flex-row py-4 border-b transition transform active:scale-95 active:opacity-80"
-              onClick={() => {
-                setSelectedStop(key);
-                useStore.getState().currentLocation = key;
-                localStorage.setItem("currentLocation", key);
-                (
-                  document.querySelector('[data-state="open"]') as HTMLElement
-                )?.click(); // 关闭对话框
-              }}
-            >
-              <div className="flex flex-col w-full">
-                <div>
-                  <div className="text-lg mb-1 inline">{key}</div>
-                </div>
-                <div>
-                  {value.routes.map((stop, index) => (
-                    <div
-                      className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[stop]?.bgColor} text-gray-900 font-bold`}
-                      key={index}
-                    >
-                      {stop}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="flex flex-col justify-center">
-                {bookmarkedStops.includes(key) ? (
-                  <MdOutlineBookmark
-                    className={`ml-2 text-amber-400 w-7 h-7`}
-                    onClick={(e) => {
-                      e.stopPropagation(); // 阻止事件冒泡
-                      setBookmarkedStops((prev) =>
-                        prev.filter((stop) => stop !== key)
-                      );
-                      localStorage.setItem(
-                        "bookmarkedStops",
-                        JSON.stringify(
-                          bookmarkedStops.filter((stop) => stop !== key)
-                        )
-                      );
-                    }}
-                  />
-                ) : (
-                  <MdOutlineBookmarkBorder
-                    className={`ml-2 text-gray-500 w-7 h-7`}
-                    onClick={(e) => {
-                      e.stopPropagation(); // 阻止事件冒泡
-                      setBookmarkedStops((prev) => [...prev, key]);
-                      localStorage.setItem(
-                        "bookmarkedStops",
-                        JSON.stringify([...bookmarkedStops, key])
-                      );
-                    }}
-                  />
-                )}
-              </div>
-            </div>
-          ))}
-        {Object.keys(filteredStops).length === 0 && (
-          <div className="text-center text-gray-400 py-4 text-lg font-bold">
-            No stop found
-          </div>
-        )}
-      </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <Drawer>
@@ -259,11 +226,34 @@ export default function Location() {
             placeholder="Search a stop"
             className="w-[55%] shadow-none rounded-full text-lg"
             value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)} // 更新搜索输入值
+            onChange={(e) => handleSearch(e.target.value)}
           />
           <MdOutlineSearch className="w-8 h-8 text-gray-400 ml-2" />
         </div>
-        <CardList />
+
+        <div className="flex flex-col h-full overflow-y-auto px-8">
+          <LayoutGroup>
+            <motion.div key={"nearest-stop"} layoutId="nearest-stop">
+              {nearestStop && <NearestStopCard stopKey={nearestStop} />}
+            </motion.div>
+            {sortedStops.map(([key, value]) => (
+              <motion.div
+                key={key}
+                layout
+                layoutId={key}
+                transition={{ layout: { duration: 0.5, ease: "easeInOut" } }}
+              >
+                <StopCard stopKey={key} value={value} />
+              </motion.div>
+            ))}
+          </LayoutGroup>
+          {Object.keys(filteredStops).length === 0 && (
+            <div className="text-center text-gray-400 py-4 text-lg font-bold">
+              No stop found
+            </div>
+          )}
+        </div>
+
         <DrawerFooter />
       </DrawerContent>
     </Drawer>
