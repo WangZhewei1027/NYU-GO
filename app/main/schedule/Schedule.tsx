@@ -1,14 +1,35 @@
 "use client";
-import { use, useState, useEffect } from "react";
+import { useState } from "react";
 import React from "react";
-import { Switch } from "@/components/ui/switch"; // 使用 ShadCN UI 的 Switch 组件
-import { ChevronRight } from "lucide-react"; // 右箭头图标
 import Image from "next/image";
 import ProgressBar from "@/components/Card/ProgressBar";
 import { useStore, StoreState } from "@/app/store";
-import { shallow } from "zustand/shallow";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Settings() {
+  // 清除 localStorage 和 caches 的处理函数
+  const handleClear = async () => {
+    localStorage.clear();
+    if (window.caches) {
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames.map((cacheName) => caches.delete(cacheName))
+      );
+    }
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       {/* 个人信息卡片 */}
@@ -33,32 +54,35 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* 其他设置 */}
-      {/* <div className="bg-white rounded-lg  divide-y mt-4">
-        <SettingItem title="Support & Feedback" />
-        <SettingItem title="About" />
+      {/* 单位切换组件 */}
+      <UnitToggle />
+
+      {/* 清除 Local Storage 和 Cache 的按钮 */}
+      <div className="mt-6">
+        <AlertDialog>
+          <AlertDialogTrigger className="bg-white rounded-lg  p-4 mb-4 shadow-sm text-xl w-full text-red-600 font-sans font-semibold text-center">
+            Clear Local Data
+          </AlertDialogTrigger>
+          <AlertDialogContent className="w-[80vw] rounded-lg">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Clear Local Storage and Cache</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to clear your local storage and cache?
+                This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleClear}>Clear</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
-
-      <div className="bg-white rounded-lg  divide-y">
-        <SettingItem title="Km/Miles" rightElement={<Switch />} />
-      </div> */}
-
-      <div className="mt-4">
-        {/* <span className="text-lg font-semibold text-gray-900">
-          Measurement Units
-        </span> */}
-        <UnitToggle />
-      </div>
-
-      {/* 退出按钮 */}
-      {/* <div className="mt-6 text-center">
-        <button className="text-red-500 font-bold text-lg">Log Out</button>
-      </div> */}
     </div>
   );
 }
 
-// 设置项组件
+// 单位切换组件示例
 function UnitToggle() {
   const setUnit = useStore((state: StoreState) => state.setUnit);
 
