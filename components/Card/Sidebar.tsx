@@ -28,6 +28,8 @@ export default function Sidebar({
   const [fromSchedule, setFromSchedule] = useState<string[]>([]);
   const [toSchedule, setToSchedule] = useState<string[]>([]);
 
+  const [mostRecenIndex, setMostRecentIndex] = useState<number | null>(null);
+
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   // **让 Sidebar 打开时自动获取焦点**
@@ -56,6 +58,28 @@ export default function Sidebar({
     setCurrentStopFrom(from);
     setCurrentStopTo(to);
   }, [from, to]);
+
+  useEffect(() => {
+    for (let i = 0; i < fromSchedule.length; i++) {
+      const item = fromSchedule[i];
+      const [time, period] = item.split(" ");
+      // eslint-disable-next-line prefer-const
+      let [hour, minute] = time.split(":").map(Number);
+      if (period === "PM" && hour !== 12) {
+        hour += 12; // 转换为24小时制
+      }
+
+      const currentDate = new Date();
+      const currentHour = currentDate.getHours();
+      const currentMinute = currentDate.getMinutes();
+      const currentTotalMinutes = currentHour * 60 + currentMinute;
+      const itemTotalMinutes = hour * 60 + minute;
+      if (itemTotalMinutes >= currentTotalMinutes) {
+        setMostRecentIndex(i);
+        break;
+      }
+    }
+  }, [fromSchedule, toSchedule]);
 
   return (
     <>
@@ -115,17 +139,31 @@ export default function Sidebar({
         </div>
 
         {/* 可滚动的时间表 */}
-        <div className="flex px-4 space-x-4 overflow-y-auto">
+        <div className="flex px-4 overflow-y-auto">
           <div className="w-1/2">
             {fromSchedule.map((stop, index) => (
-              <div key={index} className="text-center mt-2 h-6">
+              <div
+                key={index}
+                className={`text-center mt-2 h-6 ${
+                  index === mostRecenIndex
+                    ? "bg-slate-300 animate-pulse font-bold rounded-l-lg"
+                    : ""
+                }`}
+              >
                 {stop}
               </div>
             ))}
           </div>
           <div className="w-1/2">
             {toSchedule.map((stop, index) => (
-              <div key={index} className="text-center mt-2 h-6">
+              <div
+                key={index}
+                className={`text-center mt-2 h-6 ${
+                  index === mostRecenIndex
+                    ? "bg-slate-300 animate-pulse font-bold rounded-r-lg"
+                    : ""
+                }`}
+              >
                 {stop}
               </div>
             ))}
