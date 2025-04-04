@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LocationUpdater from "@/components/LocationUpdater";
 import Script from "next/script";
+import Initialization from "@/components/Initialization";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +53,7 @@ export default function RootLayout({
           }}
         />
         <LocationUpdater />
+        <Initialization />
         {children}
       </body>
     </html>

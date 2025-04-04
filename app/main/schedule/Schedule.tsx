@@ -17,7 +17,7 @@ export default function Settings() {
       </div>
 
       {/* 个人信息 */}
-      <div className="bg-white rounded-lg  p-4 mb-4">
+      <div className="bg-white rounded-lg  p-4 mb-4 shadow-sm">
         <div className="flex items-center">
           <Image
             src="https://picsum.photos/200" // 替换成你的头像路径
@@ -77,14 +77,14 @@ function UnitToggle() {
 
   return (
     <>
-      <div className="flex w-full px-6 py-11 bg-white rounded-t-lg items-center">
+      <div className="flex w-full px-6 py-11 bg-white rounded-t-lg items-center shadow-sm">
         <ProgressBar routeName="E" progress={1.1} />
       </div>
       <div
         className="w-full h-12 relative cursor-pointer select-none"
         onClick={toggle}
       >
-        <div className="absolute inset-0 bg-white rounded-b-lg" />
+        <div className="absolute inset-0 bg-white rounded-b-lg shadow-sm" />
         <div
           className="absolute top-0 left-0 h-full w-1/2 bg-gray-900 rounded-lg transition-transform duration-300"
           style={{
