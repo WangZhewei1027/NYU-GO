@@ -70,7 +70,11 @@ export default function Location() {
           nearest = key;
         }
       });
-      setNearestStop(nearest);
+      if (nearest) {
+        setNearestStop(nearest);
+        setSelectedStop(nearest);
+        return;
+      }
     }
   }, [location, stopRoutes]);
 
