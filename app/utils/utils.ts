@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+import stopNameIsSame from "./stopNameIsSame";
 
 const specialStops: string[] = ["6 MetroTech", "715 Broadway"]; //分departure和arrival两种情况的站点
 
@@ -119,13 +120,15 @@ export async function getSchedule(
   const fromSchedule: string[] = [];
   const toSchedule: string[] = [];
 
+  console.log(data);
+
   if (data.length > 0) {
     for (const entry of data) {
       for (const [key, value] of Object.entries(entry)) {
-        if (key.toLowerCase().includes(_stopFrom.toLowerCase())) {
+        if (stopNameIsSame(key, _stopFrom)) {
           fromSchedule.push(value);
         }
-        if (key.toLowerCase().includes(_stopTo.toLowerCase())) {
+        if (stopNameIsSame(key, _stopTo)) {
           toSchedule.push(value);
         }
       }

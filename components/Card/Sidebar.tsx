@@ -118,14 +118,14 @@ export default function Sidebar({
         <div className="flex px-4 space-x-4 overflow-y-auto">
           <div className="w-1/2">
             {fromSchedule.map((stop, index) => (
-              <div key={index} className="text-center mt-2">
+              <div key={index} className="text-center mt-2 h-6">
                 {stop}
               </div>
             ))}
           </div>
           <div className="w-1/2">
             {toSchedule.map((stop, index) => (
-              <div key={index} className="text-center mt-2">
+              <div key={index} className="text-center mt-2 h-6">
                 {stop}
               </div>
             ))}
