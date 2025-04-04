@@ -39,6 +39,10 @@ export default function Location() {
   const [nearestStop, setNearestStop] = useState<string | null>(null);
   const location = useStore((state) => state.location);
 
+  const updateCurrentLocation = useStore(
+    (state) => state.updateCurrentLocation
+  );
+
   // 初始化 stops 及选中项
   useEffect(() => {
     const stops = useStore.getState().stopsData;
@@ -46,7 +50,7 @@ export default function Location() {
     const currentLocation =
       localStorage.getItem("currentLocation") || "715 Broadway";
     setSelectedStop(currentLocation);
-    useStore.getState().currentLocation = currentLocation;
+    updateCurrentLocation(currentLocation);
   }, []);
 
   // 根据当前位置计算最近站点
@@ -110,7 +114,7 @@ export default function Location() {
   // 选择站点统一逻辑
   const handleSelectStop = (key: string) => {
     setSelectedStop(key);
-    useStore.getState().currentLocation = key;
+    updateCurrentLocation(key);
     localStorage.setItem("currentLocation", key);
     const openElement = document.querySelector('[data-state="open"]');
     if (openElement instanceof HTMLElement) {

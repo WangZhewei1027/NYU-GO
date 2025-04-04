@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { getRemainingTime, getRecentSchedule } from "@/app/utils/utils";
 import { useStore, StoreState } from "@/app/store";
 
@@ -11,6 +11,8 @@ export function useShuttleData(routeName: string) {
   const [currentStopTo, setCurrentStopTo] = useState<string>("");
 
   const store = useStore() as StoreState;
+
+  const currentLocation = useStore((state) => state.currentLocation);
 
   // 获取 **剩余时间**
   useEffect(() => {
