@@ -31,14 +31,14 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-4 safe-area">
       {/* 个人信息卡片 */}
       <div className="flex mb-6 items-center">
         <h1 className="text-3xl font-bold">Settings</h1>
       </div>
 
       {/* 个人信息 */}
-      <div className="bg-white rounded-lg  p-4 mb-4 shadow-sm">
+      {/* <div className="bg-white rounded-lg  p-4 mb-4 shadow-sm">
         <div className="flex items-center">
           <Image
             src="https://picsum.photos/200" // 替换成你的头像路径
@@ -52,28 +52,34 @@ export default function Settings() {
             <p className="text-gray-500 text-sm">zw3636@nyu.edu</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* 单位切换组件 */}
       <UnitToggle />
 
       {/* 清除 Local Storage 和 Cache 的按钮 */}
       <div className="mt-6">
+        <div className="text-base text-gray-500 ml-4 mb-1">Developer</div>
         <AlertDialog>
-          <AlertDialogTrigger className="bg-white rounded-lg  p-4 mb-4 shadow-sm text-xl w-full text-red-600 font-sans font-semibold text-center">
+          <AlertDialogTrigger className="bg-white rounded-lg  p-4 mb-4 text-lg w-full text-red-600 text-left font-semibold">
             Clear Local Data
           </AlertDialogTrigger>
-          <AlertDialogContent className="w-[80vw] rounded-lg">
+          <AlertDialogContent className="w-[70vw] rounded-lg">
             <AlertDialogHeader>
               <AlertDialogTitle>Clear Local Storage and Cache</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogDescription className="text-left">
                 Are you sure you want to clear your local storage and cache?
                 This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleClear}>Clear</AlertDialogAction>
+              <AlertDialogAction
+                onClick={handleClear}
+                className="bg-red-600 font-bold"
+              >
+                Clear
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -101,7 +107,8 @@ function UnitToggle() {
 
   return (
     <>
-      <div className="flex w-full px-6 py-11 bg-white rounded-t-lg items-center shadow-sm">
+      <div className="text-base text-gray-500 ml-4 mb-1">Unit</div>
+      <div className="flex w-full px-6 py-11 bg-white rounded-t-lg items-center">
         <ProgressBar routeName="E" progress={1.1} />
       </div>
       <div
@@ -117,7 +124,7 @@ function UnitToggle() {
         />
         <div className="relative flex justify-around items-center h-full">
           <span
-            className={`z-10 text-lg font-semibold ${
+            className={`z-10 text-lg font-bold ${
               isMetric ? "text-white" : "text-gray-900"
             }`}
           >

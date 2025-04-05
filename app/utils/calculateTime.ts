@@ -1,4 +1,5 @@
 import stops from "@/app/utils/stops.json";
+import stopNameIsSame from "./stopNameIsSame";
 
 // 输出出发点和到达点的坐标，返回所需时间
 export function calculateTime(
@@ -39,7 +40,7 @@ export function calculateTime(
 // 从stops.json中获取站点坐标
 export function getStopPosition(stopName: string) {
   const stop = Object.values(stops.stops).find((stop) =>
-    stop.name.toLowerCase().includes(stopName.toLowerCase())
+    stopNameIsSame(stop.name, stopName)
   );
   if (stop) {
     return {

@@ -120,7 +120,7 @@ export async function getSchedule(
   const fromSchedule: string[] = [];
   const toSchedule: string[] = [];
 
-  console.log(data);
+  //console.log(data);
 
   if (data.length > 0) {
     for (const entry of data) {

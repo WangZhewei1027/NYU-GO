@@ -90,7 +90,7 @@ export default function Sidebar({
       <motion.div
         ref={sidebarRef}
         tabIndex={-1} // 让 Sidebar 可聚焦
-        className="fixed !top-0 !mt-0 right-0 h-full w-full bg-white z-50 outline-none flex flex-col"
+        className="fixed !top-0 !mt-0 right-0 h-full w-full bg-white z-50 outline-none flex flex-col safe-area"
         initial={{ x: "100%" }}
         animate={{ x: isOpen ? 0 : "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}

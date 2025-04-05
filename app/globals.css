@@ -18,6 +18,13 @@ body {
   touch-action: manipulation;
 }
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -92,4 +99,8 @@ body {
   width: 100%;
   height: calc(100vh + env(safe-area-inset-bottom));
   min-height: -webkit-fill-available;
+}
+
+html.is-capacitor-ios .safe-area {
+  padding-top: 4rem; /* Adjust this value as needed for the notch */
 }

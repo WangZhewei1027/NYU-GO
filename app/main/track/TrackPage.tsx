@@ -92,7 +92,7 @@ export default function TrackPage() {
   const MemoizedLocation = useMemo(() => <Location />, []);
 
   return (
-    <div className="p-4 h-screen overflow-y-auto">
+    <div className="p-4 h-screen overflow-y-auto safe-area">
       {/* Header */}
       <div className="flex mb-6 items-center">
         <h1 className="text-3xl font-bold">Track</h1>

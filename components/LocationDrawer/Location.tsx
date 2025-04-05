@@ -39,6 +39,9 @@ export default function Location() {
   const [nearestStop, setNearestStop] = useState<string | null>(null);
   const location = useStore((state) => state.location);
 
+  const [enableAutoNerestStop, setEnableAutoNearestStop] =
+    useState<boolean>(true);
+
   const updateCurrentLocation = useStore(
     (state) => state.updateCurrentLocation
   );
@@ -55,6 +58,9 @@ export default function Location() {
 
   // 根据当前位置计算最近站点
   useEffect(() => {
+    if (!enableAutoNerestStop || !location || !stopRoutes) {
+      return;
+    }
     if (location && stopRoutes) {
       let minDistance = Infinity;
       let nearest: string | null = null;
@@ -76,7 +82,7 @@ export default function Location() {
         return;
       }
     }
-  }, [location, stopRoutes]);
+  }, [location, stopRoutes, enableAutoNerestStop]);
 
   // 搜索过滤
   const handleSearch = (term: string) => {
@@ -119,6 +125,7 @@ export default function Location() {
   const handleSelectStop = (key: string) => {
     setSelectedStop(key);
     updateCurrentLocation(key);
+    setEnableAutoNearestStop(false); // 关闭自动最近站点
     localStorage.setItem("currentLocation", key);
     const openElement = document.querySelector('[data-state="open"]');
     if (openElement instanceof HTMLElement) {

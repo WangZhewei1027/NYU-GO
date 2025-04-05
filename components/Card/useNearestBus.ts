@@ -8,7 +8,7 @@ export function useNearestBus(route: string) {
   const [dist, setDist] = useState<number | null>(null);
 
   useEffect(() => {
-    console.log("🚍 Calculating nearest bus distance...");
+    //console.log("🚍 Calculating nearest bus distance...");
     const currentPosition = getStopPosition(store.currentLocation);
 
     function getNearestBusLocation(
@@ -22,7 +22,7 @@ export function useNearestBus(route: string) {
         !busData ||
         Object.prototype.hasOwnProperty.call(busData, "undefined")
       ) {
-        console.log("Bus data is { 'undefined': {} }, returning early.");
+        //console.log("Bus data is { 'undefined': {} }, returning early.");
         return null;
       }
 
@@ -54,7 +54,7 @@ export function useNearestBus(route: string) {
         currentPosition.latitude,
         currentPosition.longitude
       );
-      console.log(nearestBusPosition);
+      //console.log(nearestBusPosition);
 
       if (nearestBusPosition) {
         const dist = haversineDistance(
@@ -63,13 +63,13 @@ export function useNearestBus(route: string) {
           currentPosition.latitude,
           currentPosition.longitude
         );
-        console.log(`Distance to nearest bus: ${dist} km`);
+        //console.log(`Distance to nearest bus: ${dist} km`);
         setDist(Number(dist));
       } else {
-        console.log("Nearest bus position is not available.");
+        //console.log("Nearest bus position is not available.");
       }
     } else {
-      console.log("Current position is not available.");
+      //console.log("Current position is not available.");
     }
   }, [store.shuttleData, store.currentLocation, route]);
 

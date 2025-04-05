@@ -171,3 +171,14 @@
 #### 2025.4.4.4
 
 - 更新alert msg
+
+#### 2025.4.5.0
+
+- 构建ios版本
+  - 屏幕方向锁定为portrait
+  - 对应页面增加paddingTop避开刘海区域
+  - 增加了初始的开屏页面
+- web版本
+  - 修复"Cleveland & Spring St."和"Cleveland Pl & Spring St."被认为是不同站的问题
+  - 修复自动选择最近站过于频繁的问题
+  - 优化Settings页面的UI

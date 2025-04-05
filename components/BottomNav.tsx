@@ -12,11 +12,11 @@ const BottomNav = () => {
   const navItems = [
     { name: "Track", href: "/main/track", icon: MdOutlineDirectionsBus },
     { name: "Map", href: "/main/map", icon: MdOutlineLocationOn },
-    { name: "Schedule", href: "/main/schedule", icon: MdOutlinePerson },
+    { name: "Settings", href: "/main/schedule", icon: MdOutlinePerson },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white bg-opacity-50 backdrop-blur-md border-t flex justify-around py-4 shadow-md rounded-t-3xl w-[100vw]">
+    <div className="fixed bottom-0 left-0 right-0 bg-white bg-opacity-50 backdrop-blur-md border-t flex justify-around pt-2 pb-8 shadow-md w-[100vw]">
       {navItems.map((item) => (
         <Link key={item.name} href={item.href} className="flex-1">
           <div className={`flex flex-col items-center`}>
