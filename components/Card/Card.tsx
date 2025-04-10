@@ -29,7 +29,7 @@ export default function Card({ name }: CardProps) {
   return (
     <>
       <div
-        className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[8px] ${routes[name]?.borderColor} bg-white`}
+        className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[8px] ${routes[name]?.borderColor} bg-white relative`}
       >
         <div
           className="flex items-center w-full h-20"

@@ -182,3 +182,7 @@
   - 修复"Cleveland & Spring St."和"Cleveland Pl & Spring St."被认为是不同站的问题
   - 修复自动选择最近站过于频繁的问题
   - 优化Settings页面的UI
+
+#### 2025.4.10.0
+
+- 统一progress bar的长度
