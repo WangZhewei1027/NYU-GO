@@ -1,7 +1,14 @@
-"use server";
+"use client";
 
-import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default async function Page() {
-  redirect("/main/track");
+export default function Page() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/main/track");
+  }, [router]);
+
+  return null;
 }
