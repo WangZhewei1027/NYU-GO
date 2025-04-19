@@ -1,14 +1,7 @@
-"use client";
+"use server";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.push("/main/track");
-  }, [router]);
-
-  return null; // 不需要显示内容，直接跳转
+export default async function Page() {
+  redirect("/main/track");
 }

@@ -20,9 +20,16 @@ body {
 
 html,
 body {
-  height: 100%;
+  height: calc(100% + env(safe-area-inset-top));
   margin: 0;
   padding: 0;
+}
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 @layer base {
@@ -92,15 +99,25 @@ body {
 
 .map-container {
   position: absolute;
-  top: env(safe-area-inset-top); /* 适配 notch */
+  top: 0; /* 适配 notch */
   left: 0;
   right: 0;
   bottom: 0;
   width: 100%;
-  height: calc(100vh + env(safe-area-inset-bottom));
+  height: 200%;
   min-height: -webkit-fill-available;
 }
 
-html.is-capacitor-ios .safe-area {
-  padding-top: 4rem; /* Adjust this value as needed for the notch */
+/* html.is-capacitor-ios .safe-area {
+  padding-top: 4rem; 
+} */
+
+.safe-area-debug {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top);
+  background-color: rgba(255, 0, 0, 0.4);
+  z-index: 99999999;
 }
