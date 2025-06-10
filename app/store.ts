@@ -22,6 +22,8 @@ export type StoreState = {
   stopsData: StopRoute;
   unit: "metric" | "imperial"; // 添加单位类型
   setUnit: (unit: "metric" | "imperial") => void;
+  enableAutoNearestStop: boolean; // 可选属性，默认为 true
+  setEnableAutoNearestStop?: (enable: boolean) => void; // 可选方法
 };
 
 export const useStore = create<StoreState>()(
@@ -38,5 +40,7 @@ export const useStore = create<StoreState>()(
     setShuttleData: (data: BusInfo) => set({ shuttleData: data }),
     unit: "metric", // 默认单位为公制
     setUnit: (unit: "metric" | "imperial") => set({ unit }),
+    enableAutoNearestStop: true, // 默认启用自动最近站点
+    setEnableAutoNearestStop: (enable: boolean) => set((state) => ({enableAutoNearestStop: enable}))
   }))
 );
