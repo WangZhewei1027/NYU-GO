@@ -1,10 +1,11 @@
 import Papa from "papaparse";
 import stopNameIsSame from "./stopNameIsSame";
+import { validFileNames } from "@/types";
 
 const specialStops: string[] = ["6 MetroTech", "715 Broadway"]; //分departure和arrival两种情况的站点
 
 // 通过route获取文件名
-function getFilenameForRoute(route: string): string {
+export function getFilenameForRoute(route: string): string {
   const date = new Date();
   const dayOfWeek = date.getDay();
 
@@ -15,30 +16,20 @@ function getFilenameForRoute(route: string): string {
     dayLabel = "f";
   }
 
-  return `/route_${route}_${dayLabel}.csv`;
+  return `/route_${route.toUpperCase()}_${dayLabel}.csv`;
 }
 
-const validFileNames = [
-  "route_A_f.csv",
-  "route_A_mt.csv",
-  "route_A_w.csv",
-  "route_B_f.csv",
-  "route_B_mt.csv",
-  "route_C_mt.csv",
-  "route_E_f.csv",
-  "route_E_mt.csv",
-  "route_F_mt.csv",
-  "route_G_f.csv",
-  "route_G_mt.csv",
-  "route_G_w.csv",
-  "route_W_w.csv",
-]
+export function isRouteValidToday(route: string): boolean {
+  const filename = getFilenameForRoute(route);
+  const cleanFilename = filename.startsWith("/") ? filename.slice(1) : filename;
+  return validFileNames.includes(cleanFilename);
+}
 
 // CSV 文件读取和解析
 async function fetchAndParseCSV<T>(filename: string): Promise<T[]> {
-  const cleanFilename = filename.startsWith('/') ? filename.slice(1) : filename;
-  if(!validFileNames.includes(cleanFilename)) return [];
-  
+  const cleanFilename = filename.startsWith("/") ? filename.slice(1) : filename;
+  if (!validFileNames.includes(cleanFilename)) return [];
+
   try {
     const response = await fetch(filename);
     if (!response.ok) {

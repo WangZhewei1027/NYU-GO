@@ -201,3 +201,7 @@
 - Add Routes 改为 Edit Routes
 - 线路选择弹出框中，Close 改为 Save
 - 修复 drawer 有时 nearest stop 不显示的 bug
+
+#### 2025.6.10.3
+
+- 增加功能：当今天这个 Route 没有 schedule 的时候，Card 变为灰色 disable 状态（注意和今天班次结束的状态不一样。没有剩余时间可能是今天班次结束了，但是还是可以查看 full schedule）
