@@ -42,9 +42,7 @@ export default function Location() {
   // const [enableAutoNerestStop, setEnableAutoNearestStop] =
   //   useState<boolean>(true);
 
-  const enableAutoNerestStop = useStore(
-    (state) => state.enableAutoNearestStop
-  );
+  const enableAutoNerestStop = useStore((state) => state.enableAutoNearestStop);
   const setEnableAutoNearestStop = useStore(
     (state) => state.setEnableAutoNearestStop
   );
@@ -65,7 +63,7 @@ export default function Location() {
 
   // 根据当前位置计算最近站点
   useEffect(() => {
-    if (!enableAutoNerestStop || !location || !stopRoutes) {
+    if (!location || !stopRoutes) {
       return;
     }
     if (location && stopRoutes) {
@@ -85,7 +83,9 @@ export default function Location() {
       });
       if (nearest) {
         setNearestStop(nearest);
-        setSelectedStop(nearest);
+        if (enableAutoNerestStop) {
+          setSelectedStop(nearest);
+        }
         return;
       }
     }

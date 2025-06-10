@@ -57,17 +57,17 @@ export default function Add() {
               className="p-1 text-base w-full max-w-full  text-gray-400"
             >
               <MdOutlineAdd className="shrink-0 text-gray-400" />
-              Add Routes
+              Edit Routes
             </Button>
           </div>
         </DialogTrigger>
         <DialogContent className="max-w-[90vw] max-h-[100vh] overflow-hidden p-4 rounded">
           <DialogHeader>
             <DialogTitle asChild>
-              <div className="hidden">Add Routes</div>
+              <div className="hidden">Edit Routes</div>
             </DialogTitle>
             <DialogDescription asChild>
-              <div className="hidden">Add Routes</div>
+              <div className="hidden">Edit Routes</div>
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-2">
@@ -89,7 +89,7 @@ export default function Add() {
                 variant="outline"
                 className="fixed h-10 w-20 bottom-12 left-1/2 transform -translate-x-1/2 border border-egg-blue-400 rounded-full text-egg-blue-400 text-base z-50"
               >
-                Close
+                Save
               </Button>
             </DialogClose>
           </DialogFooter>
