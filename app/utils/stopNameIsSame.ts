@@ -1,6 +1,7 @@
 const specialStops: { [key: string]: string } = {
   "Cleveland & Spring St.": "Cleveland Pl & Spring St.",
   "80 Lafayette Street": "80 Lafayette St.",
+  "20th St & Loop Exit":"20th Street At Loop Exit",
 };
 
 export default function stopNameIsSame(
