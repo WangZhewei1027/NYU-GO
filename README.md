@@ -1,3 +1,5 @@
+### 更新日志
+
 #### 2025.1.1.0
 
 - Location Drawer 改为点击站点后自动收起，提供直接的视觉反馈
@@ -205,3 +207,35 @@
 #### 2025.6.10.3
 
 - 增加功能：当今天这个 Route 没有 schedule 的时候，Card 变为灰色 disable 状态（注意和今天班次结束的状态不一样。没有剩余时间可能是今天班次结束了，但是还是可以查看 full schedule）
+
+#### 2025.6.10.4
+
+- 今天这条route有Schedule，但当前选择站点不在这条route中，表现为打开Card后，显示 “Departure stop not available”
+
+### 调试相关
+
+#### node version
+
+node v24
+
+#### 模拟时间
+
+```
+// 假装现在是 2025 年 6 月 7 日 （周六）
+const fixedDate = new Date("2025-06-07T12:00:00Z")
+
+// 重新定义全局 Date 构造函数
+Date = class extends Date {
+  constructor(...args) {
+    if (args.length === 0) {
+      return fixedDate
+    }
+    return super(...args)
+  }
+  static now() {
+    return fixedDate.getTime()
+  }
+}
+```
+
+> 注意：该作用为一次性，浏览器刷新后就失效。

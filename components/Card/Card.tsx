@@ -28,6 +28,16 @@ export default function Card({ name }: CardProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isValidRoute = isRouteValidToday(name);
 
+  let msg = "";
+  let processedFrom = stopFrom;
+  let processedTo = stopTo;
+
+  if (stopFrom.length <= 0 || stopTo.length <= 0) {
+    msg = "Departure stop not available";
+    processedFrom = [];
+    processedTo = [];
+  }
+
   return (
     <>
       {isValidRoute && (
@@ -54,20 +64,27 @@ export default function Card({ name }: CardProps) {
               isClicked ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
             } items-center w-full`}
           >
-            <div className="flex flex-row p-2">
-              <StopSelector
-                route={name}
-                isFrom={true}
-                callback={setCurrentStopFrom}
-                stops={stopFrom}
-              />
-              <MdOutlineArrowForward className="mt-2 w-8 h-8 mx-1" />
-              <StopSelector
-                route={name}
-                isFrom={false}
-                callback={setCurrentStopTo}
-                stops={stopTo}
-              />
+            <div className="flex-col p-2">
+              <div className="flex flex-grow-0">
+                <StopSelector
+                  route={name}
+                  isFrom={true}
+                  callback={setCurrentStopFrom}
+                  stops={processedFrom}
+                />
+                <MdOutlineArrowForward className="mt-2 w-8 h-8 mx-1" />
+                <StopSelector
+                  route={name}
+                  isFrom={false}
+                  callback={setCurrentStopTo}
+                  stops={processedTo}
+                />
+              </div>
+              {msg && (
+                <div className="text-gray-400 text-base text-center mt-4">
+                  {msg}
+                </div>
+              )}
             </div>
             <div className="flex flex-row space-x-2 m-2 mt-6">
               <Button
