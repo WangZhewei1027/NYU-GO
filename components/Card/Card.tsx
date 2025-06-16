@@ -32,8 +32,12 @@ export default function Card({ name }: CardProps) {
   let processedFrom = stopFrom;
   let processedTo = stopTo;
 
-  if (stopFrom.length <= 0 || stopTo.length <= 0) {
+  if (stopFrom.length <= 0) {
     msg = "Departure stop not available";
+    processedFrom = [];
+    processedTo = [];
+  } else if (stopTo.length <= 0) {
+    msg = "Arrival stop not available";
     processedFrom = [];
     processedTo = [];
   }
