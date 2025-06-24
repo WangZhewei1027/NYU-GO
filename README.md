@@ -220,6 +220,10 @@
 
 - 修复 map 上非 nyu shuttle 意外带有颜色的 bug
 
+#### 2025.6.24.1
+
+- 修复 map 上 ferry 图标的 bug
+
 ### 调试相关
 
 #### node version

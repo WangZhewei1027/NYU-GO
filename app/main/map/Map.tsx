@@ -14,6 +14,8 @@ import StopMarkers from "./StopMakers";
 
 // 🏷️ 提取路线字母，例如 "Route A" -> "A", "Express Bus C" -> "C"
 const getRouteLetter = (route: string) => {
+  if (route === "Ferry Route") return "⛴️"; // 特例处理 Ferry Route
+
   const pattern = /^Route\s[A-Z]$/;
   if (pattern.test(route)) {
     const parts = route.split(" "); // 按空格拆分字符串
@@ -28,7 +30,7 @@ const getRouteLetter = (route: string) => {
 // ✅ JSX 组件表示 Marker
 const MarkerIcon = ({ letter }: { letter: string }) => (
   <div
-    className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 border-black text-black ${routes[letter]?.borderColor} ${routes[letter]?.textColor} `}
+    className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 border-gray-800 text-black ${routes[letter]?.borderColor} ${routes[letter]?.textColor} `}
     style={{
       boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
       transition: "transform 0.3s ease-in-out",
