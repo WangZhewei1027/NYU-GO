@@ -210,7 +210,15 @@
 
 #### 2025.6.10.4
 
-- 今天这条route有Schedule，但当前选择站点不在这条route中，表现为打开Card后，显示 “Departure stop not available”
+- 今天这条 route 有 Schedule，但当前选择站点不在这条 route 中，表现为打开 Card 后，显示 “Departure stop not available”
+
+#### 2025.6.16.0
+
+- 到达站无 Schedule 信息时，显示 “Arrival stop not available”
+
+#### 2025.6.24.0
+
+- 修复 map 上非 nyu shuttle 意外带有颜色的 bug
 
 ### 调试相关
 

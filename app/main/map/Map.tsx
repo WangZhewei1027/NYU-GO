@@ -14,16 +14,21 @@ import StopMarkers from "./StopMakers";
 
 // 🏷️ 提取路线字母，例如 "Route A" -> "A", "Express Bus C" -> "C"
 const getRouteLetter = (route: string) => {
-  const parts = route.split(" "); // 按空格拆分字符串
-  if (parts.length < 2) return "?"; // 确保至少有两个单词
-  const letterMatch = parts[1].match(/[A-Z]/i); // 查找第二个单词的第一个字母
-  return letterMatch ? letterMatch[0].toUpperCase() : "?"; // 默认返回 "?"
+  const pattern = /^Route\s[A-Z]$/;
+  if (pattern.test(route)) {
+    const parts = route.split(" "); // 按空格拆分字符串
+    if (parts.length < 2) return "?"; // 确保至少有两个单词
+    const letterMatch = parts[1].match(/[A-Z]/i); // 查找第二个单词的第一个字母
+    return letterMatch ? letterMatch[0].toUpperCase() : "?"; // 默认返回 "?"
+  }
+
+  return "🚍"; // 如果不匹配，返回 "?"
 };
 
 // ✅ JSX 组件表示 Marker
 const MarkerIcon = ({ letter }: { letter: string }) => (
   <div
-    className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 ${routes[letter]?.borderColor} ${routes[letter]?.textColor} border-black`}
+    className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 border-black text-black ${routes[letter]?.borderColor} ${routes[letter]?.textColor} `}
     style={{
       boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
       transition: "transform 0.3s ease-in-out",
