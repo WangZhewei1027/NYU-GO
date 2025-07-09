@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useStore, StoreState } from "@/app/store";
-import { getThisRouteStops, routes } from "@/app/utils/utils";
+import { getThisRouteStops, routesColor } from "@/app/utils/utils";
 import { shallow } from "zustand/shallow";
 import { useForceUpdate } from "framer-motion";
 
@@ -99,7 +99,7 @@ export default function FullStops({
             {/* 时间轴竖线 */}
             <div
               ref={lineRef} // 竖线引用
-              className={`absolute top-0 left-[23.5px] w-0.5 ${routes[route].bgColor} min-h-full`}
+              className={`absolute top-0 left-[23.5px] w-0.5 ${routesColor[route].bgColor} min-h-full`}
             ></div>
 
             {stops.map((stop, index) => (
@@ -119,8 +119,8 @@ export default function FullStops({
                 <div
                   className={`absolute left-4 w-4 h-4 rounded-full border-2 ${
                     selectedStop === stop
-                      ? `${routes[route].bgColor} border-white shadow`
-                      : `bg-white ${routes[route].borderColor}`
+                      ? `${routesColor[route].bgColor} border-white shadow`
+                      : `bg-white ${routesColor[route].borderColor}`
                   }`}
                 ></div>
 

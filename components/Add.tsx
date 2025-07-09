@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { MdOutlineAdd } from "react-icons/md";
-import { routes } from "@/app/utils/utils";
+import { routesColor } from "@/app/utils/utils";
 import {
   Dialog,
   DialogClose,
@@ -71,13 +71,13 @@ export default function Add() {
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-2">
-            {Object.keys(routes).map((route, index) => {
+            {Object.keys(routesColor).map((route, index) => {
               //console.log(route);
               return (
                 <RouteItem
                   key={index}
                   route={route}
-                  promo={routes[route].promo}
+                  promo={routesColor[route].promo}
                 />
               );
             })}

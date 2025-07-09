@@ -1,4 +1,4 @@
-import { routes } from "@/app/utils/utils";
+import { routesColor } from "@/app/utils/utils";
 import { useNearestBus } from "./useNearestBus";
 import { useStore, StoreState } from "@/app/store";
 
@@ -60,7 +60,7 @@ export default function ProgressBar({
       className={`relative h-1 w-full rounded-full bg-gray-200 ${className}`}
     >
       <div
-        className={`h-full rounded-full ${routes[routeName]?.bgColor} transition-all duration-1000`}
+        className={`h-full rounded-full ${routesColor[routeName]?.bgColor} transition-all duration-1000`}
         style={{ width: `${computedProgress}%` }}
       ></div>
       <div

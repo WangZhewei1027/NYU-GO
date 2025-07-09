@@ -203,50 +203,58 @@ interface Route {
   borderColor?: string;
   bgColor?: string;
   textColor?: string;
+  color?: string;
 }
 
-export const routes: Record<string, Route> = {
+export const routesColor: Record<string, Route> = {
   A: {
     promo: "Service to/from Tandon in Brooklyn",
     borderColor: "border-pink-400",
     bgColor: "bg-pink-400",
     textColor: "text-pink-400",
+    color: "#F48FB2",
   },
   B: {
     promo: "Points South of WSQ",
     borderColor: "border-purple-400",
     bgColor: "bg-purple-400",
     textColor: "text-purple-400",
+    color: "#673AB8",
   },
   C: {
     promo: "Stuyvesant Town & Points North of WSQ",
     borderColor: "border-blue-400",
     bgColor: "bg-blue-400",
     textColor: "text-blue-400",
+    color: "#0088D1",
   },
   E: {
     promo: "Points North of WSQ",
     borderColor: "border-brown-500",
     bgColor: "bg-brown-500",
     textColor: "text-brown-500",
+    color: "#A52714",
   },
   F: {
     promo: "3rd Avenue Express",
     borderColor: "border-green-400",
     bgColor: "bg-green-400",
     textColor: "text-green-400",
+    color: "#0B9D58",
   },
   G: {
     promo: "Greenwich Hall",
     borderColor: "border-cyan-400",
     bgColor: "bg-cyan-400",
     textColor: "text-cyan-400",
+    color: "#B2EBF2",
   },
   W: {
     promo: "Weekend Service Combining Routes B, E, & G",
     borderColor: "border-yellow-400",
     bgColor: "bg-yellow-400",
     textColor: "text-yellow-400",
+    color: "#FFCC80",
   },
 };
 

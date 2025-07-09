@@ -1,5 +1,11 @@
 "use client";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+} from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
 import { useMemo } from "react";
@@ -7,10 +13,11 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 import useShuttleData from "@/app/utils/useShuttleData";
-import { routes } from "@/app/utils/utils";
+import { routesColor } from "@/app/utils/utils";
 import stops from "@/app/utils/stops.json";
 import { useStore } from "@/app/store";
 import StopMarkers from "./StopMakers";
+import routeIdToLetterMap from "@/app/utils/map-settings/routeIdToLetterMap.json";
 
 // 🏷️ 提取路线字母，例如 "Route A" -> "A", "Express Bus C" -> "C"
 const getRouteLetter = (route: string) => {
@@ -30,7 +37,7 @@ const getRouteLetter = (route: string) => {
 // ✅ JSX 组件表示 Marker
 const MarkerIcon = ({ letter }: { letter: string }) => (
   <div
-    className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 border-gray-800 text-black ${routes[letter]?.borderColor} ${routes[letter]?.textColor} `}
+    className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 border-gray-800 text-black ${routesColor[letter]?.borderColor} ${routesColor[letter]?.textColor} `}
     style={{
       boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
       transition: "transform 0.3s ease-in-out",
@@ -83,6 +90,41 @@ export default function Map() {
       <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
 
       <StopMarkers />
+
+      {/* 🔵 渲染路线 Polyline */}
+      {Object.entries(stops.routePoints).map(
+        ([routeId, points], routeIndex) => {
+          const routeLetter =
+            routeIdToLetterMap[routeId as keyof typeof routeIdToLetterMap];
+          const color = routesColor[routeLetter]?.color;
+
+          return points.map((pointList, index) => {
+            const latLngs = pointList.map((p) => [
+              Number(p.lat),
+              Number(p.lng),
+            ]);
+
+            return (
+              <Polyline
+                key={`${routeId}-${index}`}
+                positions={latLngs as [number, number][]}
+                color={color || "#333"} // 可自定义颜色
+                weight={color ? 4 : 2.5} // 线宽
+                opacity={0.3} // 透明度
+                dashArray={!color ? "5, 10" : undefined} // 虚线效果
+              >
+                <Popup>
+                  路线 {routeLetter}
+                  <br />
+                  路线ID: {routeId}
+                  <br />
+                  颜色: {color}
+                </Popup>
+              </Polyline>
+            );
+          });
+        }
+      )}
 
       {/* 🔴 渲染 Shuttle 位置 */}
       {Object.entries(shuttleData).map(([busId, info]) => {

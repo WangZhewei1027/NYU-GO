@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { routes } from "@/app/utils/utils";
+import { routesColor } from "@/app/utils/utils";
 import { useStore } from "@/app/store";
 import { StopRoute, Position } from "@/types";
 import stopNameIsSame from "@/app/utils/stopNameIsSame";
@@ -163,7 +163,7 @@ export default function Location() {
           {value.routes.map((route: string, idx: number) => (
             <div
               key={idx}
-              className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[route]?.bgColor} text-gray-900 font-bold`}
+              className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routesColor[route]?.bgColor} text-gray-900 font-bold`}
             >
               {route}
             </div>
@@ -214,7 +214,7 @@ export default function Location() {
               stopRoutes[stopKey]?.routes.map((route: string, idx: number) => (
                 <div
                   key={idx}
-                  className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routes[route]?.bgColor} text-gray-900 font-bold`}
+                  className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routesColor[route]?.bgColor} text-gray-900 font-bold`}
                 >
                   {route}
                 </div>

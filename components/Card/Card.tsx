@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { routes } from "@/app/utils/utils";
+import { routesColor } from "@/app/utils/utils";
 import Sidebar from "@/components/Card/Sidebar";
 import { MdOutlineArrowForward } from "react-icons/md";
 import { useShuttleData } from "./useShuttleData";
@@ -46,7 +46,7 @@ export default function Card({ name }: CardProps) {
     <>
       {isValidRoute && (
         <div
-          className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[8px] ${routes[name]?.borderColor} bg-white relative`}
+          className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[8px] ${routesColor[name]?.borderColor} bg-white relative`}
         >
           <div
             className="flex items-center w-full h-20"
@@ -94,7 +94,7 @@ export default function Card({ name }: CardProps) {
               <Button
                 onClick={() => setIsSidebarOpen(true)}
                 variant={"outline"}
-                className={`h-12 rounded-full text-base ${routes[name].borderColor} ml-auto`}
+                className={`h-12 rounded-full text-base ${routesColor[name].borderColor} ml-auto`}
               >
                 Full Schedule
               </Button>
@@ -103,7 +103,7 @@ export default function Card({ name }: CardProps) {
                   window.location.href = `/main/map`;
                 }}
                 variant={"secondary"}
-                className={`h-12 rounded-full text-base text-gray-50 ${routes[name].bgColor}`}
+                className={`h-12 rounded-full text-base text-gray-50 ${routesColor[name].bgColor}`}
               >
                 Open Map
               </Button>
