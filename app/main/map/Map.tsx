@@ -21,7 +21,7 @@ import routeIdToLetterMap from "@/app/utils/map-settings/routeIdToLetterMap.json
 
 // 🏷️ 提取路线字母，例如 "Route A" -> "A", "Express Bus C" -> "C"
 const getRouteLetter = (route: string) => {
-  if (route === "Ferry Route") return "⛴️"; // 特例处理 Ferry Route
+  if (route === "Ferry Route") return "ferry"; // 特例处理 Ferry Route
 
   const pattern = /^Route\s[A-Z]$/;
   if (pattern.test(route)) {
@@ -34,18 +34,50 @@ const getRouteLetter = (route: string) => {
   return "🚍"; // 如果不匹配，返回 "?"
 };
 
-// ✅ JSX 组件表示 Marker
-const MarkerIcon = ({ letter }: { letter: string }) => (
-  <div
-    className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 border-gray-800 text-black ${routesColor[letter]?.borderColor} ${routesColor[letter]?.textColor} `}
-    style={{
-      boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
-      transition: "transform 0.3s ease-in-out",
-    }}
-  >
-    <span className="font-black">{letter}</span>
-  </div>
-);
+const MarkerIcon = ({
+  letter,
+  heading = 0,
+}: {
+  letter: string;
+  heading?: number;
+}) => {
+  return (
+    <div
+      className="relative w-8 h-8"
+      style={{
+        transform: `rotate(${heading}deg)`,
+        transformOrigin: "center center",
+        transition: "transform 0.3s ease-in-out",
+      }}
+    >
+      {/* 小三角箭头 */}
+      <div
+        className="absolute top-[-6px] left-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-b-[10px] border-transparent border-b-black"
+        style={{
+          transform: "translateX(-50%)",
+          zIndex: -1, // 确保小三角在圆形下方
+        }}
+      ></div>
+
+      {/* 圆形主体 + 反向旋转内容 */}
+      <div
+        className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 border-gray-800 text-black ${routesColor[letter]?.borderColor} ${routesColor[letter]?.textColor}`}
+        style={{
+          boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
+        }}
+      >
+        {/* 👇 反向旋转中间内容 */}
+        <div style={{ transform: `rotate(${-heading}deg)` }}>
+          {letter === "ferry" ? (
+            <img src="/map/ferry.svg" alt="ferry" className="w-4 h-4" />
+          ) : (
+            <span className="font-black">{letter}</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const StopIcon = () => (
   <div
@@ -138,7 +170,10 @@ export default function Map() {
           iconCache[routeLetter] = L.divIcon({
             className: "custom-marker",
             html: ReactDOMServer.renderToString(
-              <MarkerIcon letter={routeLetter} />
+              <MarkerIcon
+                letter={routeLetter}
+                heading={Number(info.calculatedCourse)}
+              />
             ),
             iconSize: [30, 30],
             iconAnchor: [15, 15],

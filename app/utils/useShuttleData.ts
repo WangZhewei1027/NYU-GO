@@ -35,7 +35,11 @@ export default function useShuttleData() {
                 const latitude = data.latitude;
                 const longitude = data.longitude;
                 const route = prev[busId].route;
-                return { ...prev, [busId]: { route, latitude, longitude } };
+                const calculatedCourse = prev[busId].calculatedCourse;
+                return {
+                  ...prev,
+                  [busId]: { route, latitude, longitude, calculatedCourse },
+                };
               } else {
                 return prev;
               }

@@ -42,12 +42,22 @@ interface ShuttleData {
 }
 
 export interface BusInfo {
-  [key: string]: { route: string; latitude: string; longitude: string };
+  [key: string]: {
+    route: string;
+    latitude: string;
+    longitude: string;
+    calculatedCourse: string;
+  };
 }
 
 export async function getBusInfo(): Promise<BusInfo> {
   const data: {
-    [key: number]: { route: string; latitude: string; longitude: string };
+    [key: number]: {
+      route: string;
+      latitude: string;
+      longitude: string;
+      calculatedCourse: string;
+    };
   } = {};
 
   const response: ShuttleData = await fetch(
@@ -66,7 +76,13 @@ export async function getBusInfo(): Promise<BusInfo> {
     const route = value[0].route;
     const latitude = value[0].latitude;
     const longitude = value[0].longitude;
-    data[busId] = { route: route, latitude: latitude, longitude: longitude };
+    const calculatedCourse = value[0].calculatedCourse;
+    data[busId] = {
+      route: route,
+      latitude: latitude,
+      longitude: longitude,
+      calculatedCourse: calculatedCourse,
+    };
   }
 
   return data;
