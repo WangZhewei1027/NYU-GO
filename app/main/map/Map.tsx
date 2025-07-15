@@ -113,13 +113,21 @@ export default function Map() {
       center={[40.73, -73.99]} // 纽约中心点
       zoom={14}
       zoomAnimation={true}
-      zoomAnimationThreshold={4}
+      zoomAnimationThreshold={1}
+      maxZoom={18}
+      minZoom={12}
+      scrollWheelZoom={true}
       style={{ zIndex: 0 }}
       className="map-container"
       zoomControl={false}
     >
       {/* 🔥 使用 OpenStreetMap 作为地图 */}
-      <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+      <TileLayer
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        updateWhenIdle={false}
+        updateWhenZooming={false}
+        keepBuffer={8}
+      />
 
       <StopMarkers />
 
