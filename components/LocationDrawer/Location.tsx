@@ -163,7 +163,8 @@ export default function Location() {
           {value.routes.map((route: string, idx: number) => (
             <div
               key={idx}
-              className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routesColor[route]?.bgColor} text-gray-900 font-bold`}
+              className={`inline mr-2 p-3 py-1 text-xs rounded-md text-gray-900 font-bold`}
+              style={{ backgroundColor: routesColor[route]?.color }}
             >
               {route}
             </div>
@@ -214,7 +215,8 @@ export default function Location() {
               stopRoutes[stopKey]?.routes.map((route: string, idx: number) => (
                 <div
                   key={idx}
-                  className={`inline mr-2 p-3 py-1 text-xs rounded-md ${routesColor[route]?.bgColor} text-gray-900 font-bold`}
+                  className={`inline mr-2 p-3 py-1 text-xs rounded-md text-gray-900 font-bold`}
+                  style={{ backgroundColor: routesColor[route]?.color }}
                 >
                   {route}
                 </div>

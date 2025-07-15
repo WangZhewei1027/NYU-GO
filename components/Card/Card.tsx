@@ -46,7 +46,8 @@ export default function Card({ name }: CardProps) {
     <>
       {isValidRoute && (
         <div
-          className={`flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[8px] ${routesColor[name]?.borderColor} bg-white relative`}
+          className="flex flex-col items-center rounded-lg shadow-sm mt-1 border-l-[8px] bg-white relative"
+          style={{ borderLeftColor: routesColor[name]?.color }}
         >
           <div
             className="flex items-center w-full h-20"
@@ -94,7 +95,8 @@ export default function Card({ name }: CardProps) {
               <Button
                 onClick={() => setIsSidebarOpen(true)}
                 variant={"outline"}
-                className={`h-12 rounded-full text-base ${routesColor[name].borderColor} ml-auto`}
+                className={`h-12 rounded-full text-base ml-auto`}
+                style={{ borderColor: routesColor[name].color }}
               >
                 Full Schedule
               </Button>
@@ -103,7 +105,8 @@ export default function Card({ name }: CardProps) {
                   window.location.href = `/main/map`;
                 }}
                 variant={"secondary"}
-                className={`h-12 rounded-full text-base text-gray-50 ${routesColor[name].bgColor}`}
+                className={`h-12 rounded-full text-base text-gray-50`}
+                style={{ backgroundColor: routesColor[name].color }}
               >
                 Open Map
               </Button>
