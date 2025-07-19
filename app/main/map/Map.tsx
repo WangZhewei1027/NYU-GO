@@ -150,7 +150,7 @@ export default function Map() {
                 positions={latLngs as [number, number][]}
                 color={color || "#333"} // 可自定义颜色
                 weight={color ? 4 : 2.5} // 线宽
-                opacity={0.3} // 透明度
+                opacity={color ? 0.8 : 0.4} // 透明度
                 dashArray={!color ? "5, 10" : undefined} // 虚线效果
               >
                 <Popup>
