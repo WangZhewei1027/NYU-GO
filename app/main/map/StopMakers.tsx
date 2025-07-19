@@ -3,6 +3,9 @@ import { Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
 import stops from "@/app/utils/stops.json";
+import { useStore } from "@/app/store";
+import stopNameIsSame from "@/app/utils/stopNameIsSame";
+import { routesColor } from "@/app/utils/utils";
 
 // 根据 zoom 计算透明度
 const getStopIconOpacity = (zoom: number) => {
@@ -40,6 +43,35 @@ const StopMarkers = () => {
   // 根据当前 zoom 计算 StopIcon 的透明度
   const opacity = getStopIconOpacity(zoom);
 
+  function PassingRoutes({ stopName }: { stopName: string }) {
+    const stopsData = useStore.getState().stopsData;
+
+    let stopData: string[] | null = null;
+
+    for (const [name, info] of Object.entries(stopsData)) {
+      if (stopNameIsSame(name, stopName)) {
+        stopData = info.routes;
+        break;
+      }
+    }
+
+    if (!stopData) return null;
+
+    return (
+      <div>
+        {stopData.map((route) => (
+          <span
+            className="inline mr-2 p-3 py-1 text-xs rounded-md text-gray-900 font-bold"
+            style={{ backgroundColor: routesColor[route]?.color }}
+            key={route}
+          >
+            {route}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <>
       {Object.values(stops.stops).map((stop) => (
@@ -53,8 +85,12 @@ const StopMarkers = () => {
             iconAnchor: [5, 5],
           })}
         >
-          <Popup>
-            {stop.name} ({stop.id})
+          <Popup closeButton={false} autoPan={true}>
+            <div className="mb-2">
+              <span className="font-bold text-base"> {stop.name} </span>
+              <span>({stop.id})</span>
+            </div>
+            <PassingRoutes stopName={stop.name} />
           </Popup>
         </Marker>
       ))}
