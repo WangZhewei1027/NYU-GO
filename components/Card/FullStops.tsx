@@ -35,10 +35,6 @@ export default function FullStops({
   const lineRef = useRef<HTMLDivElement>(null); // 时间轴竖线的引用
   const containerRef = useRef<HTMLDivElement>(null); // 容器的引用
 
-  const currentLocation = useStore(
-    (state) => (state as StoreState).currentLocation
-  );
-
   // 加载站点数据
   useEffect(() => {
     async function fetchStops() {

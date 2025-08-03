@@ -55,10 +55,9 @@ export default function Location() {
   useEffect(() => {
     const stops = useStore.getState().stopsData;
     setStopRoutes(stops);
-    const currentLocation =
-      localStorage.getItem("currentLocation") || "715 Broadway";
-    setSelectedStop(currentLocation);
-    updateCurrentLocation(currentLocation);
+    // const currentLocation = localStorage.getItem("currentLocation") || "";
+    // setSelectedStop(currentLocation);
+    // updateCurrentLocation(currentLocation);
   }, []);
 
   // 根据当前位置计算最近站点
@@ -85,6 +84,7 @@ export default function Location() {
         setNearestStop(nearest);
         if (enableAutoNerestStop) {
           setSelectedStop(nearest);
+          updateCurrentLocation(nearest);
         }
         return;
       }
@@ -133,7 +133,7 @@ export default function Location() {
     setSelectedStop(key);
     updateCurrentLocation(key);
     if (setEnableAutoNearestStop) {
-      setEnableAutoNearestStop(false); // 关闭自动最近站点
+      setEnableAutoNearestStop(false); // 手动选择站点后，关闭自动最近站点
     }
     localStorage.setItem("currentLocation", key);
     const openElement = document.querySelector('[data-state="open"]');

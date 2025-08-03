@@ -37,7 +37,7 @@ export const useStore = create<StoreState>()(
     setLocation: (location: Position) => set({ location }),
     personalData: {},
     setPersonalData: (data: PersonalData) => set({ personalData: data }),
-    currentLocation: "715 Broadway",
+    currentLocation: "",
     updateCurrentLocation: (newLocation: string) =>
       set({ currentLocation: newLocation }),
     shuttleData: {},

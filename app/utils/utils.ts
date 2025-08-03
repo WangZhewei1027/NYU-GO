@@ -66,7 +66,7 @@ export async function getRemainingTime(
   const filename = getFilenameForRoute(route);
   const data = await fetchAndParseCSV<{ [stop: string]: string }>(filename);
 
-  if (!(data.length > 0)) {
+  if (!(data.length > 0) || !currentLocation) {
     // console.log(`Route ${route}: No data found`);
     return -1; // Return -1 if no data is found
   }
@@ -93,6 +93,9 @@ export async function getRemainingTime(
           (entryHour - hour) * 60 + (entryMinute - minute);
 
         if (remainingMinutes >= 0) {
+          console.log(
+            `Route ${route}: Remaining time to ${currentLocation} is ${remainingMinutes} minutes`
+          );
           return remainingMinutes;
         }
       }

@@ -83,9 +83,6 @@ export default function TrackPage() {
     // 设置轮询定时器，每 500ms 检查一次 visibleRoutes
     const intervalId = setInterval(updateVisibleRoutes, 500);
 
-    store.currentLocation =
-      localStorage.getItem("currentLocation") || "715 Broadway";
-
     return () => clearInterval(intervalId);
   }, [updateVisibleRoutes, store]);
 
