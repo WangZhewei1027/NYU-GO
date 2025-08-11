@@ -153,12 +153,12 @@ export default function Map() {
                 opacity={color ? 0.8 : 0.4} // 透明度
                 dashArray={!color ? "5, 10" : undefined} // 虚线效果
               >
-                <Popup>
-                  路线 {routeLetter}
-                  <br />
-                  路线ID: {routeId}
-                  <br />
-                  颜色: {color}
+                <Popup closeButton={false} autoPan={true}>
+                  <div className="mb-2">
+                    <span className="font-bold text-base">
+                      Route {routeLetter}
+                    </span>
+                  </div>
                 </Popup>
               </Polyline>
             );
@@ -195,11 +195,11 @@ export default function Map() {
             icon={iconCache[routeLetter]}
             zIndexOffset={1000}
           >
-            <Popup>
-              🚌 {info.route}
-              <br /># {busId}
-              <br />
-              📍 {Number(info.latitude)}, {Number(info.longitude)}
+            <Popup closeButton={false} autoPan={true}>
+              <div className="mb-2">
+                <span className="font-bold text-base">{info.route}</span>
+                <span> ({busId})</span>
+              </div>
             </Popup>
           </Marker>
         );
