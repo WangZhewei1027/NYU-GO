@@ -1,9 +1,18 @@
 "use client";
 import { useStore } from "@/app/store";
 import { useEffect } from "react";
+import { SafeArea } from "capacitor-plugin-safe-area";
 
 export default function Initialization() {
   const setUnit = useStore((state) => state.setUnit);
+  const setInsets = useStore((state) => state.setInsets);
+
+  useEffect(() => {
+    SafeArea.getSafeAreaInsets().then(({ insets }) => {
+      setInsets(insets);
+      console.log("Safe area insets:", insets);
+    });
+  }, []);
 
   useEffect(() => {
     if (localStorage.getItem("unit")?.toLowerCase() === "imperial") {

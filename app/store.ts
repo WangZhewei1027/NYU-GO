@@ -26,6 +26,13 @@ export type StoreState = {
   setUnit: (unit: "metric" | "imperial") => void;
   enableAutoNearestStop: boolean; // 可选属性，默认为 true
   setEnableAutoNearestStop?: (enable: boolean) => void; // 可选方法
+  insets: { top: number; right: number; bottom: number; left: number } | null; // 安全区域边距
+  setInsets: (insets: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  }) => void; // 可选方法
 };
 
 export const useStore = create<StoreState>()(
@@ -47,5 +54,7 @@ export const useStore = create<StoreState>()(
     enableAutoNearestStop: true, // 默认启用自动最近站点
     setEnableAutoNearestStop: (enable: boolean) =>
       set((state) => ({ enableAutoNearestStop: enable })),
+    insets: null, // 初始安全区域边距为 null
+    setInsets: (insets) => set({ insets }),
   }))
 );

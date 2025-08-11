@@ -30,8 +30,13 @@ export default function Settings() {
     window.location.reload();
   };
 
+  const insets = useStore((state) => state.insets);
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 safe-area">
+    <div
+      className="bg-gray-50 p-4 h-screen overflow-y-auto"
+      style={{ marginTop: insets?.top ?? 0 }}
+    >
       {/* 个人信息卡片 */}
       <div className="flex mb-6 items-center">
         <h1 className="text-3xl font-bold">Settings</h1>

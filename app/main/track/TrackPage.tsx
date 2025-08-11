@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, use } from "react";
 import Card from "@/components/Card/Card";
 import Add from "@/components/Add";
 import Location from "@/components/LocationDrawer/Location";
@@ -88,8 +88,13 @@ export default function TrackPage() {
 
   const MemoizedLocation = useMemo(() => <Location />, []);
 
+  const insets = useStore((state) => state.insets);
+
   return (
-    <div className="p-4 h-screen overflow-y-auto safe-area">
+    <div
+      className="p-4 h-screen overflow-y-auto"
+      style={{ marginTop: insets?.top ?? 0 }}
+    >
       {/* Header */}
       <div className="flex mb-6 items-center">
         <h1 className="text-3xl font-bold">Track</h1>
