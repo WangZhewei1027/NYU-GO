@@ -18,7 +18,7 @@ const BottomNav = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white bg-opacity-50 backdrop-blur-md border-t flex justify-around pt-4 pb-4 shadow-md w-[100vw]">
       {navItems.map((item) => (
-        <Link key={item.name} href={item.href} className="flex-1">
+        <Link key={item.name} href={item.href} className="flex-1" replace>
           <div className={`flex flex-col items-center`}>
             <item.icon
               className={`text-3xl  transition-all duration-500 ${
