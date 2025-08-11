@@ -58,6 +58,8 @@ export default function Location() {
     // const currentLocation = localStorage.getItem("currentLocation") || "";
     // setSelectedStop(currentLocation);
     // updateCurrentLocation(currentLocation);
+    const currentLocation = useStore.getState().currentLocation;
+    setSelectedStop(currentLocation || "-");
   }, []);
 
   // 根据当前位置计算最近站点

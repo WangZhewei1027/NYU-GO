@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useStore } from "@/app/store";
 
-const LocationUpdater = () => {
+function LocationUpdater() {
   const setLocation = useStore((state) => state.setLocation);
 
   useEffect(() => {
@@ -34,6 +34,6 @@ const LocationUpdater = () => {
   }, [setLocation]);
 
   return null; // 不需要渲染 UI
-};
+}
 
 export default LocationUpdater;
