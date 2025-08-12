@@ -286,6 +286,10 @@
 
 - 修复progress bar的颜色
 
+#### 2025.8.12.4
+
+- track页优化api性能
+
 ### 调试相关
 
 #### node version

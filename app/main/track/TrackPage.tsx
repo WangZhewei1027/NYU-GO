@@ -66,25 +66,39 @@ export default function TrackPage() {
     );
   }, []);
 
-  // 初始化时调用 API 获取 alert 消息（使用你自己的端口）
+  // ① 仅负责获取 alert 消息（首轮一次 + 每 60s 刷新），与本地状态无关
   useEffect(() => {
-    fetch("https://nyu-go-backend-production.up.railway.app/alert-messages")
-      .then((res) => res.json())
-      .then((data) => {
+    const controller = new AbortController();
+    const fetchAlerts = async () => {
+      try {
+        const res = await fetch(
+          "https://nyu-go-backend-production.up.railway.app/alert-messages",
+          { signal: controller.signal }
+        );
+        const data = await res.json();
         setAlertData(data);
-      })
-      .catch((error) => {
-        console.error("❌ 获取 alert 消息失败:", error);
-      });
+      } catch (error: any) {
+        if (error?.name !== "AbortError") {
+          console.error("❌ 获取 alert 消息失败:", error);
+        }
+      }
+    };
 
-    // 初始化可见路线
+    fetchAlerts();
+    const alertIntervalId = setInterval(fetchAlerts, 60000); // 每 60s 刷新一次
+
+    return () => {
+      controller.abort();
+      clearInterval(alertIntervalId);
+    };
+  }, []);
+
+  // ② 仅负责本地 visibleRoutes 的轮询检查
+  useEffect(() => {
     updateVisibleRoutes();
-
-    // 设置轮询定时器，每 500ms 检查一次 visibleRoutes
     const intervalId = setInterval(updateVisibleRoutes, 500);
-
     return () => clearInterval(intervalId);
-  }, [updateVisibleRoutes, store]);
+  }, [updateVisibleRoutes]);
 
   const MemoizedLocation = useMemo(() => <Location />, []);
 
