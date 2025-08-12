@@ -60,8 +60,11 @@ export default function ProgressBar({
       className={`relative h-1 w-full rounded-full bg-gray-200 ${className}`}
     >
       <div
-        className={`h-full rounded-full ${routesColor[routeName]?.bgColor} transition-all duration-1000`}
-        style={{ width: `${computedProgress}%` }}
+        className={`h-full rounded-full transition-all duration-1000`}
+        style={{
+          width: `${computedProgress}%`,
+          backgroundColor: routesColor[routeName]?.color || "#000",
+        }}
       ></div>
       <div
         className="absolute text-gray-500 text-sm whitespace-nowrap animate-pulse"

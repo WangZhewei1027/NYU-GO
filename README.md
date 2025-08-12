@@ -282,6 +282,10 @@
 
 - 修复map上icon的颜色
 
+#### 2025.8.12.3
+
+- 修复progress bar的颜色
+
 ### 调试相关
 
 #### node version
