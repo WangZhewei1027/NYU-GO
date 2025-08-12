@@ -23,7 +23,7 @@ const data = [
   { img: "/guide/guide_1.png", description: "Description 5" },
 ];
 
-export function CarouselDApiDemo() {
+function CarouselDApiDemo() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
