@@ -56,6 +56,7 @@ const MarkerIcon = ({
         style={{
           transform: "translateX(-50%)",
           zIndex: -1, // 确保小三角在圆形下方
+          borderBottomColor: routesColor[letter]?.color || "#000", // 使用对应路线颜色
         }}
       ></div>
 
@@ -63,7 +64,8 @@ const MarkerIcon = ({
       <div
         className={`w-8 h-8 flex items-center justify-center rounded-full bg-white border-2 border-gray-800 text-black ${routesColor[letter]?.borderColor} ${routesColor[letter]?.textColor}`}
         style={{
-          boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.25)",
+          boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.45)",
+          borderColor: routesColor[letter]?.color || "#000",
         }}
       >
         {/* 👇 反向旋转中间内容 */}
@@ -71,7 +73,12 @@ const MarkerIcon = ({
           {letter === "ferry" ? (
             <img src="/map/ferry.svg" alt="ferry" className="w-4 h-4" />
           ) : (
-            <span className="font-black">{letter}</span>
+            <span
+              className="font-bold text-lg"
+              style={{ color: routesColor[letter]?.color || "#000" }}
+            >
+              {letter}
+            </span>
           )}
         </div>
       </div>
