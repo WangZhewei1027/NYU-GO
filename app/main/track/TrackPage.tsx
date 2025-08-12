@@ -77,8 +77,8 @@ export default function TrackPage() {
         );
         const data = await res.json();
         setAlertData(data);
-      } catch (error: any) {
-        if (error?.name !== "AbortError") {
+      } catch (error: unknown) {
+        if (error instanceof Error && error.name !== "AbortError") {
           console.error("❌ 获取 alert 消息失败:", error);
         }
       }
