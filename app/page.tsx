@@ -7,7 +7,13 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/main/track");
+    const guide = localStorage.getItem("guideCompleted");
+
+    if (guide === "true") {
+      router.replace("/main/track");
+    } else {
+      router.replace("/guide");
+    }
   }, [router]);
 
   return null;

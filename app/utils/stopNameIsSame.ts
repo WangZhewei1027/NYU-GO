@@ -44,9 +44,9 @@ export default function stopNameIsSame(
     specialStops[stopNameA.trim()] === stopNameB.trim() ||
     specialStops[stopNameB.trim()] === stopNameA.trim()
   ) {
-    console.log(
-      `Special stop match: "${stopNameA}" is considered the same as "${stopNameB}"`
-    );
+    // console.log(
+    //   `Special stop match: "${stopNameA}" is considered the same as "${stopNameB}"`
+    // );
     return true;
   }
   return false;
