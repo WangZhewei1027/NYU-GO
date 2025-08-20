@@ -21,6 +21,8 @@ import {
 import { IoEnterOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
+import Image from "next/image";
+
 const guideData = [
   { img: "/guide/guide_1.jpg", description: "Description 1" },
   { img: "/guide/guide_2.jpg", description: "Description 2" },
@@ -49,7 +51,9 @@ function GuideCarousel() {
             <CarouselItem key={index}>
               <Card className="border-0 shadow-none">
                 <CardContent className="flex flex-col items-center justify-center p-0">
-                  <img
+                  <Image
+                    width={500}
+                    height={500}
                     src={item.img}
                     alt={`Slide ${index + 1}`}
                     className="max-h-[60vh] sm:max-h-[65vh] object-contain"
