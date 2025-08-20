@@ -22,11 +22,11 @@ import { IoEnterOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 const guideData = [
-  { img: "/guide/guide_1.png", description: "Description 1" },
-  { img: "/guide/guide_1.png", description: "Description 2" },
-  { img: "/guide/guide_1.png", description: "Description 3" },
-  { img: "/guide/guide_1.png", description: "Description 4" },
-  { img: "/guide/guide_1.png", description: "Description 5" },
+  { img: "/guide/guide_1.jpg", description: "Description 1" },
+  { img: "/guide/guide_2.jpg", description: "Description 2" },
+  { img: "/guide/guide_3.jpg", description: "Description 3" },
+  { img: "/guide/guide_4.jpg", description: "Description 4" },
+  { img: "/guide/guide_5.jpg", description: "Description 5" },
 ];
 
 function GuideCarousel() {
@@ -56,11 +56,11 @@ function GuideCarousel() {
                   />
                 </CardContent>
               </Card>
-              <div className="w-full flex items-center justify-center mt-4">
+              {/* <div className="w-full flex items-center justify-center mt-4">
                 <span className="text-lg text-gray-500">
                   {item.description}
                 </span>
-              </div>
+              </div> */}
             </CarouselItem>
           ))}
         </CarouselContent>

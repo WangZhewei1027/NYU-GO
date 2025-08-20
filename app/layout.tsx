@@ -65,7 +65,6 @@ export default function RootLayout({
         />
         <LocationUpdater />
         <Initialization />
-        <div className="safe-area-debug"></div>
         {children}
       </body>
     </html>
