@@ -126,7 +126,7 @@ export default function AboutSidebar({ open, onClose }: UpdateLogSidebarProps) {
 
             {/* 内容区域 */}
             <div className="p-4 overflow-y-auto flex-1">
-              <div className="space-y-6 text-sm leading-6 text-gray-700">
+              <div className="space-y-6 text-sm leading-6 text-gray-700 mt-6">
                 <section>
                   <h3 className="text-base font-semibold text-gray-900 mb-2">
                     About This App
