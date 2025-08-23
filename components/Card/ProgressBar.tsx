@@ -63,7 +63,7 @@ export default function ProgressBar({
         className={`h-full rounded-full transition-all duration-1000`}
         style={{
           width: `${computedProgress}%`,
-          backgroundColor: routesColor[routeName]?.color || "#000",
+          backgroundColor: routesColor[routeName]?.color || "#1DADAF",
         }}
       ></div>
       <div
