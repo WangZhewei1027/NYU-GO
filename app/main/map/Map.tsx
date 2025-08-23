@@ -117,7 +117,7 @@ export default function Map() {
 
   return (
     <MapContainer
-      center={[40.73, -73.99]} // 纽约中心点
+      center={[40.7, -73.99]} // 纽约中心点
       zoom={14}
       zoomAnimation={true}
       zoomAnimationThreshold={1}
