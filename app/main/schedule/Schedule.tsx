@@ -6,6 +6,7 @@ import ProgressBar from "@/components/Card/ProgressBar";
 import { useStore, StoreState } from "@/app/store";
 import { MdArrowForwardIos } from "react-icons/md";
 import UpdateLogSidebar from "./UpdateLogSidebar";
+import AboutSidebar from "./AboutSideBar";
 
 import {
   AlertDialog,
@@ -34,6 +35,7 @@ export default function Settings() {
 
   const insets = useStore((state) => state.insets);
   const [isLogOpen, setIsLogOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   return (
     <>
@@ -61,6 +63,26 @@ export default function Settings() {
             <MdArrowForwardIos className="align-middle text-gray-500" />
           </button>
         </div>
+        <UpdateLogSidebar
+          open={isLogOpen}
+          onClose={() => setIsLogOpen(false)}
+        />
+
+        {/* 关于应用 */}
+        <div className="mt-6"></div>
+        <div className="text-base text-gray-500 ml-4 mb-1">About</div>
+        <button
+          type="button"
+          onClick={() => setIsAboutOpen(true)}
+          className="bg-white rounded-lg p-4 mb-4 text-lg w-full text-left font-semibold flex justify-between items-center focus:outline-none"
+        >
+          <span>About This App</span>
+          <MdArrowForwardIos className="align-middle text-gray-500" />
+        </button>
+        <AboutSidebar
+          open={isAboutOpen}
+          onClose={() => setIsAboutOpen(false)}
+        />
 
         {/* 清除 Local Storage 和 Cache 的按钮 */}
         <div className="mt-6">
@@ -92,7 +114,6 @@ export default function Settings() {
           </AlertDialog>
         </div>
       </div>
-      <UpdateLogSidebar open={isLogOpen} onClose={() => setIsLogOpen(false)} />
     </>
   );
 }
