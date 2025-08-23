@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MdOutlineArrowBackIos } from "react-icons/md";
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getSchedule } from "@/app/utils/utils";
 import { MdOutlineArrowForward } from "react-icons/md";
 import FullStops from "./FullStops";
@@ -32,12 +32,76 @@ export default function Sidebar({
 
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
-  // **让 Sidebar 打开时自动获取焦点**
+  // Lock background scroll when sidebar is open (handles iOS/Safari too)
   useEffect(() => {
-    if (isOpen && sidebarRef.current) {
-      sidebarRef.current.focus();
-    }
+    if (!isOpen) return;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+    };
   }, [isOpen]);
+
+  // Move focus into the sidebar on open (prefer close/back button if present)
+  useEffect(() => {
+    if (!isOpen) return;
+    const id = window.setTimeout(() => {
+      const closeBtn = sidebarRef.current?.querySelector<HTMLElement>(
+        'button[aria-label="Close"], [data-sidebar-close]'
+      );
+      if (closeBtn) closeBtn.focus();
+      else sidebarRef.current?.focus();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [isOpen]);
+
+  // Focus trap + Esc to close
+  useEffect(() => {
+    if (!isOpen) return;
+    const el = sidebarRef.current;
+    if (!el) return;
+
+    const selector = [
+      "a[href]",
+      "button:not([disabled])",
+      "textarea:not([disabled])",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(",");
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      if (!el) return;
+      const focusables = Array.from(el.querySelectorAll<HTMLElement>(selector));
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    el.addEventListener("keydown", onKeyDown);
+    return () => el.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
 
   // **获取时刻表**
   useEffect(() => {
@@ -84,13 +148,20 @@ export default function Sidebar({
   return (
     <>
       {/* 背景遮罩层 - 不能点击关闭 */}
-      {isOpen && <div className="fixed inset-0 bg-black/50 z-40 !mt-0" />}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 !mt-0"
+          onTouchMove={(e) => e.preventDefault()}
+        />
+      )}
 
       {/* 侧边栏 - 可手势拖动关闭 */}
       <motion.div
         ref={sidebarRef}
         tabIndex={-1} // 让 Sidebar 可聚焦
-        className="fixed !top-0 !mt-0 right-0 h-full w-full bg-white z-50 outline-none flex flex-col safe-area"
+        className="fixed !top-0 !mt-0 right-0 h-full w-full bg-white z-50 outline-none flex flex-col safe-area overscroll-contain"
+        role="dialog"
+        aria-modal="true"
         initial={{ x: "100%" }}
         animate={{ x: isOpen ? 0 : "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -105,13 +176,16 @@ export default function Sidebar({
       >
         {/* 顶部返回按钮 */}
         <div className="p-4 flex items-center">
-          <MdOutlineArrowBackIos
-            className="cursor-pointer text-2xl"
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 text-base font-semibold"
+            aria-label="Close"
+            data-sidebar-close
             onClick={onClose}
-          />
-          <span className="text-lg ml-2 font-bold" onClick={onClose}>
-            Back
-          </span>
+          >
+            <MdOutlineArrowBackIos className="text-2xl" />
+            <span>Back</span>
+          </button>
         </div>
 
         {/* 标题 */}
