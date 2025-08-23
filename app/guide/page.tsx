@@ -14,12 +14,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { IoEnterOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 const data = [
-  { img: "/onboarding/onboarding1.mp4", description: "Description 1" },
-  { img: "/onboarding/onboarding2.mp4", description: "Description 2" },
-  { img: "/onboarding/onboarding3.mp4", description: "Description 3" },
+  { img: "/onboarding/onboarding1.gif", description: "Description 1" },
+  { img: "/onboarding/onboarding2.gif", description: "Description 2" },
+  { img: "/onboarding/onboarding3.gif", description: "Description 3" },
 ];
 
 function CarouselDApiDemo() {
@@ -50,12 +49,10 @@ function CarouselDApiDemo() {
             <CarouselItem key={index}>
               <Card className="border-0 shadow-none">
                 <CardContent className="flex flex-col items-center justify-center p-0">
-                  <video
+                  <img
                     src={item.img}
+                    alt={`Slide ${index + 1}`}
                     className="max-h-[70vh] object-contain"
-                    autoPlay
-                    loop
-                    muted
                   />
                 </CardContent>
               </Card>
