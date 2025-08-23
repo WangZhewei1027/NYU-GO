@@ -4,6 +4,7 @@ import "./globals.css";
 import LocationUpdater from "@/components/LocationUpdater";
 import Script from "next/script";
 import Initialization from "@/components/Initialization";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
