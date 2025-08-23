@@ -5,6 +5,7 @@ import LocationUpdater from "@/components/LocationUpdater";
 import Script from "next/script";
 import Initialization from "@/components/Initialization";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SpeedInsights />
+        <Analytics />
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-3F9SX1ZT04"
