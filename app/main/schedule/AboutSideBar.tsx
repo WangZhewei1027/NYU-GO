@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export interface UpdateLogSidebarProps {
@@ -8,6 +9,80 @@ export interface UpdateLogSidebarProps {
 }
 
 export default function AboutSidebar({ open, onClose }: UpdateLogSidebarProps) {
+  const asideRef = useRef<HTMLDivElement | null>(null);
+
+  // Prevent background scroll when open (also handles iOS/Safari)
+  useEffect(() => {
+    if (!open) return;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+    };
+  }, [open]);
+
+  // Move focus into the sidebar on open
+  useEffect(() => {
+    if (!open) return;
+    const id = window.setTimeout(() => {
+      // try focus close button first, fallback to container
+      const closeBtn = asideRef.current?.querySelector<HTMLButtonElement>(
+        'button[aria-label="Close"]'
+      );
+      if (closeBtn) closeBtn.focus();
+      else asideRef.current?.focus();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [open]);
+
+  // Simple focus trap inside the sidebar
+  useEffect(() => {
+    if (!open) return;
+    const el = asideRef.current;
+    if (!el) return;
+
+    const selector = [
+      "a[href]",
+      "button:not([disabled])",
+      "textarea:not([disabled])",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(",");
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      if (!el) return;
+      const focusables = Array.from(el.querySelectorAll<HTMLElement>(selector));
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    el.addEventListener("keydown", onKeyDown);
+    return () => el.removeEventListener("keydown", onKeyDown);
+  }, [open, onClose]);
+
   return (
     <AnimatePresence>
       {open && (
@@ -29,9 +104,12 @@ export default function AboutSidebar({ open, onClose }: UpdateLogSidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 35 }}
-            className="fixed top-0 right-0 h-full w-[100vw] max-w-md bg-white shadow-xl z-50 flex flex-col"
+            className="fixed top-0 right-0 h-full w-[100vw] max-w-md bg-white shadow-xl z-50 flex flex-col overscroll-contain"
             role="dialog"
             aria-label="About Sidebar"
+            aria-modal="true"
+            ref={asideRef}
+            tabIndex={-1}
           >
             {/* 顶部标题 & 关闭按钮 */}
             <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
