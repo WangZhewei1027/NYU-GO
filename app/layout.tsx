@@ -4,6 +4,7 @@ import "./globals.css";
 import LocationUpdater from "@/components/LocationUpdater";
 import Script from "next/script";
 import Initialization from "@/components/Initialization";
+import AIChatWidget from "@/components/AIChat/AIChatWidget";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -69,6 +70,7 @@ export default function RootLayout({
         />
         <LocationUpdater />
         <Initialization />
+        <AIChatWidget />
         {children}
       </body>
     </html>
