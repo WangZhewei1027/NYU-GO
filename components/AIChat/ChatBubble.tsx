@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import Draggable, { DraggableEvent, DraggableData } from "react-draggable";
 import { MessageCircle } from "lucide-react";
 
 interface ChatBubbleProps {
@@ -9,171 +9,135 @@ interface ChatBubbleProps {
 }
 
 export default function ChatBubble({ onClick }: ChatBubbleProps) {
-  const bubbleRef = useRef<HTMLButtonElement>(null);
+  const nodeRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
-  const dragOffsetRef = useRef({ x: 0, y: 0 });
-  const positionRef = useRef({ bottom: 128, right: 24 });
-  const rafIdRef = useRef<number | null>(null);
+  const dragStartPosRef = useRef({ x: 0, y: 0 });
+  const clickTimeRef = useRef(0);
+  const [isMounted, setIsMounted] = useState(false);
+  const [controlledPosition, setControlledPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const [isSnapping, setIsSnapping] = useState(false);
 
-  const updatePosition = (clientX: number, clientY: number) => {
-    if (!bubbleRef.current) return;
+  // 等待组件挂载后再渲染
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-    if (rafIdRef.current) {
-      cancelAnimationFrame(rafIdRef.current);
+  // 计算初始位置
+  const getDefaultPosition = () => {
+    if (typeof window === "undefined") return { x: 0, y: 0 };
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    return {
+      x: windowWidth - 72, // right: 24px + button size 48px
+      y: windowHeight - 176, // bottom: 128px + button size 48px
+    };
+  };
+
+  const handleDragStart = (e: DraggableEvent, data: DraggableData) => {
+    // 记录拖动起始位置和时间
+    dragStartPosRef.current = { x: data.x, y: data.y };
+    clickTimeRef.current = Date.now();
+    isDraggingRef.current = false;
+  };
+
+  const handleDrag = (e: DraggableEvent, data: DraggableData) => {
+    // 计算移动距离，如果移动超过5px才算真正拖动
+    const deltaX = Math.abs(data.x - dragStartPosRef.current.x);
+    const deltaY = Math.abs(data.y - dragStartPosRef.current.y);
+
+    if (deltaX > 5 || deltaY > 5) {
+      isDraggingRef.current = true;
+    }
+  };
+
+  const handleDragStop = (e: DraggableEvent, data: DraggableData) => {
+    const wasDragging = isDraggingRef.current;
+    const clickDuration = Date.now() - clickTimeRef.current;
+    const deltaX = Math.abs(data.x - dragStartPosRef.current.x);
+    const deltaY = Math.abs(data.y - dragStartPosRef.current.y);
+
+    // 如果没有真正拖动且时间短、移动距离小，视为点击
+    if (!wasDragging && clickDuration < 300 && deltaX < 5 && deltaY < 5) {
+      isDraggingRef.current = false;
+      onClick();
+      return;
     }
 
-    rafIdRef.current = requestAnimationFrame(() => {
-      if (!bubbleRef.current) return;
-
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const buttonSize = 48;
-
-      let newRight = windowWidth - clientX - dragOffsetRef.current.x;
-      let newBottom = windowHeight - clientY - dragOffsetRef.current.y;
-
-      newRight = Math.max(8, Math.min(windowWidth - buttonSize - 8, newRight));
-      newBottom = Math.max(
-        8,
-        Math.min(windowHeight - buttonSize - 8, newBottom)
-      );
-
-      positionRef.current = { bottom: newBottom, right: newRight };
-      bubbleRef.current.style.bottom = `${newBottom}px`;
-      bubbleRef.current.style.right = `${newRight}px`;
-    });
-  };
-
-  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!bubbleRef.current) return;
-
-    const rect = bubbleRef.current.getBoundingClientRect();
-    dragOffsetRef.current = {
-      x: e.clientX - rect.right,
-      y: e.clientY - rect.bottom,
-    };
-    isDraggingRef.current = true;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      if (!isDraggingRef.current) return;
-      updatePosition(e.clientX, e.clientY);
-    };
-
-    const handleMouseUp = (e: MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
+    // 如果没有真正拖动，直接重置状态并返回
+    if (!wasDragging) {
       isDraggingRef.current = false;
-      snapToEdge();
-      document.removeEventListener("mousemove", handleMouseMove, {
-        capture: true,
-      } as any);
-      document.removeEventListener("mouseup", handleMouseUp, {
-        capture: true,
-      } as any);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove, {
-      passive: false,
-      capture: true,
-    });
-    document.addEventListener("mouseup", handleMouseUp, { capture: true });
-  };
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!bubbleRef.current) return;
-
-    const rect = bubbleRef.current.getBoundingClientRect();
-    const touch = e.touches[0];
-    dragOffsetRef.current = {
-      x: touch.clientX - rect.right,
-      y: touch.clientY - rect.bottom,
-    };
-    isDraggingRef.current = true;
-
-    const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      if (!isDraggingRef.current || !e.touches[0]) return;
-      updatePosition(e.touches[0].clientX, e.touches[0].clientY);
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      isDraggingRef.current = false;
-      snapToEdge();
-      document.removeEventListener("touchmove", handleTouchMove, {
-        capture: true,
-      } as any);
-      document.removeEventListener("touchend", handleTouchEnd, {
-        capture: true,
-      } as any);
-    };
-
-    document.addEventListener("touchmove", handleTouchMove, {
-      passive: false,
-      capture: true,
-    });
-    document.addEventListener("touchend", handleTouchEnd, { capture: true });
-  };
-
-  const snapToEdge = () => {
-    if (!bubbleRef.current) return;
+      return;
+    }
 
     const windowWidth = window.innerWidth;
-    const buttonCenterX = windowWidth - positionRef.current.right - 24;
+    const windowHeight = window.innerHeight;
+    const buttonSize = 48;
+    const margin = 8;
 
-    let newRight: number;
+    // 计算按钮中心点
+    const buttonCenterX = data.x + buttonSize / 2;
+    const buttonCenterY = data.y + buttonSize / 2;
+
+    // 确保按钮在可视区域内
+    let finalX = data.x;
+    let finalY = data.y;
+
+    // 限制在垂直方向
+    finalY = Math.max(
+      margin,
+      Math.min(windowHeight - buttonSize - margin, finalY)
+    );
+
+    // 判断靠近哪一边（左边还是右边）
+    setIsSnapping(true);
     if (buttonCenterX < windowWidth / 2) {
-      newRight = windowWidth - 56;
+      // 吸附到左边
+      finalX = margin;
     } else {
-      newRight = 8;
+      // 吸附到右边
+      finalX = windowWidth - buttonSize - margin;
     }
 
-    positionRef.current.right = newRight;
-    bubbleRef.current.style.transition = "right 0.3s ease-out";
-    bubbleRef.current.style.right = `${newRight}px`;
+    setControlledPosition({ x: finalX, y: finalY });
 
+    // 动画完成后移除snapping状态
     setTimeout(() => {
-      if (bubbleRef.current) {
-        bubbleRef.current.style.transition = "";
-      }
+      setIsSnapping(false);
+      isDraggingRef.current = false;
     }, 300);
   };
 
-  const handleBubbleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!isDraggingRef.current) {
-      onClick();
-    }
-  };
+  // 如果还没挂载，不渲染任何内容
+  if (!isMounted) {
+    return null;
+  }
 
   return (
-    <button
-      ref={bubbleRef}
-      onClick={handleBubbleClick}
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
-      style={{
-        bottom: `${positionRef.current.bottom}px`,
-        right: `${positionRef.current.right}px`,
-        willChange: "bottom, right",
-      }}
-      className="fixed z-50 h-12 w-12 rounded-full bg-egg-blue-500 text-white shadow-xl hover:shadow-2xl hover:scale-110 cursor-grab active:cursor-grabbing active:scale-110 flex items-center justify-center"
-      aria-label="Open chat"
+    <Draggable
+      nodeRef={nodeRef}
+      defaultPosition={getDefaultPosition()}
+      position={controlledPosition || undefined}
+      onStart={handleDragStart}
+      onDrag={handleDrag}
+      onStop={handleDragStop}
     >
-      <MessageCircle className="h-5 w-5" />
-    </button>
+      <div
+        ref={nodeRef}
+        className="fixed z-50"
+        style={{
+          transition: isSnapping ? "transform 0.3s ease-out" : "none",
+        }}
+      >
+        <button
+          className="h-12 w-12 rounded-full bg-egg-blue-500 text-white shadow-xl hover:shadow-2xl hover:scale-110 cursor-grab active:cursor-grabbing active:scale-110 flex items-center justify-center"
+          aria-label="Open chat"
+        >
+          <MessageCircle className="h-5 w-5" />
+        </button>
+      </div>
+    </Draggable>
   );
 }
