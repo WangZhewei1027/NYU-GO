@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 const specialStops: { [key: string]: string } = {
   "Cleveland & Spring St.": "Cleveland Pl & Spring St.",
   "80 Lafayette Street": "80 Lafayette St.",

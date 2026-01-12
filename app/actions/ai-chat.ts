@@ -56,6 +56,7 @@ Be friendly, concise, and helpful. If you don't know something specific about th
   const readableStream = new ReadableStream({
     async start(controller) {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         for await (const chunk of stream as any) {
           const content = chunk.choices?.[0]?.delta?.content || "";
           if (content) {
