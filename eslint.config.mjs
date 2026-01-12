@@ -12,6 +12,11 @@ export default [
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   {
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
       "react/react-in-jsx-scope": "off",
