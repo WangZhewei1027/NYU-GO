@@ -77,53 +77,77 @@ export default function UpdateLogSidebar({
     el.addEventListener("keydown", onKeyDown);
     return () => el.removeEventListener("keydown", onKeyDown);
   }, [open]);
+
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* 半透明遮罩 */}
+          {/* 背景遮罩 */}
           <motion.div
             key="overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/40 z-40"
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
             onClick={onClose}
           />
-          {/* 右侧抽屉 */}
+
+          {/* 侧边栏 */}
           <motion.aside
             key="sidebar"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 35 }}
-            className="fixed top-0 right-0 h-full w-[100vw] max-w-md bg-white shadow-xl z-50 flex flex-col overscroll-contain"
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed top-0 right-0 h-full w-[100vw] max-w-md bg-gradient-to-b from-gray-50 to-white shadow-2xl z-50 flex flex-col overscroll-contain"
             role="dialog"
             aria-label="Update Log Sidebar"
             aria-modal="true"
             ref={asideRef}
             tabIndex={-1}
           >
-            {/* 顶部标题 & 关闭按钮 */}
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-xl font-bold">Update Log</h2>
-              <button
-                type="button"
-                className="text-gray-500 hover:text-gray-800 text-2xl leading-none"
-                onClick={onClose}
-                aria-label="Close"
-              >
-                ×
-              </button>
+            {/* 顶部区域 */}
+            <div className="relative px-6 pt-6 pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-[#1DADAF] to-[#4cb5b7] bg-clip-text text-transparent">
+                    Update Log
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    View latest features and improvements
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                  onClick={onClose}
+                  aria-label="Close"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* 内容区域 */}
-            <div className="p-4 overflow-y-auto flex-1">
+            <div className="flex-1 overflow-y-auto px-6 pb-6">
               {updateLog.length > 0 ? (
                 <div className="relative">
-                  {/* 时间线竖线 */}
-                  <div className="absolute left-3 top-0 bottom-0 w-px bg-gray-200" />
+                  {/* 时间线 */}
+                  <div className="absolute left-[13px] top-3 bottom-0 w-0.5 bg-gradient-to-b from-[#1DADAF]/30 via-[#4cb5b7]/20 to-transparent" />
+
                   <ul className="space-y-6">
                     {updateLog
                       .sort(
@@ -133,36 +157,77 @@ export default function UpdateLogSidebar({
                       )
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       .map((log: any, index: number) => (
-                        <li key={index} className="relative pl-10">
+                        <motion.li
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          className="relative pl-12"
+                        >
                           {/* 时间线节点 */}
-                          <span className="absolute left-0 top-1.5 h-6 w-6 rounded-full bg-white ring-2 ring-[#1DADAF] flex items-center justify-center">
-                            <span className="h-2.5 w-2.5 rounded-full bg-[#4cb5b7]" />
-                          </span>
+                          <div className="absolute left-2 top-6">
+                            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-[#1DADAF] to-[#4cb5b7] shadow-lg shadow-[#1DADAF]/30 flex items-center justify-center">
+                              <div className="w-2 h-2 rounded-full bg-white" />
+                            </div>
+                          </div>
 
                           {/* 卡片 */}
-                          <div className="rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex items-center justify-between p-3 border-b">
-                              <div className="flex items-center gap-2">
-                                <span className="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold">
-                                  v{log.version}
-                                </span>
-                              </div>
-                              <time className="text-xs text-gray-500">
+                          <div className="group relative bg-white rounded-xl p-4 hover:shadow-lg transition-all duration-300 border border-gray-100">
+                            {/* 版本和日期 */}
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-[#1DADAF]/10 to-[#4cb5b7]/10 text-[#1DADAF] font-semibold text-sm">
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                v{log.version}
+                              </span>
+                              <time className="text-xs text-gray-400 font-medium">
                                 {log.date}
                               </time>
                             </div>
-                            <ul className="p-4 list-disc list-inside space-y-1 text-gray-700 text-sm">
+
+                            {/* 更新内容 */}
+                            <ul className="space-y-2">
                               {log.content.map((item: string, idx: number) => (
-                                <li key={idx}>{item}</li>
+                                <li
+                                  key={idx}
+                                  className="flex items-start gap-2 text-sm text-gray-700"
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#1DADAF] mt-1.5 flex-shrink-0" />
+                                  <span className="flex-1">{item}</span>
+                                </li>
                               ))}
                             </ul>
                           </div>
-                        </li>
+                        </motion.li>
                       ))}
                   </ul>
                 </div>
               ) : (
-                <div className="text-gray-600">No updates yet.</div>
+                <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+                  <svg
+                    className="w-16 h-16 mb-4 opacity-50"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  <p className="text-sm">No updates yet</p>
+                </div>
               )}
             </div>
           </motion.aside>
