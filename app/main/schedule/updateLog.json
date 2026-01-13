@@ -1,5 +1,19 @@
 [
     {
+        "date": "2026-01-13",
+        "version": "1.0.2",
+        "content": [
+            "Introduce AI chatbox."
+        ]
+    },
+    {
+        "date": "2026-01-13",
+        "version": "1.0.1",
+        "content": [
+            "Update about page and log page."
+        ]
+    },
+    {
         "date": "2025-08-23",
         "version": "1.0.0",
         "content": [
