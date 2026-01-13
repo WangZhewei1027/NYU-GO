@@ -42,7 +42,7 @@ Be friendly, concise, and helpful. If you don't know something specific about th
 
   // Call the AI streaming API
   const stream = await callAIStream(
-    process.env.OPENAI_MODEL || "gpt-5-mini",
+    process.env.OPENAI_MODEL || "gpt-4o-mini",
     userPrompt,
     systemPrompt,
     {
