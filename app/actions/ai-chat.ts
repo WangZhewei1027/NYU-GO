@@ -1,6 +1,6 @@
 "use server";
 
-import { callAIStream } from "@/lib/ai-api.mjs";
+import { callAIStream } from "@/lib/ai-api.js";
 
 interface Message {
   role: "user" | "assistant";
