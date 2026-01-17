@@ -9,7 +9,7 @@ interface Message {
 
 export async function streamAIResponse(
   message: string,
-  history: Message[]
+  history: Message[],
 ): Promise<ReadableStream> {
   if (!message || typeof message !== "string") {
     throw new Error("Message is required");
@@ -22,7 +22,8 @@ export async function streamAIResponse(
     const recentHistory = history.slice(-10);
     conversationContext = recentHistory
       .map(
-        (msg) => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`
+        (msg) =>
+          `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`,
       )
       .join("\n");
   }
@@ -34,7 +35,16 @@ You can help users with:
 - Tracking shuttle locations
 - General questions about NYU transportation
 
-Be friendly, concise, and helpful. If you don't know something specific about the app, be honest about it.`;
+Be friendly, concise, and helpful. If you don't know something specific about the app, be honest about it.
+
+App Instructions:
+- The NYU-GO app provides real-time tracking of NYU shuttle buses.
+- Users can view bus locations on a map, see estimated arrival times, and get route information.
+- Add routes to home screen to track shuttle buses.
+- The remaining time shown is an estimate and may vary due to traffic conditions. And it means the time left for the shuttle to arrive at the selected stop (on top of the home screen).
+- You can mark stops as favorites for quick access.
+
+`;
 
   const userPrompt = conversationContext
     ? `${conversationContext}\nUser: ${message}`
@@ -48,7 +58,7 @@ Be friendly, concise, and helpful. If you don't know something specific about th
     {
       temperature: 0.7,
       max_tokens: 1000,
-    }
+    },
   );
 
   // Create a readable stream
