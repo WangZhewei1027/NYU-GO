@@ -306,9 +306,15 @@ export async function getAllStops(): Promise<StopRoute> {
   return obj;
 }
 
+// 缓存 stops_data.csv，静态文件只需加载一次
+let stopsDataCache: RouteStop[] | null = null;
+let stopsDataPromise: Promise<RouteStop[]> | null = null;
+
 async function getStopsData(): Promise<RouteStop[]> {
-  let data: RouteStop[] = [];
-  await fetch("/stops_data.csv")
+  if (stopsDataCache) return stopsDataCache;
+  if (stopsDataPromise) return stopsDataPromise;
+
+  stopsDataPromise = fetch("/stops_data.csv")
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -316,23 +322,28 @@ async function getStopsData(): Promise<RouteStop[]> {
       return response.text();
     })
     .then((csvText) => {
-      Papa.parse<{ stop: string; time: string }>(csvText, {
-        header: true, // 如果 CSV 包含表头
-        skipEmptyLines: true, // 跳过空行
-        complete: (results) => {
-          //console.log("Parsed CSV Data:", results.data);
-          data = results.data as unknown as RouteStop[];
-        },
-        error: (error: Error) => {
-          console.warn("Error parsing CSV:", error);
-        },
+      return new Promise<RouteStop[]>((resolve) => {
+        Papa.parse<{ stop: string; time: string }>(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            stopsDataCache = results.data as unknown as RouteStop[];
+            resolve(stopsDataCache);
+          },
+          error: (error: Error) => {
+            console.warn("Error parsing CSV:", error);
+            resolve([]);
+          },
+        });
       });
     })
     .catch((error) => {
       console.warn("Error fetching CSV:", error);
+      stopsDataPromise = null;
+      return [];
     });
 
-  return data;
+  return stopsDataPromise;
 }
 
 export async function getThisRouteStops(route: string): Promise<string[]> {
