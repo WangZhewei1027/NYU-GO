@@ -36,6 +36,8 @@ export type StoreState = {
   visibleRoutes: string[]; // 用户选择的可见线路
   setVisibleRoutes: (routes: string[]) => void;
   toggleRoute: (route: string) => void;
+  lastSeenVersion: string; // 上次看到的版本号
+  setLastSeenVersion: (version: string) => void;
 };
 
 export const useStore = create<StoreState>()(
@@ -69,10 +71,16 @@ export const useStore = create<StoreState>()(
               ? state.visibleRoutes.filter((r) => r !== route)
               : [...state.visibleRoutes, route],
           })),
+        lastSeenVersion: "0.0.0",
+        setLastSeenVersion: (version: string) =>
+          set({ lastSeenVersion: version }),
       }),
       {
         name: "nyu-go-store",
-        partialize: (state) => ({ visibleRoutes: state.visibleRoutes }),
+        partialize: (state) => ({
+          visibleRoutes: state.visibleRoutes,
+          lastSeenVersion: state.lastSeenVersion,
+        }),
       },
     ),
   ),

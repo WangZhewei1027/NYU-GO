@@ -1,5 +1,12 @@
 [
     {
+        "date": "2026-03-17",
+        "version": "1.0.3",
+        "content": [
+            "Fix some bugs and improve the performance."
+        ]
+    },
+    {
         "date": "2026-01-13",
         "version": "1.0.2",
         "content": [
