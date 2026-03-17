@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import useShuttleData from "@/app/utils/useShuttleData";
 
 // ✅ 让 ShuttleMap 仅在客户端渲染
 const TrackPage = dynamic(() => import("@/app/main/track/TrackPage"), {
@@ -9,7 +8,5 @@ const TrackPage = dynamic(() => import("@/app/main/track/TrackPage"), {
 });
 
 export default function Page() {
-  const shuttleData = useShuttleData();
-
   return <TrackPage />;
 }

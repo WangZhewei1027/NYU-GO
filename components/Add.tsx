@@ -13,29 +13,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
 import { MdCheckBox } from "react-icons/md";
+import { useStore } from "@/app/store";
 
 function RouteItem({ route, promo }: { route: string; promo: string }) {
-  const [selected, setSelected] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem(route) === "true") {
-      setSelected(true);
-    } else {
-      setSelected(false);
-    }
-  }, []);
+  const visibleRoutes = useStore((state) => state.visibleRoutes);
+  const toggleRoute = useStore((state) => state.toggleRoute);
+  const selected = visibleRoutes.includes(route);
 
   return (
     <div
       className={`w-full h-40 shadow rounded p-4 flex flex-col transition-all ${
         selected ? "bg-egg-blue-400 text-white" : "bg-white text-black"
       }`}
-      onClick={() => {
-        setSelected(!selected);
-        localStorage.setItem(route, (!selected).toString());
-      }}
+      onClick={() => toggleRoute(route)}
     >
       <div className="flex flex-row items-center">
         <span className="text-lg font-bold">Route {route}</span>

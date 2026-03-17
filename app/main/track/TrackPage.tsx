@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useMemo, useCallback, use } from "react";
+import React, { useMemo } from "react";
 import Card from "@/components/Card/Card";
 import Add from "@/components/Add";
 import Location from "@/components/LocationDrawer/Location";
-import { useStore, StoreState } from "@/app/store";
+import { useStore } from "@/app/store";
 import { memo } from "react";
 import AlertBell from "@/components/AlertBell";
 import InstallGuide from "@/components/InstallGuide";
@@ -22,34 +22,7 @@ const routes = [
 const MemoizedCard = memo(Card);
 
 export default function TrackPage() {
-  const [visibleRoutes, setVisibleRoutes] = useState<string[]>([]);
-
-  const store: StoreState = useStore() as StoreState;
-
-  // 只在 localStorage 变化时更新 visibleRoutes
-  const visibleRoutesMemo = useMemo(() => {
-    return routes
-      .map((route) => route.name)
-      .filter((name) => localStorage.getItem(name) === "true");
-  }, [visibleRoutes]);
-
-  // 用 useCallback 避免 setState 触发多次渲染
-  const updateVisibleRoutes = useCallback(() => {
-    const visible = routes
-      .map((route) => route.name)
-      .filter((name) => localStorage.getItem(name) === "true");
-
-    setVisibleRoutes((prev) =>
-      JSON.stringify(prev) === JSON.stringify(visible) ? prev : visible
-    );
-  }, []);
-
-  // ② 仅负责本地 visibleRoutes 的轮询检查
-  useEffect(() => {
-    updateVisibleRoutes();
-    const intervalId = setInterval(updateVisibleRoutes, 500);
-    return () => clearInterval(intervalId);
-  }, [updateVisibleRoutes]);
+  const visibleRoutes = useStore((state) => state.visibleRoutes);
 
   const MemoizedLocation = useMemo(() => <Location />, []);
 
@@ -78,9 +51,9 @@ export default function TrackPage() {
       <div className="space-y-6">
         {routes.map(
           (route, index) =>
-            visibleRoutesMemo.includes(route.name) && (
+            visibleRoutes.includes(route.name) && (
               <MemoizedCard name={route.name} key={index} />
-            )
+            ),
         )}
         <div className="flex justify-center items-center">
           <div className="w-32">

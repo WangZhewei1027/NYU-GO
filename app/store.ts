@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { BusInfo } from "./utils/getBusInfo";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 import initStopsData from "@/app/utils/initStopsData";
 import { StopRoute, Position } from "@/types";
@@ -33,28 +33,47 @@ export type StoreState = {
     bottom: number;
     left: number;
   }) => void; // 可选方法
+  visibleRoutes: string[]; // 用户选择的可见线路
+  setVisibleRoutes: (routes: string[]) => void;
+  toggleRoute: (route: string) => void;
 };
 
 export const useStore = create<StoreState>()(
-  devtools((set) => ({
-    isInitialized: false, // 初始状态为未初始化
-    setIsInitialized: (isInitialized: boolean) => set({ isInitialized }),
-    location: { latitude: 0, longitude: 0 }, // 默认位置
-    stopsData: initStopsData(),
-    setLocation: (location: Position) => set({ location }),
-    personalData: {},
-    setPersonalData: (data: PersonalData) => set({ personalData: data }),
-    currentLocation: "",
-    updateCurrentLocation: (newLocation: string) =>
-      set({ currentLocation: newLocation }),
-    shuttleData: {},
-    setShuttleData: (data: BusInfo) => set({ shuttleData: data }),
-    unit: "metric", // 默认单位为公制
-    setUnit: (unit: "metric" | "imperial") => set({ unit }),
-    enableAutoNearestStop: true, // 默认启用自动最近站点
-    setEnableAutoNearestStop: (enable: boolean) =>
-      set((state) => ({ enableAutoNearestStop: enable })),
-    insets: null, // 初始安全区域边距为 null
-    setInsets: (insets) => set({ insets }),
-  }))
+  devtools(
+    persist(
+      (set) => ({
+        isInitialized: false, // 初始状态为未初始化
+        setIsInitialized: (isInitialized: boolean) => set({ isInitialized }),
+        location: { latitude: 0, longitude: 0 }, // 默认位置
+        stopsData: initStopsData(),
+        setLocation: (location: Position) => set({ location }),
+        personalData: { name: "", staredStops: [] },
+        setPersonalData: (data: PersonalData) => set({ personalData: data }),
+        currentLocation: "",
+        updateCurrentLocation: (newLocation: string) =>
+          set({ currentLocation: newLocation }),
+        shuttleData: {},
+        setShuttleData: (data: BusInfo) => set({ shuttleData: data }),
+        unit: "metric", // 默认单位为公制
+        setUnit: (unit: "metric" | "imperial") => set({ unit }),
+        enableAutoNearestStop: true, // 默认启用自动最近站点
+        setEnableAutoNearestStop: (enable: boolean) =>
+          set((state) => ({ enableAutoNearestStop: enable })),
+        insets: null, // 初始安全区域边距为 null
+        setInsets: (insets) => set({ insets }),
+        visibleRoutes: [], // 用户选择的可见线路
+        setVisibleRoutes: (routes: string[]) => set({ visibleRoutes: routes }),
+        toggleRoute: (route: string) =>
+          set((state) => ({
+            visibleRoutes: state.visibleRoutes.includes(route)
+              ? state.visibleRoutes.filter((r) => r !== route)
+              : [...state.visibleRoutes, route],
+          })),
+      }),
+      {
+        name: "nyu-go-store",
+        partialize: (state) => ({ visibleRoutes: state.visibleRoutes }),
+      },
+    ),
+  ),
 );

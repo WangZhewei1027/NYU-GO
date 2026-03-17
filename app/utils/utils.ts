@@ -25,10 +25,19 @@ export function isRouteValidToday(route: string): boolean {
   return validFileNames.includes(cleanFilename);
 }
 
-// CSV 文件读取和解析
+// CSV 缓存：静态文件只需加载一次
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const csvCache = new Map<string, any[]>();
+
+// CSV 文件读取和解析（带缓存）
 async function fetchAndParseCSV<T>(filename: string): Promise<T[]> {
   const cleanFilename = filename.startsWith("/") ? filename.slice(1) : filename;
   if (!validFileNames.includes(cleanFilename)) return [];
+
+  // 命中缓存直接返回
+  if (csvCache.has(filename)) {
+    return csvCache.get(filename) as T[];
+  }
 
   try {
     const response = await fetch(filename);
@@ -41,7 +50,10 @@ async function fetchAndParseCSV<T>(filename: string): Promise<T[]> {
       Papa.parse<T>(csvText, {
         header: true,
         skipEmptyLines: true,
-        complete: (results) => resolve(results.data),
+        complete: (results) => {
+          csvCache.set(filename, results.data);
+          resolve(results.data);
+        },
         error: (error: Error) => reject(error),
       });
     });
