@@ -47,14 +47,19 @@ export default function UpdatePopup() {
             {latestDate}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="py-2">
-          <h4 className="text-sm font-bold text-foreground mb-3 tracking-wide">WHAT'S NEW</h4>
+          <h4 className="text-sm font-bold text-foreground mb-3 tracking-wide">
+            WHAT&apos;S NEW
+          </h4>
           <ul className="space-y-3">
             {latestContent.map((item, i) => (
-              <li key={i} className="flex gap-3 text-sm sm:text-base font-medium text-foreground/80 leading-relaxed">
-                <span 
-                  className="font-bold flex-shrink-0 mt-[2px]" 
+              <li
+                key={i}
+                className="flex gap-3 text-sm sm:text-base font-medium text-foreground/80 leading-relaxed"
+              >
+                <span
+                  className="font-bold flex-shrink-0 mt-[2px]"
                   style={{ color: "rgb(29, 173, 175)" }}
                 >
                   •
