@@ -19,14 +19,27 @@ const latestDate = updateLog[0].date;
 
 export default function UpdatePopup() {
   const [open, setOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const lastSeenVersion = useStore((s) => s.lastSeenVersion);
   const setLastSeenVersion = useStore((s) => s.setLastSeenVersion);
 
+  // Wait for zustand persist hydration before comparing
   useEffect(() => {
-    if (lastSeenVersion < latestVersion) {
+    const unsub = useStore.persist.onFinishHydration(() => {
+      setHydrated(true);
+    });
+    // If already hydrated (e.g. fast localStorage)
+    if (useStore.persist.hasHydrated()) {
+      setHydrated(true);
+    }
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    if (hydrated && lastSeenVersion < latestVersion) {
       setOpen(true);
     }
-  }, [lastSeenVersion]);
+  }, [hydrated, lastSeenVersion]);
 
   const handleClose = () => {
     setLastSeenVersion(latestVersion);
