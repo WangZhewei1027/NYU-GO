@@ -10,6 +10,7 @@ import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
 import { useMemo } from "react";
 import { FaBus } from "react-icons/fa";
+import { FaFerry } from "react-icons/fa6";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
@@ -22,7 +23,7 @@ import routeIdToLetterMap from "@/app/utils/map-settings/routeIdToLetterMap.json
 
 // 🏷️ 提取路线字母，例如 "Route A" -> "A", "Express Bus C" -> "C"
 const getRouteLetter = (route: string) => {
-  if (route === "Ferry Route") return "ferry"; // 特例处理 Ferry Route
+  if (route.toLowerCase().includes("ferry")) return "ferry"; // 特例处理 Ferry Route
 
   const pattern = /^Route\s[A-Z]$/;
   if (pattern.test(route)) {
@@ -72,7 +73,10 @@ const MarkerIcon = ({
         {/* 👇 反向旋转中间内容 */}
         <div style={{ transform: `rotate(${-heading}deg)` }}>
           {letter === "ferry" ? (
-            <img src="/map/ferry.svg" alt="ferry" className="w-4 h-4" />
+            <FaFerry
+              className="w-4 h-4"
+              style={{ color: routesColor[letter]?.color || "#000" }}
+            />
           ) : letter === "bus" ? (
             <FaBus
               className="w-4 h-4"
