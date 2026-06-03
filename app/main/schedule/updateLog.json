@@ -1,5 +1,13 @@
 [
     {
+        "date": "2026-06-03",
+        "version": "1.0.4",
+        "content": [
+            "Fix bus icon heading not updating on the map.",
+            "Replace bus emoji with a bus icon."
+        ]
+    },
+    {
         "date": "2026-03-17",
         "version": "1.0.3",
         "content": [
