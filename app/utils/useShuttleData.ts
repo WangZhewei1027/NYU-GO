@@ -25,20 +25,31 @@ export default function useShuttleData() {
 
         ws.onmessage = (event) => {
           try {
-            const data: { busId: number; latitude: number; longitude: number } =
-              JSON.parse(event.data);
+            const data: {
+              busId: number;
+              latitude: number;
+              longitude: number;
+              course?: number;
+            } = JSON.parse(event.data);
 
             //console.log("🚍 收到公交数据:", data);
             setShuttleData((prev) => {
               if (prev[data.busId]) {
                 const busId = data.busId;
-                const latitude = data.latitude;
-                const longitude = data.longitude;
                 const route = prev[busId].route;
-                const calculatedCourse = prev[busId].calculatedCourse;
+                const calculatedCourse =
+                  data.course !== undefined && data.course !== null
+                    ? String(data.course)
+                    : prev[busId].calculatedCourse;
+
                 return {
                   ...prev,
-                  [busId]: { route, latitude, longitude, calculatedCourse },
+                  [busId]: {
+                    route,
+                    latitude: String(data.latitude),
+                    longitude: String(data.longitude),
+                    calculatedCourse,
+                  },
                 };
               } else {
                 return prev;

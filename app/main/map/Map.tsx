@@ -109,12 +109,6 @@ const UserLocation = () => (
 export default function Map() {
   const shuttleData = useShuttleData();
 
-  // ✅ **确保 Hook 调用顺序一致**
-  const iconCache = useMemo(() => {
-    const cache: { [key: string]: L.DivIcon } = {};
-    return cache;
-  }, []);
-
   return (
     <MapContainer
       center={[40.7, -73.99]} // 纽约中心点
@@ -170,7 +164,7 @@ export default function Map() {
               </Polyline>
             );
           });
-        }
+        },
       )}
 
       {/* 🔴 渲染 Shuttle 位置 */}
@@ -179,27 +173,23 @@ export default function Map() {
           return null; // 确保数据完整
         }
         const routeLetter = getRouteLetter(info.route);
+        const heading = Number(info.calculatedCourse) || 0;
 
-        // ✅ **使用缓存的 icon，避免重复创建**
-        if (!iconCache[routeLetter]) {
-          iconCache[routeLetter] = L.divIcon({
-            className: "custom-marker",
-            html: ReactDOMServer.renderToString(
-              <MarkerIcon
-                letter={routeLetter}
-                heading={Number(info.calculatedCourse)}
-              />
-            ),
-            iconSize: [30, 30],
-            iconAnchor: [15, 15],
-          });
-        }
+        // ✅ 每次都创建新的 icon，确保 heading 更新
+        const busIcon = L.divIcon({
+          className: "custom-marker",
+          html: ReactDOMServer.renderToString(
+            <MarkerIcon letter={routeLetter} heading={heading} />,
+          ),
+          iconSize: [30, 30],
+          iconAnchor: [15, 15],
+        });
 
         return (
           <Marker
             key={busId}
             position={[Number(info.latitude), Number(info.longitude)]}
-            icon={iconCache[routeLetter]}
+            icon={busIcon}
             zIndexOffset={1000}
           >
             <Popup closeButton={false} autoPan={true}>
