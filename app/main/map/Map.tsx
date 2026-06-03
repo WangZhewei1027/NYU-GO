@@ -9,6 +9,7 @@ import {
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
 import { useMemo } from "react";
+import { FaBus } from "react-icons/fa";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
@@ -31,7 +32,7 @@ const getRouteLetter = (route: string) => {
     return letterMatch ? letterMatch[0].toUpperCase() : "?"; // 默认返回 "?"
   }
 
-  return "🚍"; // 如果不匹配，返回 "?"
+  return "bus"; // 如果不匹配，返回 bus 图标
 };
 
 const MarkerIcon = ({
@@ -72,6 +73,11 @@ const MarkerIcon = ({
         <div style={{ transform: `rotate(${-heading}deg)` }}>
           {letter === "ferry" ? (
             <img src="/map/ferry.svg" alt="ferry" className="w-4 h-4" />
+          ) : letter === "bus" ? (
+            <FaBus
+              className="w-4 h-4"
+              style={{ color: routesColor[letter]?.color || "#000" }}
+            />
           ) : (
             <span
               className="font-bold text-lg"
