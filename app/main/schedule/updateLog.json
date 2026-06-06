@@ -1,5 +1,13 @@
 [
     {
+        "date": "2026-06-06",
+        "version": "1.0.5",
+        "content": [
+            "New searching card.",
+            "Stop search now finds results even with partial or approximate input."
+        ]
+    },
+    {
         "date": "2026-06-03",
         "version": "1.0.4",
         "content": [

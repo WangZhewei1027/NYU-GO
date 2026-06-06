@@ -63,7 +63,7 @@ export default function TrackPage() {
       </div>
 
       {/* Location Card */}
-      <div className="mb-8 flex items-center gap-4 rounded-2xl border bg-white px-5 py-4 shadow-sm">
+      <div className="mb-8 flex items-center gap-4 rounded-2xl bg-white px-5 py-4 shadow-md">
         <div className="min-w-0 flex-1 space-y-0">
           {/* From */}
           <div className="border-b pb-3">

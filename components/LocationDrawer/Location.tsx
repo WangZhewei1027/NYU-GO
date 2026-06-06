@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { routesColor } from "@/app/utils/utils";
 import { useStore } from "@/app/store";
 import { StopRoute } from "@/types";
-import stopNameIsSame from "@/app/utils/stopNameIsSame";
+import Fuse from "fuse.js";
 import { haversineDistance } from "../Card/haversineDistance";
 import {
   MdOutlineSearch,
@@ -97,18 +97,22 @@ export default function Location({
     }
   }, [location, stopRoutes, enableAutoNerestStop, mode]);
 
-  // 搜索过滤
+  // 搜索过滤（Fuse.js 模糊搜索）
   const handleSearch = (term: string) => {
     setSearchTerm(term);
+    const allStops = useStore.getState().stopsData;
     if (!term) {
-      setFilteredStops(useStore.getState().stopsData);
+      setFilteredStops(allStops);
       return;
     }
-    const allStops = useStore.getState().stopsData;
-    const filtered = Object.keys(allStops).reduce((acc, key) => {
-      if (stopNameIsSame(key, term)) {
-        acc[key] = allStops[key];
-      }
+    const fuse = new Fuse(Object.keys(allStops), {
+      threshold: 0.4,
+      distance: 100,
+      minMatchCharLength: 1,
+    });
+    const results = fuse.search(term);
+    const filtered = results.reduce((acc, { item: key }) => {
+      acc[key] = allStops[key];
       return acc;
     }, {} as StopRoute);
     setFilteredStops(filtered);
