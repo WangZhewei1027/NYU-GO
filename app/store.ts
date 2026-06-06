@@ -17,6 +17,8 @@ export type StoreState = {
   setPersonalData: (data: PersonalData) => void;
   currentLocation: string;
   updateCurrentLocation: (newLocation: string) => void;
+  destination: string;
+  updateDestination: (newDestination: string) => void;
   shuttleData: BusInfo;
   setShuttleData: (data: BusInfo) => void;
   stopsData: StopRoute;
@@ -52,6 +54,9 @@ export const useStore = create<StoreState>()(
         currentLocation: "",
         updateCurrentLocation: (newLocation: string) =>
           set({ currentLocation: newLocation }),
+        destination: "",
+        updateDestination: (newDestination: string) =>
+          set({ destination: newDestination }),
         shuttleData: {},
         setShuttleData: (data: BusInfo) => set({ shuttleData: data }),
         stopsData: {},
@@ -80,6 +85,7 @@ export const useStore = create<StoreState>()(
         partialize: (state) => ({
           visibleRoutes: state.visibleRoutes,
           lastSeenVersion: state.lastSeenVersion,
+          destination: state.destination,
         }),
       },
     ),

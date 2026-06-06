@@ -10,15 +10,13 @@ import {
   DrawerDescription,
   DrawerFooter,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { routesColor } from "@/app/utils/utils";
 import { useStore } from "@/app/store";
-import { StopRoute, Position } from "@/types";
+import { StopRoute } from "@/types";
 import stopNameIsSame from "@/app/utils/stopNameIsSame";
 import { haversineDistance } from "../Card/haversineDistance";
 import {
-  MdOutlineLocationOn,
   MdOutlineSearch,
   MdOutlineBookmark,
   MdOutlineBookmarkBorder,
@@ -26,40 +24,47 @@ import {
 } from "react-icons/md";
 import { motion, LayoutGroup } from "framer-motion";
 
-export default function Location() {
+interface LocationProps {
+  mode?: "from" | "to";
+  placeholder?: string;
+}
+
+export default function Location({
+  mode = "from",
+  placeholder = "-",
+}: LocationProps) {
   const [stopRoutes, setStopRoutes] = useState<StopRoute | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStop, setSelectedStop] = useState("-");
   const [filteredStops, setFilteredStops] = useState<StopRoute>(
-    useStore.getState().stopsData
+    useStore.getState().stopsData,
   );
   const [bookmarkedStops, setBookmarkedStops] = useState<string[]>(
-    JSON.parse(localStorage.getItem("bookmarkedStops") || "[]")
+    JSON.parse(localStorage.getItem("bookmarkedStops") || "[]"),
   );
   const [nearestStop, setNearestStop] = useState<string | null>(null);
   const location = useStore((state) => state.location);
+
+  // 根据 mode 读取/写入 store 中对应的值，保证 UI 对 store 变化（如交换）保持响应
+  const storeValue = useStore((state) =>
+    mode === "from" ? state.currentLocation : state.destination,
+  );
+  const updateValue = useStore((state) =>
+    mode === "from" ? state.updateCurrentLocation : state.updateDestination,
+  );
+  const selectedStop = storeValue || "-";
 
   // const [enableAutoNerestStop, setEnableAutoNearestStop] =
   //   useState<boolean>(true);
 
   const enableAutoNerestStop = useStore((state) => state.enableAutoNearestStop);
   const setEnableAutoNearestStop = useStore(
-    (state) => state.setEnableAutoNearestStop
+    (state) => state.setEnableAutoNearestStop,
   );
 
-  const updateCurrentLocation = useStore(
-    (state) => state.updateCurrentLocation
-  );
-
-  // 初始化 stops 及选中项
+  // 初始化 stops
   useEffect(() => {
     const stops = useStore.getState().stopsData;
     setStopRoutes(stops);
-    // const currentLocation = localStorage.getItem("currentLocation") || "";
-    // setSelectedStop(currentLocation);
-    // updateCurrentLocation(currentLocation);
-    const currentLocation = useStore.getState().currentLocation;
-    setSelectedStop(currentLocation || "-");
   }, []);
 
   // 根据当前位置计算最近站点
@@ -75,7 +80,7 @@ export default function Location() {
           location.latitude,
           location.longitude,
           value.position.latitude,
-          value.position.longitude
+          value.position.longitude,
         );
         if (distance < minDistance) {
           minDistance = distance;
@@ -84,14 +89,13 @@ export default function Location() {
       });
       if (nearest) {
         setNearestStop(nearest);
-        if (enableAutoNerestStop) {
-          setSelectedStop(nearest);
-          updateCurrentLocation(nearest);
+        if (enableAutoNerestStop && mode === "from") {
+          updateValue(nearest);
         }
         return;
       }
     }
-  }, [location, stopRoutes, enableAutoNerestStop]);
+  }, [location, stopRoutes, enableAutoNerestStop, mode]);
 
   // 搜索过滤
   const handleSearch = (term: string) => {
@@ -125,19 +129,21 @@ export default function Location() {
       ? Object.entries(filteredStops).sort(
           ([a], [b]) =>
             (bookmarkedStops.includes(a) ? -1 : 1) -
-            (bookmarkedStops.includes(b) ? -1 : 1)
+            (bookmarkedStops.includes(b) ? -1 : 1),
         )
       : [];
   }, [filteredStops, bookmarkedStops]);
 
   // 选择站点统一逻辑
   const handleSelectStop = (key: string) => {
-    setSelectedStop(key);
-    updateCurrentLocation(key);
-    if (setEnableAutoNearestStop) {
-      setEnableAutoNearestStop(false); // 手动选择站点后，关闭自动最近站点
+    updateValue(key);
+    // 仅在 "from" 模式下手动选择会关闭自动最近站点
+    if (mode === "from" && setEnableAutoNearestStop) {
+      setEnableAutoNearestStop(false);
     }
-    localStorage.setItem("currentLocation", key);
+    if (mode === "from") {
+      localStorage.setItem("currentLocation", key);
+    }
     const openElement = document.querySelector('[data-state="open"]');
     if (openElement instanceof HTMLElement) {
       openElement.click();
@@ -232,10 +238,15 @@ export default function Location() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant={"outline"} className="p-1 text-base w-full max-w-full">
-          <MdOutlineLocationOn className="shrink-0 text-gray-500" />
-          <span className="truncate">{selectedStop}</span>
-        </Button>
+        <button className="flex items-center w-full text-left active:opacity-60 transition">
+          <span className="truncate text-base font-semibold text-gray-800 leading-tight">
+            {selectedStop === "-" ? (
+              <span className="text-gray-400 font-normal">{placeholder}</span>
+            ) : (
+              selectedStop
+            )}
+          </span>
+        </button>
       </DrawerTrigger>
       <DrawerContent className="h-[85vh]">
         <DrawerHeader>

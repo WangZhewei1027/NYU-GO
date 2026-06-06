@@ -36,6 +36,8 @@ export default function Stops({
     (state) => (state as StoreState).currentLocation,
   );
 
+  const destination = useStore((state) => (state as StoreState).destination);
+
   // 加载站点数据
   useEffect(() => {
     async function fetchStops() {
@@ -64,6 +66,13 @@ export default function Stops({
       callback(currentLocation);
     }
   }, [isFrom, currentLocation, callback]);
+
+  useEffect(() => {
+    if (!isFrom && destination) {
+      setSelectedStop(destination);
+      callback(destination);
+    }
+  }, [isFrom, destination, callback]);
 
   // 计算时间轴竖线的高度
   function setLineHeight() {

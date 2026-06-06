@@ -8,6 +8,8 @@ import { useStore } from "@/app/store";
 import { memo } from "react";
 import AlertBell from "@/components/AlertBell";
 import InstallGuide from "@/components/InstallGuide";
+import { MdSwapVert } from "react-icons/md";
+import { routesColor } from "@/app/utils/utils";
 
 const routes = [
   { name: "A", time: "4", color: "pink" },
@@ -23,10 +25,30 @@ const MemoizedCard = memo(Card);
 
 export default function TrackPage() {
   const visibleRoutes = useStore((state) => state.visibleRoutes);
+  const currentLocation = useStore((state) => state.currentLocation);
+  const destination = useStore((state) => state.destination);
+  const stopsData = useStore((state) => state.stopsData);
 
-  const MemoizedLocation = useMemo(() => <Location />, []);
+  const MemoizedFrom = useMemo(() => <Location mode="from" />, []);
+  const MemoizedTo = useMemo(
+    () => <Location mode="to" placeholder="Select destination" />,
+    [],
+  );
 
   const insets = useStore((state) => state.insets);
+
+  const handleSwap = () => {
+    const { currentLocation, destination } = useStore.getState();
+    useStore.getState().updateCurrentLocation(destination);
+    useStore.getState().updateDestination(currentLocation);
+    useStore.getState().setEnableAutoNearestStop?.(false);
+  };
+
+  const fromRoutes: string[] = stopsData[currentLocation]?.routes ?? [];
+  const toRoutes: string[] = stopsData[destination]?.routes ?? [];
+  const overlappingRoutes = new Set(
+    destination ? fromRoutes.filter((r) => toRoutes.includes(r)) : [],
+  );
 
   return (
     <div
@@ -40,11 +62,68 @@ export default function TrackPage() {
         <AlertBell />
       </div>
 
-      {/* Location */}
-      <div className="mb-8 text-base">
-        Departing from &nbsp;
-        <div className="max-w-48 inline-block">{MemoizedLocation}</div>
-        &nbsp; in
+      {/* Location Card */}
+      <div className="mb-8 flex items-center gap-4 rounded-2xl border bg-white px-5 py-4 shadow-sm">
+        <div className="min-w-0 flex-1 space-y-0">
+          {/* From */}
+          <div className="border-b pb-3">
+            <div className="text-[11px] font-medium uppercase tracking-widest text-gray-400">
+              From
+            </div>
+            {MemoizedFrom}
+            {fromRoutes.length > 0 && (
+              <div className="mt-1.5">
+                {fromRoutes.map((r) => (
+                  <span
+                    key={r}
+                    className="inline mr-2 p-3 py-1 text-xs rounded-md text-gray-900 font-bold"
+                    style={{
+                      backgroundColor: overlappingRoutes.has(r)
+                        ? routesColor[r]?.color
+                        : "#e5e7eb",
+                    }}
+                  >
+                    {r}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* To */}
+          <div className="pt-3">
+            <div className="text-[11px] font-medium uppercase tracking-widest text-gray-400">
+              To
+            </div>
+            {MemoizedTo}
+            {toRoutes.length > 0 && (
+              <div className="mt-1.5">
+                {toRoutes.map((r) => (
+                  <span
+                    key={r}
+                    className="inline mr-2 p-3 py-1 text-xs rounded-md text-gray-900 font-bold"
+                    style={{
+                      backgroundColor: overlappingRoutes.has(r)
+                        ? routesColor[r]?.color
+                        : "#e5e7eb",
+                    }}
+                  >
+                    {r}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Swap button */}
+        <button
+          type="button"
+          onClick={handleSwap}
+          aria-label="Swap from and to"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-egg-blue-500 text-white shadow transition active:scale-90"
+        >
+          <MdSwapVert className="h-5 w-5" />
+        </button>
       </div>
 
       {/* Routes List */}
