@@ -1,67 +1,76 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getBusInfo, BusInfo } from "./getBusInfo";
-import { useStore, StoreState } from "@/app/store";
+import { useStore } from "@/app/store";
 
 export default function useShuttleData() {
   const [shuttleData, setShuttleData] = useState<BusInfo>({});
-
-  const store: StoreState = useStore() as StoreState;
+  const setStoreShuttleData = useStore((state) => state.setShuttleData);
 
   // 启动时fetch第一次的所有shuttle数据
   useEffect(() => {
-    let ws: WebSocket;
+    let ws: WebSocket | null = null;
+    let isMounted = true;
 
-    getBusInfo()
-      .then((data) => {
-        console.log("🚍 首次获取到的公交数据:", data);
-        setShuttleData(data);
-      })
-      .then(() => {
-        ws = new WebSocket("wss://nyu-go-backend-production.up.railway.app");
+    const initializeShuttleData = async () => {
+      try {
+        const data = await getBusInfo();
+        if (isMounted) {
+          setShuttleData(data);
+        }
+      } catch (error) {
+        console.error("❌ 首次获取公交数据失败:", error);
+      }
 
-        ws.onopen = () => {
-          console.log("✅ WebSocket 连接已建立");
-        };
+      if (!isMounted) return;
 
-        ws.onmessage = (event) => {
-          try {
-            const data: {
-              busId: number;
-              latitude: number;
-              longitude: number;
-              course?: number;
-            } = JSON.parse(event.data);
+      ws = new WebSocket("wss://nyu-go-backend-production.up.railway.app");
 
-            //console.log("🚍 收到公交数据:", data);
-            setShuttleData((prev) => {
-              if (prev[data.busId]) {
-                const busId = data.busId;
-                const route = prev[busId].route;
-                const calculatedCourse =
+      ws.onopen = () => {
+        console.log("✅ WebSocket 连接已建立");
+      };
+
+      ws.onerror = (event) => {
+        console.error("❌ WebSocket 连接错误:", event);
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data: {
+            busId: number;
+            latitude: number;
+            longitude: number;
+            course?: number;
+          } = JSON.parse(event.data);
+
+          setShuttleData((prev) => {
+            const previousBusData = prev[data.busId];
+            if (!previousBusData) {
+              return prev;
+            }
+
+            return {
+              ...prev,
+              [data.busId]: {
+                route: previousBusData.route,
+                latitude: String(data.latitude),
+                longitude: String(data.longitude),
+                calculatedCourse:
                   data.course !== undefined && data.course !== null
                     ? String(data.course)
-                    : prev[busId].calculatedCourse;
+                    : previousBusData.calculatedCourse,
+              },
+            };
+          });
+        } catch (error) {
+          console.error("❌ 解析 WebSocket 数据出错:", error);
+        }
+      };
+    };
 
-                return {
-                  ...prev,
-                  [busId]: {
-                    route,
-                    latitude: String(data.latitude),
-                    longitude: String(data.longitude),
-                    calculatedCourse,
-                  },
-                };
-              } else {
-                return prev;
-              }
-            });
-          } catch (error) {
-            console.error("❌ 解析 WebSocket 数据出错:", error);
-          }
-        };
-      });
+    void initializeShuttleData();
 
     return () => {
+      isMounted = false;
       if (!ws) return;
       try {
         ws.close();
@@ -74,8 +83,8 @@ export default function useShuttleData() {
 
   useEffect(() => {
     //console.log("🚍 更新后的公交数据:", shuttleData);
-    store.setShuttleData(shuttleData);
-  }, [shuttleData]);
+    setStoreShuttleData(shuttleData);
+  }, [shuttleData, setStoreShuttleData]);
 
   return shuttleData;
 }

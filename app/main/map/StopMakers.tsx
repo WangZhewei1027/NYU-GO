@@ -44,7 +44,7 @@ const StopMarkers = () => {
   const opacity = getStopIconOpacity(zoom);
 
   function PassingRoutes({ stopName }: { stopName: string }) {
-    const stopsData = useStore.getState().stopsData;
+    const stopsData = useStore((state) => state.stopsData);
 
     let stopData: string[] | null = null;
 

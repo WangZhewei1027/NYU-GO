@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { BusInfo } from "./utils/getBusInfo";
 import { devtools, persist } from "zustand/middleware";
-
-import initStopsData from "@/app/utils/initStopsData";
 import { StopRoute, Position } from "@/types";
 
 export type PersonalData = {
@@ -22,6 +20,7 @@ export type StoreState = {
   shuttleData: BusInfo;
   setShuttleData: (data: BusInfo) => void;
   stopsData: StopRoute;
+  setStopsData: (data: StopRoute) => void;
   unit: "metric" | "imperial"; // 添加单位类型
   setUnit: (unit: "metric" | "imperial") => void;
   enableAutoNearestStop: boolean; // 可选属性，默认为 true
@@ -47,7 +46,6 @@ export const useStore = create<StoreState>()(
         isInitialized: false, // 初始状态为未初始化
         setIsInitialized: (isInitialized: boolean) => set({ isInitialized }),
         location: { latitude: 0, longitude: 0 }, // 默认位置
-        stopsData: initStopsData(),
         setLocation: (location: Position) => set({ location }),
         personalData: { name: "", staredStops: [] },
         setPersonalData: (data: PersonalData) => set({ personalData: data }),
@@ -56,6 +54,8 @@ export const useStore = create<StoreState>()(
           set({ currentLocation: newLocation }),
         shuttleData: {},
         setShuttleData: (data: BusInfo) => set({ shuttleData: data }),
+        stopsData: {},
+        setStopsData: (data: StopRoute) => set({ stopsData: data }),
         unit: "metric", // 默认单位为公制
         setUnit: (unit: "metric" | "imperial") => set({ unit }),
         enableAutoNearestStop: true, // 默认启用自动最近站点

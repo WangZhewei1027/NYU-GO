@@ -33,7 +33,7 @@ export default function Stops({
   const containerRef = useRef<HTMLDivElement>(null); // 容器的引用
 
   const currentLocation = useStore(
-    (state) => (state as StoreState).currentLocation
+    (state) => (state as StoreState).currentLocation,
   );
 
   // 加载站点数据
@@ -56,19 +56,18 @@ export default function Stops({
       setSelectedStop(storedStop);
       callback(storedStop);
     }
-  }, []);
+  }, [route, isFrom, callback]);
 
   useEffect(() => {
     if (isFrom && currentLocation) {
       setSelectedStop(currentLocation);
       callback(currentLocation);
     }
-  }, [currentLocation]);
+  }, [isFrom, currentLocation, callback]);
 
   // 计算时间轴竖线的高度
   function setLineHeight() {
     if (containerRef.current && lineRef.current) {
-      console.log("📏 计算竖线高度:", containerRef.current.scrollHeight);
       lineRef.current.style.height = `${containerRef.current.scrollHeight}px`;
     }
   }
@@ -125,9 +124,7 @@ export default function Stops({
                   setSelectedStop(stop); // 更新选中的站点
                   callback(stop); // 回调函数
                   localStorage.setItem(`route_${route}_${isFrom}`, stop); // 保存到本地存储
-                  (
-                    document.querySelector('[data-state="open"]') as HTMLElement
-                  )?.click(); // 关闭对话框
+                  setIsOpen(false); // 关闭对话框
                 }}
               >
                 {/* 圆点 */}

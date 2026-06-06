@@ -2,17 +2,39 @@
 import { useStore } from "@/app/store";
 import { useEffect } from "react";
 import { SafeArea } from "capacitor-plugin-safe-area";
+import initStopsData from "@/app/utils/initStopsData";
 
 export default function Initialization() {
   const setUnit = useStore((state) => state.setUnit);
   const setInsets = useStore((state) => state.setInsets);
+  const setStopsData = useStore((state) => state.setStopsData);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const hydrateStopsData = async () => {
+      try {
+        const stopsData = await initStopsData();
+        if (isMounted) {
+          setStopsData(stopsData);
+        }
+      } catch (error) {
+        console.error("Failed to initialize stops data:", error);
+      }
+    };
+
+    void hydrateStopsData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [setStopsData]);
 
   useEffect(() => {
     SafeArea.getSafeAreaInsets().then(({ insets }) => {
       setInsets(insets);
-      console.log("Safe area insets:", insets);
     });
-  }, []);
+  }, [setInsets]);
 
   useEffect(() => {
     if (localStorage.getItem("unit")?.toLowerCase() === "imperial") {

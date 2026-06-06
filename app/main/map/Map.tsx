@@ -8,7 +8,6 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
-import { useMemo } from "react";
 import { FaBus } from "react-icons/fa";
 import { FaFerry } from "react-icons/fa6";
 import "leaflet/dist/leaflet.css";
@@ -118,6 +117,7 @@ const UserLocation = () => (
 
 export default function Map() {
   const shuttleData = useShuttleData();
+  const location = useStore((state) => state.location);
 
   return (
     <MapContainer
@@ -214,10 +214,7 @@ export default function Map() {
 
       {/* 🔴 渲染 User 位置 */}
       <Marker
-        position={[
-          useStore.getState().location.latitude,
-          useStore.getState().location.longitude,
-        ]}
+        position={[location.latitude, location.longitude]}
         icon={L.divIcon({
           className: "custom-user-location",
           html: ReactDOMServer.renderToString(<UserLocation />),
@@ -229,8 +226,8 @@ export default function Map() {
         <Popup>
           📍 Your Location
           <br />
-          Latitude: {useStore.getState().location.latitude.toFixed(4)},
-          Longitude: {useStore.getState().location.longitude.toFixed(4)}
+          Latitude: {location.latitude.toFixed(4)}, Longitude:{" "}
+          {location.longitude.toFixed(4)}
         </Popup>
       </Marker>
     </MapContainer>
