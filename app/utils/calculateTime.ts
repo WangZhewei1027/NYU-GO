@@ -1,12 +1,13 @@
 import stops from "@/app/utils/stops.json";
 import stopNameIsSame from "./stopNameIsSame";
+import { haversineDistance } from "@/components/Card/haversineDistance";
 
 // 输出出发点和到达点的坐标，返回所需时间
 export function calculateTime(
   shuttleLat: number,
   shuttleLon: number,
   stopLat: number,
-  stopLon: number
+  stopLon: number,
 ): number {
   // 不同时段的平均车速（单位：km/h）
   const trafficSpeeds = [
@@ -23,13 +24,11 @@ export function calculateTime(
   // 选择合适的速度
   const speed =
     trafficSpeeds.find(
-      (slot) => currentHour >= slot.startHour && currentHour < slot.endHour
+      (slot) => currentHour >= slot.startHour && currentHour < slot.endHour,
     )?.speed || 25; // 如果找不到，默认速度 25km/h
 
-  // 经纬度转大约距离（简单假设：每度纬度≈111km，经度≈85km在纽约）
-  const latDistance = (shuttleLat - stopLat) * 111; // 纬度的影响
-  const lonDistance = (shuttleLon - stopLon) * 85; // 纽约地区的经度影响
-  const distance = Math.sqrt(latDistance ** 2 + lonDistance ** 2); // 欧几里得距离 (km)
+  // 使用 Haversine 公式计算球面距离（单位：km）
+  const distance = haversineDistance(shuttleLat, shuttleLon, stopLat, stopLon);
 
   // 计算时间（单位：分钟）
   const estimatedTime = (distance / speed) * 60;
@@ -40,7 +39,7 @@ export function calculateTime(
 // 从stops.json中获取站点坐标
 export function getStopPosition(stopName: string) {
   const stop = Object.values(stops.stops).find((stop) =>
-    stopNameIsSame(stop.name, stopName)
+    stopNameIsSame(stop.name, stopName),
   );
   if (stop) {
     return {
