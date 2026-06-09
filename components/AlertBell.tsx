@@ -40,7 +40,7 @@ export default function AlertBell({ className }: Props) {
       try {
         const res = await fetch(
           "https://nyu-go-backend-production.up.railway.app/alert-messages",
-          { signal: controller.signal }
+          { signal: controller.signal },
         );
         const json: AlertResponse = await res.json();
         setData(json);
@@ -82,7 +82,7 @@ export default function AlertBell({ className }: Props) {
           <DialogTitle>Alert Messages</DialogTitle>
           <DialogDescription />
           {count > 0 ? (
-            <div className="text-left">
+            <div className="text-left max-h-[60vh] overflow-y-auto pr-1">
               {data!.msgs!.map((msg) => (
                 <div key={msg.id} className="my-4">
                   <div className="text-sm text-gray-500">{msg.created}</div>
