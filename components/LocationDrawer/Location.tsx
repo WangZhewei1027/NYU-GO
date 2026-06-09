@@ -38,6 +38,7 @@ export default function Location({
   const [filteredStops, setFilteredStops] = useState<StopRoute>(
     useStore.getState().stopsData,
   );
+  const stopsData = useStore((state) => state.stopsData);
   const [bookmarkedStops, setBookmarkedStops] = useState<string[]>(
     JSON.parse(localStorage.getItem("bookmarkedStops") || "[]"),
   );
@@ -61,11 +62,14 @@ export default function Location({
     (state) => state.setEnableAutoNearestStop,
   );
 
-  // 初始化 stops
+  // 同步 stopsData：当 store 中数据异步加载完成后更新本地状态
   useEffect(() => {
-    const stops = useStore.getState().stopsData;
-    setStopRoutes(stops);
-  }, []);
+    setStopRoutes(stopsData);
+    // 仅在没有进行搜索时才同步 filteredStops
+    if (!searchTerm) {
+      setFilteredStops(stopsData);
+    }
+  }, [stopsData]);
 
   // 根据当前位置计算最近站点
   useEffect(() => {
