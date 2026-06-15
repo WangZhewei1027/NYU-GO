@@ -21,7 +21,7 @@ function RouteItem({ route, promo }: { route: string; promo: string }) {
   return (
     <div
       className={`w-full h-32 min-[375px]:h-36 sm:h-40 shadow rounded p-3 sm:p-4 flex flex-col transition-all ${
-        selected ? "bg-egg-blue-400 text-white" : "bg-white text-black"
+        selected ? "bg-brand-400 text-white" : "bg-white text-black"
       }`}
       onClick={() => toggleRoute(route)}
     >

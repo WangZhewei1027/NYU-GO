@@ -120,7 +120,7 @@ export default function TrackPage() {
           type="button"
           onClick={handleSwap}
           aria-label="Swap from and to"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-egg-blue-500 text-white shadow transition active:scale-90"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white shadow transition active:scale-90"
         >
           <MdSwapVert className="h-5 w-5" />
         </button>

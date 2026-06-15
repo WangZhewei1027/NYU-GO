@@ -23,7 +23,7 @@ const BottomNav = () => {
             <item.icon
               className={`text-3xl  transition-all duration-500 ${
                 pathname === item.href
-                  ? "text-egg-blue-500 translate-y-0"
+                  ? "text-brand-500 translate-y-0"
                   : "text-gray-400 translate-y-2"
               }`}
             />
@@ -37,7 +37,7 @@ const BottomNav = () => {
                     : "opacity-0 invisible"
                 } 
                 ${
-                  pathname === item.href ? "text-egg-blue-500" : "text-gray-400"
+                  pathname === item.href ? "text-brand-500" : "text-gray-400"
                 } 
                 text-sm font-sans`}
             >

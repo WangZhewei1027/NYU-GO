@@ -51,7 +51,7 @@ export default function ChatWindow({
   return (
     <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:left-auto md:top-auto md:bottom-6 md:right-6 md:translate-x-0 md:translate-y-0 z-50 flex flex-col bg-white rounded-lg shadow-2xl w-[calc(100%-2rem)] md:w-[380px] md:h-[600px] max-h-[70vh] md:max-h-[80vh] border border-gray-200 animate-chat-pop-in">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-egg-blue-500 text-white rounded-t-lg">
+      <div className="flex items-center justify-between p-4 border-b bg-brand-500 text-white rounded-t-lg">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
             <MessageCircle className="h-5 w-5" />
@@ -82,7 +82,7 @@ export default function ChatWindow({
             <div
               className={`max-w-[85%] md:max-w-[80%] rounded-2xl px-4 py-2 ${
                 message.role === "user"
-                  ? "bg-egg-blue-500 text-white"
+                  ? "bg-brand-500 text-white"
                   : "bg-gray-100 text-gray-900"
               }`}
             >
@@ -121,7 +121,7 @@ export default function ChatWindow({
             type="submit"
             disabled={isLoading || !input.trim()}
             size="icon"
-            className="bg-egg-blue-500 hover:bg-egg-blue-600 active:scale-95 shrink-0"
+            className="bg-brand-500 hover:bg-brand-600 active:scale-95 shrink-0"
           >
             <Send className="h-4 w-4" />
           </Button>

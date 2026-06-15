@@ -132,7 +132,7 @@ export default function ChatBubble({ onClick }: ChatBubbleProps) {
         }}
       >
         <button
-          className="h-12 w-12 rounded-full bg-egg-blue-500 text-white shadow-xl hover:shadow-2xl hover:scale-110 cursor-grab active:cursor-grabbing active:scale-110 flex items-center justify-center"
+          className="h-12 w-12 rounded-full bg-brand-500 text-white shadow-xl hover:shadow-2xl hover:scale-110 cursor-grab active:cursor-grabbing active:scale-110 flex items-center justify-center"
           aria-label="Open chat"
         >
           <MessageCircle className="h-5 w-5" />
