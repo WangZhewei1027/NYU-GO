@@ -11,11 +11,12 @@ export const siteConfig = {
   name: "NYU GO",
   shortName: "NYU GO",
   // Update NEXT_PUBLIC_SITE_URL in your env to the real production domain.
-  url: (
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://nyu-go.vercel.app"
-  ).replace(/\/$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.nyu-go.com/").replace(
+    /\/$/,
+    "",
+  ),
   description:
-    "NYU GO is a real-time NYU Shanghai shuttle tracker. Follow live bus locations, smart ETAs, route maps, and schedules on a fast, installable PWA built for students.",
+    "NYU GO is a real-time NYU shuttle tracker. Follow live bus locations, smart ETAs, route maps, and schedules on a fast, installable PWA built for students.",
   locale: "en_US",
   keywords: [
     "NYU GO",
