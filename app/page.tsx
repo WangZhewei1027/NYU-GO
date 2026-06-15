@@ -1,20 +1,7 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
+// Server-side redirect: crawlers receive a 307 to the live tracker instead of
+// an empty client-rendered page, preserving link equity to the canonical app.
 export default function Page() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // const guide = localStorage.getItem("guideCompleted");
-
-    // if (guide === "true") {
-    router.replace("/main/track");
-    // } else {
-    //   router.replace("/guide");
-    // }
-  }, [router]);
-
-  return null;
+  redirect("/main/track");
 }
